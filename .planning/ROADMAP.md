@@ -31,12 +31,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Category browsing returns only entries matching a given category from the canonical taxonomy
   4. Tag normalization collapses "mcp", "MCP", and "mcp-server" to the same canonical tag
   5. Every listing has a `last_verified_at` timestamp and a dead-link health flag that can be updated independently
-**Plans**: TBD
+**Plans:** 3 plans
 
 Plans:
-- [ ] 01-01: DB schema, Drizzle ORM setup, Turso connection, migrations
-- [ ] 01-02: CatalogService (CRUD, upsert, dedup by source URL), SearchService (FTS5, filters, pagination)
-- [ ] 01-03: Zod CatalogEntry schema, tag taxonomy, category taxonomy, dead-link detection logic
+- [ ] 01-01-PLAN.md — Next.js project init, Drizzle schema, libSQL client, FTS5 custom migration
+- [ ] 01-02-PLAN.md — Zod CatalogEntry schema, tag taxonomy, category taxonomy with normalization transforms
+- [ ] 01-03-PLAN.md — CatalogService (CRUD, upsert, dead-link), SearchService (FTS5, category browse), integration tests
 
 ### Phase 2: Scraping Pipeline
 **Goal**: Automated ingestion from GitHub, npm, and HuggingFace that pre-seeds the catalog with 200+ real entries before any public URL is shared.
@@ -122,11 +122,11 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases 1 → 2 → (3, 4, 5 in parallel) → 6
+Phases 1 -> 2 -> (3, 4, 5 in parallel) -> 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Catalog Foundation | 0/3 | Not started | - |
+| 1. Catalog Foundation | 0/3 | Planned | - |
 | 2. Scraping Pipeline | 0/4 | Not started | - |
 | 3. Web Frontend | 0/3 | Not started | - |
 | 4. MCP Protocol Endpoint | 0/3 | Not started | - |
