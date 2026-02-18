@@ -1,12 +1,15 @@
 {
-  "name": "next-scaffold",
+  "name": "ai-bazaar",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:migrate": "TURSO_DATABASE_URL=file:./dev.db bun src/db/migrate.ts",
+    "db:generate": "bunx drizzle-kit generate",
+    "db:studio": "TURSO_DATABASE_URL=file:./dev.db bunx drizzle-kit studio"
   },
   "dependencies": {
     "@libsql/client": "^0.17.0",
