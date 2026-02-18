@@ -34,8 +34,9 @@ yarn-error.log*
 .env*
 !.env.example
 
-# SQLite local dev database
+# SQLite local dev and test databases
 dev.db
+test.db
 *.db-shm
 *.db-wal
 
