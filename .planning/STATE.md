@@ -5,33 +5,33 @@
 See: .planning/PROJECT.md (updated 2026-02-18)
 
 **Core value:** Any agent or human can find the right AI/Web3 tool for their need in under 60 seconds — agents via MCP protocol query, humans via search or curated bundle.
-**Current focus:** Phase 1 - Catalog Foundation
+**Current focus:** Phase 2 - Scraping Workers (Phase 1 complete)
 
 ## Current Position
 
-Phase: 1 of 6 (Catalog Foundation)
-Plan: 3 of 3 in current phase
-Status: In progress
-Last activity: 2026-02-18 — Completed 01-01 (Drizzle schema + FTS5 migration)
+Phase: 1 of 6 (Catalog Foundation) — COMPLETE
+Plan: 3 of 3 in current phase — COMPLETE
+Status: Phase 1 complete, ready for Phase 2
+Last activity: 2026-02-18 — Completed 01-03 (CatalogService + SearchService + integration tests)
 
-Progress: [███░░░░░░░] 12%
+Progress: [████░░░░░░] 17%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 2
+- Total plans completed: 3
 - Average duration: 5 min
-- Total execution time: 0.17 hours
+- Total execution time: 0.25 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01-catalog-foundation | 2/3 | 10 min | 5 min |
+| 01-catalog-foundation | 3/3 | 16 min | 5 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-02 (3 min), 01-01 (7 min)
-- Trend: -
+- Last 5 plans: 01-03 (6 min), 01-02 (3 min), 01-01 (7 min)
+- Trend: consistent 5 min average
 
 *Updated after each plan completion*
 
@@ -42,20 +42,24 @@ Progress: [███░░░░░░░] 12%
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
-- Roadmap: Scrape-first approach — pre-seed 200+ entries before any public URL is shared
-- Roadmap: MCP-only for Phase 4 — ACP/A2A deferred (protocol in flux, merger unconfirmed)
-- Roadmap: Telegram bot deferred to v2 — focus web + MCP for v1
-- Roadmap: Phases 3, 4, 5 can execute in parallel after Phase 2 completes
+- 01-03: Dynamic imports in test beforeAll — db/client.ts reads TURSO_DATABASE_URL at module init; static imports would load before env var is set
+- 01-03: searchCatalog uses db.run() with sql`` template — Drizzle relational API has no FTS5 MATCH support
+- 01-03: checkDeadLink returns false (inconclusive) for all non-404/410 — prevents false positives from HEAD-blocking servers (per research Pitfall 5)
+- 01-03: updateListing normalizes fields individually (not through full schema) — Partial<CatalogEntryInput> cannot be parsed through complete Zod schema
 - 01-02: Array.from(new Set()) for tag dedup instead of spread (tsconfig lib config compatibility)
 - 01-02: sourceUrl transform strips query params + hash, not just trailing slash (UTM dedup prevention)
 - 01-01: drizzle-kit push BANNED — silently destroys FTS5 virtual tables not in schema.ts
 - 01-01: FTS5 triggers applied via src/db/migrate.ts custom runner (drizzle-kit turso runner cannot execute BEGIN...END blocks)
 - 01-01: Zod pinned to ^3.25.0 (not v4) — Zod 4 has breaking API changes incompatible with research patterns
 - 01-01: Local dev uses file:./dev.db; production uses libsql:// Turso URL (same @libsql/client handles both)
+- Roadmap: Scrape-first approach — pre-seed 200+ entries before any public URL is shared
+- Roadmap: MCP-only for Phase 4 — ACP/A2A deferred (protocol in flux, merger unconfirmed)
+- Roadmap: Telegram bot deferred to v2 — focus web + MCP for v1
+- Roadmap: Phases 3, 4, 5 can execute in parallel after Phase 2 completes
 
 ### Pending Todos
 
-None — Plans 01-01 and 01-02 complete. Plan 01-03 (CatalogService + SearchService) is next.
+None — Phase 1 complete. Phase 2 (Scraping Workers) is next.
 
 ### Blockers/Concerns
 
@@ -66,5 +70,5 @@ None — Plans 01-01 and 01-02 complete. Plan 01-03 (CatalogService + SearchServ
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 01-01-PLAN.md
+Stopped at: Completed 01-03-PLAN.md (Phase 1 complete)
 Resume file: None
