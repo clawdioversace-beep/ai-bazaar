@@ -1,0 +1,159 @@
+# Requirements: AI Bazaar
+
+**Defined:** 2026-02-18
+**Core Value:** Any agent or human can find the right AI/Web3 tool for their need in under 60 seconds — agents via MCP protocol query, humans via search or curated bundle.
+
+## v1 Requirements
+
+Requirements for initial release. Each maps to roadmap phases.
+
+### Catalog Foundation
+
+- [ ] **CAT-01**: Listing data model stores structured metadata: name, tagline, description, category, tags, source URL, docs URL, license, runtime, chain support, MCP/ACP compatibility flags
+- [ ] **CAT-02**: Full-text search across listing name, tagline, description, and tags using SQLite FTS5
+- [ ] **CAT-03**: Canonical tag taxonomy with normalization (e.g. "mcp", "MCP", "mcp-server" all resolve to same tag)
+- [ ] **CAT-04**: Category browsing with hierarchical categories (mcp-server, ai-agent, web3-tool, defi-tool, infra, framework)
+- [ ] **CAT-05**: Listing detail page at `/tools/[slug]` with all metadata, source links, and external metrics (stars, downloads)
+- [ ] **CAT-06**: `last_verified_at` timestamp on every listing to track freshness
+- [ ] **CAT-07**: Dead-link detection via scheduled HEAD requests, auto-flagging stale entries
+
+### Scraping & Data Pipeline
+
+- [ ] **SCRP-01**: GitHub API scraper targeting topics: mcp-server, ai-agent, web3, model-context-protocol — using authenticated REST/GraphQL API
+- [ ] **SCRP-02**: npm registry scraper for packages tagged with mcp, ai-agent, web3, agent-framework keywords
+- [ ] **SCRP-03**: HuggingFace Hub API scraper for models/spaces tagged with agent, web3, mcp keywords
+- [ ] **SCRP-04**: Source-specific normalizer transforms raw scrape data to CatalogEntry schema via Zod validation
+- [ ] **SCRP-05**: CatalogService.upsert() deduplicates entries by source URL, updating existing entries on re-scrape
+- [ ] **SCRP-06**: Pre-seed catalog with 200+ entries across 5+ categories before any public URL is shared
+- [ ] **SCRP-07**: Scheduled re-indexing cron job with per-source rate limiting and exponential backoff
+
+### Web Interface
+
+- [ ] **WEB-01**: Homepage with featured/new listings and category navigation
+- [ ] **WEB-02**: Browse page with multi-select filters: category, chain, protocol, runtime
+- [ ] **WEB-03**: Sort by recency and popularity (stars + downloads as proxy)
+- [ ] **WEB-04**: Mobile-responsive design using Tailwind CSS
+- [ ] **WEB-05**: Shareable listing URLs with clean slugs (`/tools/[slug]`)
+- [ ] **WEB-06**: Cursor-based pagination on browse/search results
+- [ ] **WEB-07**: "New this week" section on homepage driven by ingest timestamp
+- [ ] **WEB-08**: SEO-optimized listing pages with unique cross-platform value (not just mirrored source data)
+
+### MCP Protocol Endpoint
+
+- [ ] **MCP-01**: MCP server exposed via Streamable HTTP transport at `/api/mcp` using @modelcontextprotocol/sdk
+- [ ] **MCP-02**: `search_catalog` tool: agents can search by keyword, category, protocol compatibility, chain support
+- [ ] **MCP-03**: `get_listing` tool: agents can fetch full listing details by slug or ID
+- [ ] **MCP-04**: `submit_listing` tool: agents can submit new listings programmatically
+- [ ] **MCP-05**: Machine-readable catalog schema exposed as MCP resource
+- [ ] **MCP-06**: Cursor-based pagination on search results matching MCP registry spec patterns
+
+### Submission & Community
+
+- [ ] **SUB-01**: Permissionless web submission form: URL + optional metadata fields, auto-enrichment via scrape
+- [ ] **SUB-02**: Submission validation: Zod schema check + deduplication against existing source URLs
+- [ ] **SUB-03**: Basic upvote per listing (anonymous, no auth required)
+- [ ] **SUB-04**: JSON feed of new listings for power users and agent crawlers
+
+### Starter Packs
+
+- [ ] **PACK-01**: 3-5 curated starter pack bundles (e.g. "DeFi Dev Starter", "AI Agent Toolbox", "Solana Builder Kit")
+- [ ] **PACK-02**: Each pack has title, description, and 5-10 linked tool listings with narrative context
+- [ ] **PACK-03**: Starter pack browse page at `/packs`
+- [ ] **PACK-04**: Individual pack detail page at `/packs/[slug]`
+
+## v2 Requirements
+
+Deferred to future release. Tracked but not in current roadmap.
+
+### Telegram Bot
+
+- **TG-01**: Telegram bot for conversational catalog discovery via natural language
+- **TG-02**: Search and browse commands with 3-5 results per query
+- **TG-03**: Inline query handler for quick search from any Telegram chat
+- **TG-04**: Starter pack recommendations via bot
+
+### User Accounts & Curation
+
+- **USER-01**: User accounts with authenticated submissions
+- **USER-02**: User-curated lists ("Top 10 MCP servers for X")
+- **USER-03**: Submission attribution tied to accounts
+
+### Advanced Search
+
+- **SRCH-01**: Semantic / embedding-based search for natural language queries
+- **SRCH-02**: Composite quality "Bazaar score" (GitHub stars + npm downloads + upvotes weighted formula)
+
+### Web3 Features
+
+- **W3-01**: On-chain metadata verification (contract address validation via chain explorers)
+- **W3-02**: Wallet connection for claiming project listings
+- **W3-03**: Verified publisher badges
+
+### Agent Protocol
+
+- **A2A-01**: A2A (formerly ACP) agent discovery layer for agent-to-agent delegation
+
+## Out of Scope
+
+| Feature | Reason |
+|---------|--------|
+| Instagram presence | Deferred past v1 — focus web + MCP first |
+| Building/hosting own tools | Pure aggregator model — only curated third-party tools |
+| Monetization / paid features | Build traffic and catalog first, monetize later |
+| Mobile app | Web-first, mobile via responsive design |
+| User accounts / auth for browsing | Frictionless anonymous access — auth only when spam/gaming becomes a problem |
+| Full review/comment system | Requires moderation; spam magnet; simple upvote sufficient for v1 |
+| Real-time price feeds / TVL | DeFi Llama does this better — link to them instead |
+| In-app agent execution / sandboxing | Massive security/infra scope — link to tool's own demo instead |
+| Wallet-gating for any feature | Kills adoption for non-crypto audience — wallet always optional |
+| Manual curation of every listing | Doesn't scale; bottleneck; algorithmic quality signals + upvotes instead |
+
+## Traceability
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| CAT-01 | Phase 1 | Pending |
+| CAT-02 | Phase 1 | Pending |
+| CAT-03 | Phase 1 | Pending |
+| CAT-04 | Phase 1 | Pending |
+| CAT-05 | Phase 1 | Pending |
+| CAT-06 | Phase 1 | Pending |
+| CAT-07 | Phase 1 | Pending |
+| SCRP-01 | Phase 2 | Pending |
+| SCRP-02 | Phase 2 | Pending |
+| SCRP-03 | Phase 2 | Pending |
+| SCRP-04 | Phase 2 | Pending |
+| SCRP-05 | Phase 2 | Pending |
+| SCRP-06 | Phase 2 | Pending |
+| SCRP-07 | Phase 2 | Pending |
+| WEB-01 | Phase 3 | Pending |
+| WEB-02 | Phase 3 | Pending |
+| WEB-03 | Phase 3 | Pending |
+| WEB-04 | Phase 3 | Pending |
+| WEB-05 | Phase 3 | Pending |
+| WEB-06 | Phase 3 | Pending |
+| WEB-07 | Phase 3 | Pending |
+| WEB-08 | Phase 3 | Pending |
+| MCP-01 | Phase 4 | Pending |
+| MCP-02 | Phase 4 | Pending |
+| MCP-03 | Phase 4 | Pending |
+| MCP-04 | Phase 4 | Pending |
+| MCP-05 | Phase 4 | Pending |
+| MCP-06 | Phase 4 | Pending |
+| SUB-01 | Phase 5 | Pending |
+| SUB-02 | Phase 5 | Pending |
+| SUB-03 | Phase 5 | Pending |
+| SUB-04 | Phase 5 | Pending |
+| PACK-01 | Phase 6 | Pending |
+| PACK-02 | Phase 6 | Pending |
+| PACK-03 | Phase 6 | Pending |
+| PACK-04 | Phase 6 | Pending |
+
+**Coverage:**
+- v1 requirements: 33 total
+- Mapped to phases: 33
+- Unmapped: 0
+
+---
+*Requirements defined: 2026-02-18*
+*Last updated: 2026-02-18 after initial definition*
