@@ -10,27 +10,27 @@ See: .planning/PROJECT.md (updated 2026-02-18)
 ## Current Position
 
 Phase: 1 of 6 (Catalog Foundation)
-Plan: 2 of 3 in current phase
+Plan: 3 of 3 in current phase
 Status: In progress
-Last activity: 2026-02-18 — Completed 01-02 (Zod schema + taxonomy)
+Last activity: 2026-02-18 — Completed 01-01 (Drizzle schema + FTS5 migration)
 
-Progress: [██░░░░░░░░] 6%
+Progress: [███░░░░░░░] 12%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 1
-- Average duration: 3 min
-- Total execution time: 0.05 hours
+- Total plans completed: 2
+- Average duration: 5 min
+- Total execution time: 0.17 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01-catalog-foundation | 1/3 | 3 min | 3 min |
+| 01-catalog-foundation | 2/3 | 10 min | 5 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-02 (3 min)
+- Last 5 plans: 01-02 (3 min), 01-01 (7 min)
 - Trend: -
 
 *Updated after each plan completion*
@@ -48,11 +48,14 @@ Recent decisions affecting current work:
 - Roadmap: Phases 3, 4, 5 can execute in parallel after Phase 2 completes
 - 01-02: Array.from(new Set()) for tag dedup instead of spread (tsconfig lib config compatibility)
 - 01-02: sourceUrl transform strips query params + hash, not just trailing slash (UTM dedup prevention)
-- 01-02: Bun project initialized without Next.js/Drizzle since Plan 01-01 not yet executed
+- 01-01: drizzle-kit push BANNED — silently destroys FTS5 virtual tables not in schema.ts
+- 01-01: FTS5 triggers applied via src/db/migrate.ts custom runner (drizzle-kit turso runner cannot execute BEGIN...END blocks)
+- 01-01: Zod pinned to ^3.25.0 (not v4) — Zod 4 has breaking API changes incompatible with research patterns
+- 01-01: Local dev uses file:./dev.db; production uses libsql:// Turso URL (same @libsql/client handles both)
 
 ### Pending Todos
 
-- Plan 01-01 (Next.js + Drizzle setup) needs execution before 01-03 (catalog service with DB queries) can run
+None — Plans 01-01 and 01-02 complete. Plan 01-03 (CatalogService + SearchService) is next.
 
 ### Blockers/Concerns
 
@@ -63,5 +66,5 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 01-02-PLAN.md
+Stopped at: Completed 01-01-PLAN.md
 Resume file: None
