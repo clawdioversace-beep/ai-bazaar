@@ -28,7 +28,7 @@ describe('fetchWithRetry', () => {
     globalThis.fetch = mock(async () => {
       callCount++;
       return new Response('success', { status: 200 });
-    });
+    }) as any;
 
     const response = await fetchWithRetry('https://example.com');
 
@@ -46,7 +46,7 @@ describe('fetchWithRetry', () => {
         return new Response('rate limited', { status: 429 });
       }
       return new Response('success', { status: 200 });
-    });
+    }) as any;
 
     const response = await fetchWithRetry('https://example.com', {}, { baseDelay: 1 });
 
@@ -64,7 +64,7 @@ describe('fetchWithRetry', () => {
         return new Response('service unavailable', { status: 503 });
       }
       return new Response('success', { status: 200 });
-    });
+    }) as any;
 
     const response = await fetchWithRetry('https://example.com', {}, { baseDelay: 1 });
 
@@ -79,7 +79,7 @@ describe('fetchWithRetry', () => {
     globalThis.fetch = mock(async () => {
       callCount++;
       return new Response('not found', { status: 404 });
-    });
+    }) as any;
 
     const response = await fetchWithRetry('https://example.com');
 
@@ -94,7 +94,7 @@ describe('fetchWithRetry', () => {
     globalThis.fetch = mock(async () => {
       callCount++;
       return new Response('server error', { status: 500 });
-    });
+    }) as any;
 
     try {
       await fetchWithRetry('https://example.com', {}, { maxAttempts: 3, baseDelay: 1 });
@@ -120,7 +120,7 @@ describe('fetchWithRetry', () => {
         });
       }
       return new Response('success', { status: 200 });
-    });
+    }) as any;
 
     const response = await fetchWithRetry('https://example.com', {}, { baseDelay: 1 });
     const elapsed = Date.now() - startTime;
