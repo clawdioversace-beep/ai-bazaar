@@ -77,6 +77,9 @@ export const listings = sqliteTable('listings', {
   /** npm/PyPI/package registry download count */
   downloads: integer('downloads').default(0),
 
+  /** Community upvote count — incremented atomically via Server Action */
+  upvotes: integer('upvotes').default(0),
+
   /** Timestamp of last automated health/availability check */
   lastVerifiedAt: integer('last_verified_at', { mode: 'timestamp' }),
 

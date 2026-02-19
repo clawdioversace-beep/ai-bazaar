@@ -15,6 +15,13 @@
       "when": 1771451717629,
       "tag": "0001_fts5-listings-index",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1771511637000,
+      "tag": "0002_add-upvotes-column",
+      "breakpoints": true
     }
   ]
 }
