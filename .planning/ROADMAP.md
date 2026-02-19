@@ -65,12 +65,12 @@ Plans:
   3. Each listing has a unique URL at `/tools/[slug]` that renders all structured metadata, external metrics, and source links
   4. The site is fully usable on a mobile device with no horizontal scrolling or overlapping elements
   5. Browse and search result pages load with cursor-based pagination, and URLs are shareable and bookmarkable
-**Plans**: TBD
+**Plans:** 3 plans
 
 Plans:
-- [ ] 03-01: Homepage (featured/new listings, category nav), browse page (multi-select filters, sort, pagination)
-- [ ] 03-02: Listing detail page at `/tools/[slug]` (all metadata, external metrics, source links, SEO)
-- [ ] 03-03: Mobile-responsive layout, Tailwind CSS, "new this week" section, shareable URLs
+- [ ] 03-01-PLAN.md — Root layout, shared components (ListingCard, CategoryNav), homepage with featured listings and new-this-week
+- [ ] 03-02-PLAN.md — Browse page at /tools with multi-select filters, sort, offset-based pagination, URL-driven state
+- [ ] 03-03-PLAN.md — Listing detail page at /tools/[slug] with dynamic SEO metadata, custom 404 page
 
 ### Phase 4: MCP Protocol Endpoint
 **Goal**: Agents can discover, query, and submit catalog entries programmatically via a compliant MCP server — making AI Bazaar the first AI/Web3 directory that agents can query at runtime.
@@ -127,7 +127,7 @@ Phases 1 -> 2 -> (3, 4, 5 in parallel) -> 6
 |-------|----------------|--------|-----------|
 | 1. Catalog Foundation | 3/3 | Complete | 2026-02-19 |
 | 2. Scraping Pipeline | 3/3 | Complete | 2026-02-19 |
-| 3. Web Frontend | 0/3 | Not started | - |
+| 3. Web Frontend | 0/3 | Planned | - |
 | 4. MCP Protocol Endpoint | 0/3 | Not started | - |
 | 5. Submission and Community | 0/2 | Not started | - |
 | 6. Starter Packs | 0/2 | Not started | - |
