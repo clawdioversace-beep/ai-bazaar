@@ -141,7 +141,7 @@ const handler = createMcpHandler(
             name: name ?? slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
             tagline: 'Submitted via MCP — enrichment pending',
             description: 'This listing was submitted programmatically via the MCP protocol. Full details will be enriched by the scraping pipeline.',
-            category: category ?? 'other',
+            category: category ?? 'framework',
             tags: [],
             sourceUrl,
           });
