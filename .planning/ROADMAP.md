@@ -112,11 +112,11 @@ Plans:
   1. A non-technical user can browse all starter packs at `/packs` and understand what each one is for without reading documentation
   2. Each pack detail page at `/packs/[slug]` lists 5-10 linked tool entries with narrative context explaining how they work together
   3. At least 3 packs covering distinct use cases (e.g. DeFi, AI agent toolbox, Solana builder) are live at launch
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 06-01: Starter pack data model and seeding (3-5 packs, 5-10 tools each, narrative copy)
-- [ ] 06-02: Pack browse page at `/packs`, pack detail page at `/packs/[slug]`
+- [ ] 06-01-PLAN.md — Starter pack data model (schema, migration, relations), pack service, seed script with 3+ packs
+- [ ] 06-02-PLAN.md — Pack browse page at `/packs` with card grid, pack detail page at `/packs/[slug]` with narrative layout, nav link
 
 ## Progress
 
@@ -130,4 +130,4 @@ Phases 1 -> 2 -> (3, 4, 5 in parallel) -> 6
 | 3. Web Frontend | 3/3 | Complete | 2026-02-19 |
 | 4. MCP Protocol Endpoint | 2/2 | Complete | 2026-02-19 |
 | 5. Submission and Community | 3/3 | Complete | 2026-02-19 |
-| 6. Starter Packs | 0/2 | Not started | - |
+| 6. Starter Packs | 0/2 | Planned | - |
