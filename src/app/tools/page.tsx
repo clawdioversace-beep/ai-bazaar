@@ -1,8 +1,9 @@
-import { Suspense } from 'react';
 import { browseListings, getFilterOptions, countByCategory } from '@/services/search';
 import { CATEGORY_LABELS } from '@/lib/categories';
 import { CategoryNav } from '@/components/category-nav';
 import { ListingCard } from '@/components/listing-card';
+import { FilterPanel } from '@/components/filter-panel';
+import { Pagination } from '@/components/pagination';
 import Link from 'next/link';
 
 const PAGE_SIZE = 24;
@@ -102,13 +103,11 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
       </div>
 
       {/* Filter Panel */}
-      <Suspense fallback={<div>Loading filters...</div>}>
-        <FilterPanelPlaceholder
-          categories={categoryNavData}
-          chains={filterOptions.chains}
-          runtimes={filterOptions.runtimes}
-        />
-      </Suspense>
+      <FilterPanel
+        categories={categoryNavData}
+        chains={filterOptions.chains}
+        runtimes={filterOptions.runtimes}
+      />
 
       {/* Results or Empty State */}
       {browseResult.listings.length === 0 ? (
@@ -138,51 +137,14 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
           {/* Pagination */}
           {totalPages > 1 && (
             <div className="mt-8">
-              <Suspense fallback={<div>Loading pagination...</div>}>
-                <PaginationPlaceholder
-                  currentPage={page}
-                  totalPages={totalPages}
-                />
-              </Suspense>
+              <Pagination
+                currentPage={page}
+                totalPages={totalPages}
+              />
             </div>
           )}
         </>
       )}
-    </div>
-  );
-}
-
-/**
- * Placeholder for FilterPanel Client Component.
- * This will be replaced with the actual component in Task 2.
- */
-function FilterPanelPlaceholder(props: {
-  categories: Array<{ category: string; count: number; label: string }>;
-  chains: string[];
-  runtimes: string[];
-}) {
-  return (
-    <div className="mb-6 rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
-      <p className="text-sm text-zinc-600 dark:text-zinc-400">
-        Filter panel loading... (Task 2)
-      </p>
-    </div>
-  );
-}
-
-/**
- * Placeholder for Pagination Client Component.
- * This will be replaced with the actual component in Task 2.
- */
-function PaginationPlaceholder(props: {
-  currentPage: number;
-  totalPages: number;
-}) {
-  return (
-    <div className="flex justify-center">
-      <p className="text-sm text-zinc-600 dark:text-zinc-400">
-        Pagination loading... (Task 2)
-      </p>
     </div>
   );
 }
