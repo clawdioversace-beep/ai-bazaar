@@ -127,6 +127,6 @@ Phases 1 -> 2 -> (3, 4, 5 in parallel) -> 6
 | 1. Catalog Foundation | 3/3 | Complete | 2026-02-19 |
 | 2. Scraping Pipeline | 3/3 | Complete | 2026-02-19 |
 | 3. Web Frontend | 3/3 | Complete | 2026-02-19 |
-| 4. MCP Protocol Endpoint | 0/2 | Not started | - |
+| 4. MCP Protocol Endpoint | 2/2 | Complete | 2026-02-19 |
 | 5. Submission and Community | 0/2 | Not started | - |
 | 6. Starter Packs | 0/2 | Not started | - |
