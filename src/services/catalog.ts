@@ -104,6 +104,23 @@ export async function getListingBySlug(slug: string) {
 }
 
 /**
+ * Retrieves a single listing by its normalized sourceUrl.
+ *
+ * Used for deduplication checks in submission forms and import pipelines.
+ * The URL is normalized using the same logic as CatalogEntrySchema to ensure
+ * lookup matches the stored value.
+ *
+ * @param url - Source URL to look up (will be normalized automatically)
+ * @returns The listing record, or undefined if not found
+ */
+export async function getListingBySourceUrl(url: string) {
+  const normalized = normalizeSourceUrl(url);
+  return db.query.listings.findFirst({
+    where: (l, { eq }) => eq(l.sourceUrl, normalized),
+  });
+}
+
+/**
  * Updates an existing listing by ID.
  *
  * Only the fields provided in `input` are updated. Tags are re-normalized if
