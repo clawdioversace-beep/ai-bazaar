@@ -13,7 +13,7 @@ AI Bazaar is a permissionless discovery platform for AI/Agent/Web3 tools, servin
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Catalog Foundation** - DB schema, CatalogService, SearchService — the contract all interfaces consume *(completed 2026-02-19)*
-- [ ] **Phase 2: Scraping Pipeline** - GitHub/npm/HuggingFace scrapers, normalizers, pre-seed 200+ entries
+- [x] **Phase 2: Scraping Pipeline** - GitHub/npm/HuggingFace scrapers, normalizers, pre-seed 200+ entries *(completed 2026-02-19)*
 - [ ] **Phase 3: Web Frontend** - Browse, search, listing detail, submission form, upvotes
 - [ ] **Phase 4: MCP Protocol Endpoint** - Machine-readable catalog via Streamable HTTP, agent tools
 - [ ] **Phase 5: Submission and Community** - Permissionless form, JSON feed, upvote system
@@ -126,7 +126,7 @@ Phases 1 -> 2 -> (3, 4, 5 in parallel) -> 6
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Catalog Foundation | 3/3 | Complete | 2026-02-19 |
-| 2. Scraping Pipeline | 0/3 | Not started | - |
+| 2. Scraping Pipeline | 3/3 | Complete | 2026-02-19 |
 | 3. Web Frontend | 0/3 | Not started | - |
 | 4. MCP Protocol Endpoint | 0/3 | Not started | - |
 | 5. Submission and Community | 0/2 | Not started | - |
