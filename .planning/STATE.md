@@ -2,17 +2,16 @@
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-02-18)
+See: .planning/PROJECT.md (updated 2026-02-19)
 
 **Core value:** Any agent or human can find the right AI/Web3 tool for their need in under 60 seconds — agents via MCP protocol query, humans via search or curated bundle.
-**Current focus:** All 6 phases complete — v1.0 milestone ready
+**Current focus:** v1.0 MVP shipped. Planning next milestone.
 
 ## Current Position
 
-Phase: 6 of 6 (Starter Packs) — COMPLETE
-Plan: 2 of 2 in current phase — COMPLETE
-Status: All phases verified. v1.0 milestone complete.
-Last activity: 2026-02-19 — Phase 6 verified and complete
+Milestone: v1.0 MVP — SHIPPED 2026-02-19
+Status: All 6 phases complete and verified. Ready for deployment or next milestone.
+Last activity: 2026-02-19 — v1.0 milestone archived
 
 Progress: [████████████████████] 100%
 
