@@ -97,11 +97,12 @@ Plans:
   2. Submitting a URL that already exists in the catalog surfaces a deduplicated result rather than creating a duplicate entry
   3. Any listing can be upvoted once per browser session with no authentication required
   4. A JSON feed at a stable URL returns new listings in reverse-chronological order, consumable by agent crawlers
-**Plans**: TBD
+**Plans:** 3 plans
 
 Plans:
-- [ ] 05-01: Permissionless submission form (URL + optional metadata, async BullMQ enrichment job)
-- [ ] 05-02: Submission validation (Zod + dedup), anonymous upvote, JSON feed endpoint
+- [ ] 05-01-PLAN.md -- Permissionless submission form with URL validation and deduplication
+- [ ] 05-02-PLAN.md -- Anonymous upvote system with optimistic UI and session-based duplicate prevention
+- [ ] 05-03-PLAN.md -- JSON Feed 1.1 endpoint for agent crawlers and power users
 
 ### Phase 6: Starter Packs
 **Goal**: Non-technical users have guided entry points into the catalog — curated bundles that tell a story about what tools to combine and why, reducing the "where do I even start?" problem.
@@ -128,5 +129,5 @@ Phases 1 -> 2 -> (3, 4, 5 in parallel) -> 6
 | 2. Scraping Pipeline | 3/3 | Complete | 2026-02-19 |
 | 3. Web Frontend | 3/3 | Complete | 2026-02-19 |
 | 4. MCP Protocol Endpoint | 2/2 | Complete | 2026-02-19 |
-| 5. Submission and Community | 0/2 | Not started | - |
+| 5. Submission and Community | 0/3 | Not started | - |
 | 6. Starter Packs | 0/2 | Not started | - |
