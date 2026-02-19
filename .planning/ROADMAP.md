@@ -48,13 +48,12 @@ Plans:
   3. Raw scrape output from each source normalizes to a valid CatalogEntry via Zod without manual field mapping
   4. Each scraper respects per-source rate limits and retries transiently-failed requests with exponential backoff
   5. A scheduled cron re-indexes all sources and flags entries whose source URL returns a non-200 response
-**Plans**: TBD
+**Plans:** 3 plans
 
 Plans:
-- [ ] 02-01: GitHub API scraper (REST + GraphQL, authenticated, topics: mcp-server, ai-agent, web3, model-context-protocol)
-- [ ] 02-02: npm registry scraper + HuggingFace Hub API scraper
-- [ ] 02-03: Source normalizers (Zod validation per source), CatalogService.upsert integration, dedup logic
-- [ ] 02-04: BullMQ worker process, scheduler cron, rate limiting, dead-link HEAD checks, pre-seed run
+- [ ] 02-01-PLAN.md — fetchWithRetry utility + 3 source normalizers (GitHub, npm, HuggingFace) with TDD tests
+- [ ] 02-02-PLAN.md — GitHub, npm, and HuggingFace API scrapers using Octokit + fetchWithRetry
+- [ ] 02-03-PLAN.md — Pre-seed script (200+ entries), bunqueue worker process, cron scheduler, dead-link checks
 
 ### Phase 3: Web Frontend
 **Goal**: A human-browsable catalog where any developer can find a tool, read its details, and share a clean URL — without an account and without any friction.
@@ -127,7 +126,7 @@ Phases 1 -> 2 -> (3, 4, 5 in parallel) -> 6
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Catalog Foundation | 3/3 | Complete | 2026-02-19 |
-| 2. Scraping Pipeline | 0/4 | Not started | - |
+| 2. Scraping Pipeline | 0/3 | Not started | - |
 | 3. Web Frontend | 0/3 | Not started | - |
 | 4. MCP Protocol Endpoint | 0/3 | Not started | - |
 | 5. Submission and Community | 0/2 | Not started | - |
