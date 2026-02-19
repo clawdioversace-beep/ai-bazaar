@@ -167,6 +167,195 @@ export async function getNewThisWeek(limit = 12): Promise<Listing[]> {
 }
 
 /**
+ * Parameters for browsing catalog listings.
+ *
+ * All fields are optional. Filters are applied as AND conditions.
+ */
+export interface BrowseParams {
+  /** Filter to a specific canonical category, e.g. "mcp-server" */
+  category?: string;
+  /** Filter by chainSupport JSON containing this chain */
+  chain?: string;
+  /** Filter by runtime column */
+  runtime?: string;
+  /** Filter by protocol: 'mcp' | 'acp' */
+  protocol?: 'mcp' | 'acp';
+  /** Sort order: 'recent' (createdAt DESC) or 'popular' (stars+downloads DESC) */
+  sort?: 'recent' | 'popular';
+  /** Optional text search query */
+  query?: string;
+  /** Maximum results to return (default 24) */
+  limit?: number;
+  /** Pagination offset (default 0) */
+  offset?: number;
+}
+
+/**
+ * Result from browsing catalog listings.
+ *
+ * Includes total count for pagination UI.
+ */
+export interface BrowseResult {
+  /** Matching listings for current page */
+  listings: Listing[];
+  /** Total matching count (all pages) */
+  total: number;
+  /** Limit used in this query */
+  limit: number;
+  /** Offset used in this query */
+  offset: number;
+}
+
+/**
+ * Browse catalog listings with filters, sorting, and pagination.
+ *
+ * This is the primary browse function for /tools page. Supports:
+ * - Multi-filter (category, chain, runtime, protocol)
+ * - Text search (optional)
+ * - Sort by recency or popularity
+ * - Pagination with total count
+ *
+ * Dead links are always excluded from results.
+ *
+ * @param params - Browse parameters with optional filters and pagination
+ * @returns BrowseResult with listings and pagination info
+ */
+export async function browseListings(params: BrowseParams): Promise<BrowseResult> {
+  const {
+    category,
+    chain,
+    runtime,
+    protocol,
+    sort = 'popular',
+    query,
+    limit = 24,
+    offset = 0,
+  } = params;
+
+  // Build SQL query using sql`` template for proper parameter binding
+  // Start with base query
+  let baseQuery = sql`SELECT l.* FROM listings l WHERE l.dead_link = 0`;
+
+  // Add filters
+  if (category !== undefined) {
+    baseQuery = sql`${baseQuery} AND l.category = ${category}`;
+  }
+
+  if (chain !== undefined) {
+    // Use LIKE for JSON array contains check
+    const chainPattern = `%"${chain}"%`;
+    baseQuery = sql`${baseQuery} AND l.chain_support LIKE ${chainPattern}`;
+  }
+
+  if (runtime !== undefined) {
+    baseQuery = sql`${baseQuery} AND l.runtime = ${runtime}`;
+  }
+
+  if (protocol === 'mcp') {
+    baseQuery = sql`${baseQuery} AND l.mcp_compatible = 1`;
+  } else if (protocol === 'acp') {
+    baseQuery = sql`${baseQuery} AND l.acp_compatible = 1`;
+  }
+
+  if (query !== undefined && query.trim() !== '') {
+    // Use FTS5 for text search
+    baseQuery = sql`
+      SELECT l.*
+      FROM listings_fts
+      JOIN listings l ON listings_fts.rowid = l.rowid
+      WHERE listings_fts MATCH ${query}
+      AND l.dead_link = 0
+    `;
+    // Re-apply filters after FTS join
+    if (category !== undefined) {
+      baseQuery = sql`${baseQuery} AND l.category = ${category}`;
+    }
+    if (chain !== undefined) {
+      const chainPattern = `%"${chain}"%`;
+      baseQuery = sql`${baseQuery} AND l.chain_support LIKE ${chainPattern}`;
+    }
+    if (runtime !== undefined) {
+      baseQuery = sql`${baseQuery} AND l.runtime = ${runtime}`;
+    }
+    if (protocol === 'mcp') {
+      baseQuery = sql`${baseQuery} AND l.mcp_compatible = 1`;
+    } else if (protocol === 'acp') {
+      baseQuery = sql`${baseQuery} AND l.acp_compatible = 1`;
+    }
+  }
+
+  // Build ORDER BY clause
+  if (sort === 'recent') {
+    baseQuery = sql`${baseQuery} ORDER BY l.created_at DESC`;
+  } else {
+    // popular (default)
+    baseQuery = sql`${baseQuery} ORDER BY l.stars DESC, l.downloads DESC`;
+  }
+
+  // Get total count first (same query without LIMIT/OFFSET)
+  const countQuery = sql`SELECT COUNT(*) as count FROM (${baseQuery})`;
+  const countResult = await db.run(countQuery);
+  const total = (countResult.rows[0] as any).count as number;
+
+  // Add pagination
+  const dataQuery = sql`${baseQuery} LIMIT ${limit} OFFSET ${offset}`;
+  const dataResult = await db.run(dataQuery);
+
+  return {
+    listings: dataResult.rows as unknown as Listing[],
+    total,
+    limit,
+    offset,
+  };
+}
+
+/**
+ * Get distinct filter options for dropdowns.
+ *
+ * Returns unique chains and runtimes from non-dead listings.
+ *
+ * @returns Object with arrays of chain and runtime values
+ */
+export async function getFilterOptions(): Promise<{
+  chains: string[];
+  runtimes: string[];
+}> {
+  // Get distinct runtimes
+  const runtimeResult = await db.run(
+    sql`SELECT DISTINCT runtime FROM listings WHERE dead_link = 0 AND runtime IS NOT NULL ORDER BY runtime`,
+  );
+  const runtimes = runtimeResult.rows.map((row: any) => row.runtime as string);
+
+  // Get distinct chains from chainSupport JSON
+  const chainResult = await db.run(
+    sql`SELECT DISTINCT chain_support FROM listings WHERE dead_link = 0 AND chain_support IS NOT NULL`,
+  );
+
+  // Parse JSON arrays and collect unique values
+  const chainSet = new Set<string>();
+  for (const row of chainResult.rows) {
+    const chainSupport = (row as any).chain_support;
+    if (chainSupport) {
+      try {
+        const chains = JSON.parse(chainSupport) as string[];
+        for (const chain of chains) {
+          chainSet.add(chain);
+        }
+      } catch (e) {
+        // Skip invalid JSON
+      }
+    }
+  }
+
+  const chains = Array.from(chainSet).sort();
+
+  return {
+    chains,
+    runtimes,
+  };
+}
+
+/**
  * Rebuilds the FTS5 index from the current listings table contents.
  *
  * Call this after any bulk insert operation that bypasses the FTS5 sync
