@@ -9,19 +9,19 @@ See: .planning/PROJECT.md (updated 2026-02-18)
 
 ## Current Position
 
-Phase: 5 of 6 (Submission and Community) — COMPLETE
-Plan: 3 of 3 in current phase — COMPLETE
-Status: Phase 5 verified (13/13 must-haves passed). Ready for Phase 6.
-Last activity: 2026-02-19 — Phase 5 verified and complete
+Phase: 6 of 6 (Starter Packs) — IN PROGRESS
+Plan: 1 of 3 in current phase — COMPLETE
+Status: Phase 6 started. Plan 01 complete (data model + seed).
+Last activity: 2026-02-19 — Phase 6 Plan 01 complete
 
-Progress: [██████████████] 83%
+Progress: [███████████████] 87%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 14
+- Total plans completed: 15
 - Average duration: 6 min
-- Total execution time: 1.50 hours
+- Total execution time: 1.63 hours
 
 **By Phase:**
 
@@ -32,10 +32,11 @@ Progress: [██████████████] 83%
 | 03-web-frontend | 3/3 | 13 min | 4 min |
 | 04-mcp-protocol-endpoint | 2/2 | 25 min | 13 min |
 | 05-submission-and-community | 3/3 | 11 min | 4 min |
+| 06-starter-packs | 1/3 | 8 min | 8 min |
 
 **Recent Trend:**
-- Last 5 plans: 05-01 (5 min), 05-02 (4 min), 05-03 (2 min), 04-02 (7 min), 04-01 (18 min)
-- Trend: Phase 5 complete; all community features deployed
+- Last 5 plans: 06-01 (8 min), 05-01 (5 min), 05-02 (4 min), 05-03 (2 min), 04-02 (7 min)
+- Trend: Phase 6 started; starter pack data model complete
 
 *Updated after each plan completion*
 
@@ -45,6 +46,9 @@ Progress: [██████████████] 83%
 
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
+
+- 06-01: Apply starter pack migration directly in migrate.ts via client.execute() (not tracked in drizzle-kit journal, same pattern as FTS5 triggers)
+- 06-01: Use straight quotes and hyphens in narrative copy (curly quotes and em dashes cause parser errors)
 
 - 05-01: Use Server Actions for progressive enhancement (submission form works without JavaScript)
 - 05-01: Split Server Component wrapper from Client Component form to support metadata export
@@ -103,9 +107,9 @@ Recent decisions affecting current work:
 
 ### Pending Todos
 
-- Phase 5: Run migration for upvotes column: `TURSO_DATABASE_URL=file:./dev.db bun src/db/migrate.ts`
-- Phase 4: MCP tool registration fixed (roll_dice shadow removed in commit 621a744)
-- Ready for Phase 6 (Starter Packs) — last phase before v1.0 milestone
+- Phase 6: Build pack browse page and pack detail page (Plan 02)
+- Phase 6: Build admin UI for pack creation/editing (Plan 03)
+- Phase 6: Consider production seed script with upsert logic (current seed creates duplicates on re-run)
 
 ### Blockers/Concerns
 
@@ -115,5 +119,5 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-02-19
-Stopped at: Phase 5 verified and complete. Ready for Phase 6 (Starter Packs).
+Stopped at: Phase 6 Plan 01 complete. Starter pack data model and seed complete. Ready for Plan 02 (frontend).
 Resume file: None
