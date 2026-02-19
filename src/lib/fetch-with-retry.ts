@@ -115,7 +115,7 @@ export async function fetchWithRetry(
       }
 
       // Wait before retrying
-      await Bun.sleep(delay);
+      await new Promise(resolve => setTimeout(resolve, delay));
     } catch (error) {
       // Clear timeout on error
       clearTimeout(timeoutId);
@@ -130,7 +130,7 @@ export async function fetchWithRetry(
 
       // Calculate backoff and retry
       const delay = calculateBackoff(attempt, opts.baseDelay, opts.maxDelay);
-      await Bun.sleep(delay);
+      await new Promise(resolve => setTimeout(resolve, delay));
     }
   }
 

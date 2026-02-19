@@ -106,7 +106,7 @@ const deadLinkWorker = new Worker(
 
       // Throttle: max 10 checks/second to avoid overwhelming servers
       if (checked % 10 === 0) {
-        await Bun.sleep(1000);
+        await new Promise(resolve => setTimeout(resolve,1000));
       }
 
       // Log progress every 100 checks
@@ -159,6 +159,7 @@ process.on('SIGTERM', () => shutdown('SIGTERM'));
 process.on('SIGINT', () => shutdown('SIGINT'));
 
 // Start workers if this file is run directly
+// @ts-ignore - Bun-specific property
 if (import.meta.main) {
   await startWorkers();
   console.log('[scrape-worker] Workers running. Press Ctrl+C to stop.');

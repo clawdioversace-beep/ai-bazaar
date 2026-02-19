@@ -97,6 +97,7 @@ export async function scheduleAllJobs(): Promise<void> {
 }
 
 // Run scheduler if this file is executed directly
+// @ts-ignore - Bun-specific property
 if (import.meta.main) {
   await scheduleAllJobs();
   console.log('\n[scheduler] Scheduler complete. Jobs will run at their scheduled times when workers are active.');
