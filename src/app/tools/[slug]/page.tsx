@@ -3,6 +3,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { getListingBySlug } from '@/services/catalog';
 import { CATEGORY_LABELS, type Category } from '@/lib/categories';
+import { UpvoteButton } from '@/components/upvote-button';
 
 /**
  * Generate dynamic metadata for listing detail pages.
@@ -114,6 +115,9 @@ export default async function ListingPage({
           <p className="text-lg text-zinc-600 dark:text-zinc-400">
             {listing.tagline}
           </p>
+
+          {/* Upvote button */}
+          <UpvoteButton listingId={listing.id} initialUpvotes={listing.upvotes ?? 0} />
 
           {/* Category badge */}
           <div className="flex items-center gap-2">
