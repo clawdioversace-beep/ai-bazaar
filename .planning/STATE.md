@@ -9,28 +9,29 @@ See: .planning/PROJECT.md (updated 2026-02-18)
 
 ## Current Position
 
-Phase: 1 of 6 (Catalog Foundation) — COMPLETE
-Plan: 3 of 3 in current phase — COMPLETE
-Status: Phase 1 complete, ready for Phase 2
-Last activity: 2026-02-18 — Completed 01-03 (CatalogService + SearchService + integration tests)
+Phase: 2 of 6 (Scraping Pipeline)
+Plan: 1 of 3 in current phase — COMPLETE
+Status: Phase 2 Plan 1 complete, continuing Phase 2
+Last activity: 2026-02-19 — Completed 02-01 (HTTP retry utility + 3 source normalizers)
 
-Progress: [████░░░░░░] 17%
+Progress: [█████░░░░░] 22%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 3
+- Total plans completed: 4
 - Average duration: 5 min
-- Total execution time: 0.25 hours
+- Total execution time: 0.35 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-catalog-foundation | 3/3 | 16 min | 5 min |
+| 02-scraping-pipeline | 1/3 | 5 min | 5 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-03 (6 min), 01-02 (3 min), 01-01 (7 min)
+- Last 5 plans: 02-01 (5 min), 01-03 (6 min), 01-02 (3 min), 01-01 (7 min)
 - Trend: consistent 5 min average
 
 *Updated after each plan completion*
@@ -42,6 +43,10 @@ Progress: [████░░░░░░] 17%
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
+- 02-01: Manual AbortController for timeout — AbortSignal.timeout has Bun bugs; use new AbortController() + setTimeout for reliability
+- 02-01: npm normalizer prefers repository URL over npm page — GitHub links more stable/useful than npmjs.com pages
+- 02-01: Source-specific category detection — each normalizer has own logic (GitHub topics, npm keywords, HF tags)
+- 02-01: Test mock 'as any' type — standard test pattern; type safety not critical in test mocks
 - 01-03: Dynamic imports in test beforeAll — db/client.ts reads TURSO_DATABASE_URL at module init; static imports would load before env var is set
 - 01-03: searchCatalog uses db.run() with sql`` template — Drizzle relational API has no FTS5 MATCH support
 - 01-03: checkDeadLink returns false (inconclusive) for all non-404/410 — prevents false positives from HEAD-blocking servers (per research Pitfall 5)
@@ -59,7 +64,7 @@ Recent decisions affecting current work:
 
 ### Pending Todos
 
-None — Phase 1 complete. Phase 2 (Scraping Workers) is next.
+None — Phase 2 Plan 1 complete. Plan 2 (Scraper Workers) is next.
 
 ### Blockers/Concerns
 
@@ -69,6 +74,6 @@ None — Phase 1 complete. Phase 2 (Scraping Workers) is next.
 
 ## Session Continuity
 
-Last session: 2026-02-18
-Stopped at: Completed 01-03-PLAN.md (Phase 1 complete)
+Last session: 2026-02-19
+Stopped at: Completed 02-01-PLAN.md (HTTP retry + normalizers foundation)
 Resume file: None
