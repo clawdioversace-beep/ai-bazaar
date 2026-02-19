@@ -10,29 +10,29 @@ See: .planning/PROJECT.md (updated 2026-02-18)
 ## Current Position
 
 Phase: 2 of 6 (Scraping Pipeline)
-Plan: 2 of 3 in current phase — COMPLETE
-Status: Phase 2 Plan 2 complete, continuing Phase 2
-Last activity: 2026-02-19 — Completed 02-02 (3 API scrapers: GitHub, npm, HuggingFace)
+Plan: 3 of 3 in current phase — COMPLETE
+Status: Phase 2 complete - ready for Phase 3
+Last activity: 2026-02-19 — Completed 02-03 (Pre-seed script, bunqueue workers, scheduler)
 
-Progress: [█████▓░░░░] 28%
+Progress: [█████▓░░░░] 33%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 5
-- Average duration: 4 min
-- Total execution time: 0.48 hours
+- Total plans completed: 6
+- Average duration: 6 min
+- Total execution time: 0.68 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-catalog-foundation | 3/3 | 16 min | 5 min |
-| 02-scraping-pipeline | 2/3 | 8 min | 4 min |
+| 02-scraping-pipeline | 3/3 | 21 min | 7 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-02 (3 min), 02-01 (5 min), 01-03 (6 min), 01-02 (3 min), 01-01 (7 min)
-- Trend: improving efficiency (4 min average for Phase 2)
+- Last 5 plans: 02-03 (13 min), 02-02 (3 min), 02-01 (5 min), 01-03 (6 min), 01-02 (3 min)
+- Trend: Phase 2 complete with heavier final plan (worker infrastructure)
 
 *Updated after each plan completion*
 
@@ -43,6 +43,9 @@ Progress: [█████▓░░░░] 28%
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
+- 02-03: bunqueue embedded mode chosen over server/TCP mode — 286K ops/sec vs 149K, no need for distributed workers
+- 02-03: Fixed categorization bug — defi-tool must be checked before web3-tool (priority order fix)
+- 02-03: Serial worker concurrency (1) for all scrapers to respect rate limits
 - 02-02: GitHub scraper uses Octokit pagination with maxResults cap to prevent runaway scrapes
 - 02-02: npm scraper respects 250-result API cap — multiple keyword queries needed for broader coverage
 - 02-02: HuggingFace scraper uses SDK (listModels, listSpaces) with direct API fallback for resilience
@@ -68,7 +71,7 @@ Recent decisions affecting current work:
 
 ### Pending Todos
 
-None — Phase 2 Plan 2 complete. Plan 3 (Worker Scheduler) is next.
+None — Phase 2 complete. Ready for Phase 3 (Next.js Frontend).
 
 ### Blockers/Concerns
 
@@ -79,5 +82,5 @@ None — Phase 2 Plan 2 complete. Plan 3 (Worker Scheduler) is next.
 ## Session Continuity
 
 Last session: 2026-02-19
-Stopped at: Completed 02-02-PLAN.md (3 API scrapers: GitHub, npm, HuggingFace)
+Stopped at: Completed 02-03-PLAN.md (Pre-seed script, workers, scheduler) — Phase 2 complete
 Resume file: None
