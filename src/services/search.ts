@@ -130,6 +130,43 @@ export async function countByCategory(): Promise<Array<{ category: string; count
 }
 
 /**
+ * Returns top listings sorted by stars (for featured/homepage sections).
+ *
+ * Dead links are always excluded. Results are sorted by stars descending
+ * to show the most popular tools first.
+ *
+ * @param limit - Maximum results to return (default 6)
+ * @returns Top listings by stars, dead links excluded
+ */
+export async function getFeaturedListings(limit = 6): Promise<Listing[]> {
+  return db.query.listings.findMany({
+    where: (l, { eq }) => eq(l.deadLink, false),
+    limit,
+    orderBy: (l, { desc }) => [desc(l.stars)],
+  }) as Promise<Listing[]>;
+}
+
+/**
+ * Returns listings created within the last 7 days.
+ *
+ * Used for "New This Week" homepage sections. Dead links are excluded.
+ * Results are sorted by creation date descending (newest first).
+ *
+ * @param limit - Maximum results to return (default 12)
+ * @returns Recently created listings (last 7 days)
+ */
+export async function getNewThisWeek(limit = 12): Promise<Listing[]> {
+  const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+
+  return db.query.listings.findMany({
+    where: (l, { gte, eq, and }) =>
+      and(eq(l.deadLink, false), gte(l.createdAt, sevenDaysAgo)),
+    limit,
+    orderBy: (l, { desc }) => [desc(l.createdAt)],
+  }) as Promise<Listing[]>;
+}
+
+/**
  * Rebuilds the FTS5 index from the current listings table contents.
  *
  * Call this after any bulk insert operation that bypasses the FTS5 sync

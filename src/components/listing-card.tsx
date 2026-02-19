@@ -1,0 +1,105 @@
+import Link from 'next/link';
+import type { Listing } from '@/db/schema';
+import { CATEGORY_LABELS } from '@/lib/categories';
+
+export interface ListingCardProps {
+  listing: Listing;
+}
+
+/**
+ * ListingCard component — displays a catalog entry as a card.
+ *
+ * Server Component (no client-side JS). Used on homepage, browse page, and search results.
+ *
+ * Shows: name (as link to detail page), tagline (truncated), category badge,
+ * stars count, runtime badge, and first 3 tags as pills.
+ *
+ * Mobile: full width. Desktop: adapts to grid context (no width set on card itself).
+ */
+export function ListingCard({ listing }: ListingCardProps) {
+  // Parse JSON fields
+  const tags = listing.tags ? (JSON.parse(listing.tags) as string[]) : [];
+  const chainSupport = listing.chainSupport
+    ? (JSON.parse(listing.chainSupport) as string[])
+    : [];
+
+  // Truncate tagline to 2 lines max (approx 120 chars)
+  const truncatedTagline =
+    listing.tagline.length > 120
+      ? listing.tagline.slice(0, 120) + '...'
+      : listing.tagline;
+
+  return (
+    <div className="group relative flex flex-col gap-3 rounded-lg border border-zinc-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900">
+      {/* Name as link to detail page */}
+      <Link
+        href={`/tools/${listing.slug}`}
+        className="text-lg font-semibold text-zinc-900 group-hover:text-zinc-700 dark:text-zinc-50 dark:group-hover:text-zinc-300"
+      >
+        {listing.name}
+      </Link>
+
+      {/* Tagline */}
+      <p className="text-sm text-zinc-600 dark:text-zinc-400 line-clamp-2">
+        {truncatedTagline}
+      </p>
+
+      {/* Category and stars */}
+      <div className="flex items-center gap-2 text-xs">
+        <span className="rounded-full bg-zinc-100 px-2 py-1 font-medium text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
+          {CATEGORY_LABELS[listing.category as keyof typeof CATEGORY_LABELS] ||
+            listing.category}
+        </span>
+        {listing.stars !== null && listing.stars > 0 && (
+          <span className="flex items-center gap-1 text-zinc-600 dark:text-zinc-400">
+            <svg
+              className="h-3 w-3 fill-current"
+              viewBox="0 0 20 20"
+              aria-hidden="true"
+            >
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+            </svg>
+            <span>{listing.stars.toLocaleString()}</span>
+          </span>
+        )}
+      </div>
+
+      {/* Runtime badge */}
+      {listing.runtime && (
+        <div className="flex items-center gap-2">
+          <span className="rounded bg-zinc-100 px-2 py-0.5 text-xs font-medium text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
+            {listing.runtime}
+          </span>
+        </div>
+      )}
+
+      {/* Chain support badges */}
+      {chainSupport.length > 0 && (
+        <div className="flex flex-wrap gap-1">
+          {chainSupport.slice(0, 3).map((chain) => (
+            <span
+              key={chain}
+              className="rounded bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
+            >
+              {chain}
+            </span>
+          ))}
+        </div>
+      )}
+
+      {/* Tags (first 3) */}
+      {tags.length > 0 && (
+        <div className="flex flex-wrap gap-1">
+          {tags.slice(0, 3).map((tag) => (
+            <span
+              key={tag}
+              className="rounded bg-zinc-50 px-2 py-0.5 text-xs text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
