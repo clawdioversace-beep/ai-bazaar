@@ -33,9 +33,11 @@ export type GitHubRepo = z.infer<typeof GitHubRepoSchema>;
  *
  * Priority order:
  * 1. MCP-related → 'mcp-server'
- * 2. Web3/blockchain → 'web3-tool'
- * 3. DeFi-specific → 'defi-tool'
- * 4. Default → 'ai-agent'
+ * 2. DeFi-specific → 'defi-tool' (MUST come before web3-tool since 'defi' is a web3 subset)
+ * 3. Infrastructure → 'infra'
+ * 4. Web3/blockchain → 'web3-tool'
+ * 5. Framework → 'framework'
+ * 6. Default → 'ai-agent'
  */
 function categorizeFromTopics(topics: string[]): Category {
   const topicsLower = topics.map(t => t.toLowerCase());
@@ -44,12 +46,24 @@ function categorizeFromTopics(topics: string[]): Category {
     return 'mcp-server';
   }
 
-  if (topicsLower.some(t => ['web3', 'blockchain', 'ethereum', 'solana', 'defi'].includes(t))) {
+  // DeFi MUST be checked before web3-tool to avoid false positives
+  if (topicsLower.some(t => ['defi', 'yield', 'swap', 'amm', 'dex', 'lending', 'staking'].includes(t))) {
+    return 'defi-tool';
+  }
+
+  // Infrastructure tools (databases, monitoring, deployment, etc.)
+  if (topicsLower.some(t => ['infrastructure', 'infra', 'docker', 'kubernetes', 'k8s', 'monitoring', 'database', 'devops'].includes(t))) {
+    return 'infra';
+  }
+
+  // General web3/blockchain (excludes defi which was matched above)
+  if (topicsLower.some(t => ['web3', 'blockchain', 'ethereum', 'solana', 'crypto', 'wallet', 'nft'].includes(t))) {
     return 'web3-tool';
   }
 
-  if (topicsLower.some(t => ['defi', 'yield', 'swap', 'amm'].includes(t))) {
-    return 'defi-tool';
+  // Frameworks and libraries
+  if (topicsLower.some(t => ['framework', 'library', 'sdk'].includes(t))) {
+    return 'framework';
   }
 
   return 'ai-agent';

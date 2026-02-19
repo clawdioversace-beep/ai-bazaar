@@ -30,10 +30,12 @@ export type HuggingFaceEntry = z.infer<typeof HuggingFaceEntrySchema>;
  * Determine category from HuggingFace tags.
  *
  * Priority order:
- * 1. Agent-related → 'ai-agent'
- * 2. Web3/blockchain → 'web3-tool'
- * 3. MCP-related → 'mcp-server'
- * 4. Default → 'framework' (HF models/spaces are often ML frameworks/tools)
+ * 1. MCP-related → 'mcp-server'
+ * 2. DeFi-specific → 'defi-tool'
+ * 3. Infrastructure → 'infra'
+ * 4. Web3/blockchain → 'web3-tool'
+ * 5. Agent-related → 'ai-agent'
+ * 6. Default → 'framework' (HF models/spaces are often ML frameworks/tools)
  */
 function categorizeFromTags(tags: string[] | undefined): Category {
   if (!tags || tags.length === 0) {
@@ -42,16 +44,27 @@ function categorizeFromTags(tags: string[] | undefined): Category {
 
   const tagsLower = tags.map(t => t.toLowerCase());
 
-  if (tagsLower.some(t => t === 'agent' || t.includes('agent'))) {
-    return 'ai-agent';
+  if (tagsLower.some(t => t.includes('mcp'))) {
+    return 'mcp-server';
   }
 
-  if (tagsLower.some(t => ['web3', 'blockchain', 'ethereum', 'solana'].includes(t))) {
+  // DeFi MUST be checked before web3-tool
+  if (tagsLower.some(t => ['defi', 'yield', 'swap', 'amm', 'dex', 'lending', 'staking'].includes(t))) {
+    return 'defi-tool';
+  }
+
+  // Infrastructure tools
+  if (tagsLower.some(t => ['infrastructure', 'infra', 'docker', 'kubernetes', 'k8s', 'monitoring', 'database', 'devops'].includes(t))) {
+    return 'infra';
+  }
+
+  // General web3/blockchain
+  if (tagsLower.some(t => ['web3', 'blockchain', 'ethereum', 'solana', 'crypto', 'wallet', 'nft'].includes(t))) {
     return 'web3-tool';
   }
 
-  if (tagsLower.some(t => t.includes('mcp'))) {
-    return 'mcp-server';
+  if (tagsLower.some(t => t === 'agent' || t.includes('agent'))) {
+    return 'ai-agent';
   }
 
   return 'framework';

@@ -37,9 +37,11 @@ export type NpmPackage = z.infer<typeof NpmPackageSchema>;
  *
  * Priority order:
  * 1. MCP-related → 'mcp-server'
- * 2. Web3/blockchain → 'web3-tool'
- * 3. DeFi-specific → 'defi-tool'
- * 4. Default → 'ai-agent'
+ * 2. DeFi-specific → 'defi-tool' (MUST come before web3-tool)
+ * 3. Infrastructure → 'infra'
+ * 4. Web3/blockchain → 'web3-tool'
+ * 5. Framework → 'framework'
+ * 6. Default → 'ai-agent'
  */
 function categorizeFromKeywords(keywords: string[] | undefined): Category {
   if (!keywords || keywords.length === 0) {
@@ -52,12 +54,24 @@ function categorizeFromKeywords(keywords: string[] | undefined): Category {
     return 'mcp-server';
   }
 
-  if (keywordsLower.some(k => ['web3', 'blockchain', 'ethereum', 'solana'].includes(k))) {
+  // DeFi MUST be checked before web3-tool
+  if (keywordsLower.some(k => ['defi', 'yield', 'swap', 'amm', 'dex', 'lending', 'staking'].includes(k))) {
+    return 'defi-tool';
+  }
+
+  // Infrastructure tools
+  if (keywordsLower.some(k => ['infrastructure', 'infra', 'docker', 'kubernetes', 'k8s', 'monitoring', 'database', 'devops'].includes(k))) {
+    return 'infra';
+  }
+
+  // General web3/blockchain
+  if (keywordsLower.some(k => ['web3', 'blockchain', 'ethereum', 'solana', 'crypto', 'wallet', 'nft'].includes(k))) {
     return 'web3-tool';
   }
 
-  if (keywordsLower.some(k => ['defi', 'yield', 'swap', 'amm'].includes(k))) {
-    return 'defi-tool';
+  // Frameworks
+  if (keywordsLower.some(k => ['framework', 'library', 'sdk'].includes(k))) {
+    return 'framework';
   }
 
   return 'ai-agent';
