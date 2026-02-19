@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-18)
 
 **Core value:** Any agent or human can find the right AI/Web3 tool for their need in under 60 seconds — agents via MCP protocol query, humans via search or curated bundle.
-**Current focus:** Phase 3 - Web Frontend (Phase 1-2 complete)
+**Current focus:** Phase 4 - MCP Protocol Endpoint (Phase 1-3 complete)
 
 ## Current Position
 
-Phase: 3 of 6 (Web Frontend)
-Plan: 3 of 3 in current phase — COMPLETE
-Status: Phase 3 complete (All frontend pages implemented)
-Last activity: 2026-02-19 — Completed 03-03 (Listing detail pages with SEO, custom 404)
+Phase: 4 of 6 (MCP Protocol Endpoint)
+Plan: 1 of 1 in current phase — COMPLETE
+Status: Phase 4 complete (MCP server endpoint with 3 tools and 1 resource)
+Last activity: 2026-02-19 — Completed 04-01 (MCP server at /api/mcp)
 
-Progress: [████████░░] 50%
+Progress: [████████░░] 55%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 9
-- Average duration: 5 min
-- Total execution time: 0.90 hours
+- Total plans completed: 10
+- Average duration: 6 min
+- Total execution time: 1.20 hours
 
 **By Phase:**
 
@@ -30,10 +30,11 @@ Progress: [████████░░] 50%
 | 01-catalog-foundation | 3/3 | 16 min | 5 min |
 | 02-scraping-pipeline | 3/3 | 21 min | 7 min |
 | 03-web-frontend | 3/3 | 13 min | 4 min |
+| 04-mcp-protocol-endpoint | 1/1 | 18 min | 18 min |
 
 **Recent Trend:**
-- Last 5 plans: 03-03 (4 min), 03-02 (5 min), 03-01 (4 min), 02-03 (13 min), 02-02 (3 min)
-- Trend: Phase 3 complete with consistent 4-5 min execution per plan
+- Last 5 plans: 04-01 (18 min), 03-03 (4 min), 03-02 (5 min), 03-01 (4 min), 02-03 (13 min)
+- Trend: Phase 4 complete with single plan (longer due to type system issues)
 
 *Updated after each plan completion*
 
@@ -44,6 +45,10 @@ Progress: [████████░░] 50%
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
+- 04-01: Used type assertion `as any` for Zod schemas to avoid TypeScript type recursion errors with mcp-handler
+- 04-01: Replaced Bun-specific code (Bun.sleep, import.meta.main) with cross-platform equivalents for Next.js build compatibility
+- 04-01: Registered tools with registerTool() API instead of deprecated server.tool() based on actual mcp-handler signature
+- 04-01: Used base64-encoded JSON cursors for pagination (opaque to client, contains { offset: number } internally)
 - 03-03: Downloads shows '0' for zero values, 'N/A' only for null (zero downloads is valid data for new packages)
 - 03-03: All tags displayed on detail page (not truncated like ListingCard) — detail page is "full view"
 - 03-03: External links have min-height 44px for mobile touch targets (accessibility standard)
@@ -82,16 +87,18 @@ Recent decisions affecting current work:
 
 ### Pending Todos
 
-None - Phase 3 complete. Ready for Phase 4 (MCP Protocol) or Phase 5 (Telegram Bot).
+- Phase 4: Test MCP server with a client (Claude Desktop, Cursor, or Windsurf)
+- Phase 4: Verify tool calls execute correctly (search, get, submit)
+- Phase 4: Test cursor-based pagination with search_catalog
+- Ready for Phase 5 (Telegram Bot) or Phase 6 (Verification & Health Checks)
 
 ### Blockers/Concerns
 
 - Phase 2: GitHub PAT and HF_TOKEN required before scraping workers can run — Jet must provision
-- Phase 4: Decision needed on MCP deployment target (Vercel stateless vs. Fly.io Bun process) before Phase 4 planning
 - General: Vercel Hobby plan is non-commercial — if any monetization is added, upgrade to Pro ($20/mo) required
 
 ## Session Continuity
 
 Last session: 2026-02-19
-Stopped at: Completed 03-03-PLAN.md (Listing Detail & 404) — Phase 3 complete
+Stopped at: Completed 04-01-PLAN.md (MCP Protocol Endpoint) — Phase 4 complete
 Resume file: None
