@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-18)
 
 **Core value:** Any agent or human can find the right AI/Web3 tool for their need in under 60 seconds — agents via MCP protocol query, humans via search or curated bundle.
-**Current focus:** Phase 4 - MCP Protocol Endpoint (Phase 1-3 complete)
+**Current focus:** Phase 5 - Submission and Community (Phase 1-4 complete)
 
 ## Current Position
 
-Phase: 4 of 6 (MCP Protocol Endpoint)
-Plan: 2 of 2 in current phase — COMPLETE
-Status: Phase 4 complete (MCP tools tested, service layer verified)
-Last activity: 2026-02-19 — Completed 04-02 (MCP tools integration tests)
+Phase: 5 of 6 (Submission and Community)
+Plan: 1 of 3 in current phase (05-03 complete)
+Status: Phase 5 in progress (JSON Feed endpoint complete)
+Last activity: 2026-02-19 — Completed 05-03 (JSON Feed 1.1 endpoint)
 
-Progress: [██████████] 61%
+Progress: [███████████] 67%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 11
-- Average duration: 7 min
-- Total execution time: 1.32 hours
+- Total plans completed: 12
+- Average duration: 6 min
+- Total execution time: 1.35 hours
 
 **By Phase:**
 
@@ -31,10 +31,11 @@ Progress: [██████████] 61%
 | 02-scraping-pipeline | 3/3 | 21 min | 7 min |
 | 03-web-frontend | 3/3 | 13 min | 4 min |
 | 04-mcp-protocol-endpoint | 2/2 | 25 min | 13 min |
+| 05-submission-and-community | 1/3 | 2 min | 2 min |
 
 **Recent Trend:**
-- Last 5 plans: 04-02 (7 min), 04-01 (18 min), 03-03 (4 min), 03-02 (5 min), 03-01 (4 min)
-- Trend: Phase 4 complete; avg time higher due to protocol integration complexity
+- Last 5 plans: 05-03 (2 min), 04-02 (7 min), 04-01 (18 min), 03-03 (4 min), 03-02 (5 min)
+- Trend: Phase 5 started; simple API endpoint executed quickly
 
 *Updated after each plan completion*
 
@@ -45,6 +46,10 @@ Progress: [██████████] 61%
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
+- 05-03: JSON Feed 1.1 spec chosen for maximum interoperability with existing feed readers and agent crawlers
+- 05-03: Custom _ai_bazaar extension field provides category, source_url, stars, downloads, mcp_compatible without fetching individual pages
+- 05-03: 5-minute CDN cache with 10-minute stale-while-revalidate for performance optimization
+- 05-03: Pagination via limit (max 100) and offset query params with next_url in response
 - 04-02: Tests use dynamic imports to ensure TURSO_DATABASE_URL is set before db client initializes
 - 04-02: Test database (test-mcp.db) isolated from test.db and dev.db to prevent interference
 - 04-02: Changed invalid default category from 'other' to 'framework' in submit_listing tool
@@ -103,5 +108,5 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-02-19
-Stopped at: Completed 04-01-PLAN.md (MCP Protocol Endpoint) — Phase 4 complete
+Stopped at: Completed 05-03-PLAN.md (JSON Feed 1.1 endpoint) — Phase 5 plan 1/3 complete
 Resume file: None
