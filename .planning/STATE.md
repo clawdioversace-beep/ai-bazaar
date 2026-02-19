@@ -10,29 +10,29 @@ See: .planning/PROJECT.md (updated 2026-02-18)
 ## Current Position
 
 Phase: 2 of 6 (Scraping Pipeline)
-Plan: 1 of 3 in current phase — COMPLETE
-Status: Phase 2 Plan 1 complete, continuing Phase 2
-Last activity: 2026-02-19 — Completed 02-01 (HTTP retry utility + 3 source normalizers)
+Plan: 2 of 3 in current phase — COMPLETE
+Status: Phase 2 Plan 2 complete, continuing Phase 2
+Last activity: 2026-02-19 — Completed 02-02 (3 API scrapers: GitHub, npm, HuggingFace)
 
-Progress: [█████░░░░░] 22%
+Progress: [█████▓░░░░] 28%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 4
-- Average duration: 5 min
-- Total execution time: 0.35 hours
+- Total plans completed: 5
+- Average duration: 4 min
+- Total execution time: 0.48 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-catalog-foundation | 3/3 | 16 min | 5 min |
-| 02-scraping-pipeline | 1/3 | 5 min | 5 min |
+| 02-scraping-pipeline | 2/3 | 8 min | 4 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-01 (5 min), 01-03 (6 min), 01-02 (3 min), 01-01 (7 min)
-- Trend: consistent 5 min average
+- Last 5 plans: 02-02 (3 min), 02-01 (5 min), 01-03 (6 min), 01-02 (3 min), 01-01 (7 min)
+- Trend: improving efficiency (4 min average for Phase 2)
 
 *Updated after each plan completion*
 
@@ -43,6 +43,10 @@ Progress: [█████░░░░░] 22%
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
+- 02-02: GitHub scraper uses Octokit pagination with maxResults cap to prevent runaway scrapes
+- 02-02: npm scraper respects 250-result API cap — multiple keyword queries needed for broader coverage
+- 02-02: HuggingFace scraper uses SDK (listModels, listSpaces) with direct API fallback for resilience
+- 02-02: All scrapers use upsertBySourceUrl for idempotent operation (re-running updates, doesn't duplicate)
 - 02-01: Manual AbortController for timeout — AbortSignal.timeout has Bun bugs; use new AbortController() + setTimeout for reliability
 - 02-01: npm normalizer prefers repository URL over npm page — GitHub links more stable/useful than npmjs.com pages
 - 02-01: Source-specific category detection — each normalizer has own logic (GitHub topics, npm keywords, HF tags)
@@ -64,7 +68,7 @@ Recent decisions affecting current work:
 
 ### Pending Todos
 
-None — Phase 2 Plan 1 complete. Plan 2 (Scraper Workers) is next.
+None — Phase 2 Plan 2 complete. Plan 3 (Worker Scheduler) is next.
 
 ### Blockers/Concerns
 
@@ -75,5 +79,5 @@ None — Phase 2 Plan 1 complete. Plan 2 (Scraper Workers) is next.
 ## Session Continuity
 
 Last session: 2026-02-19
-Stopped at: Completed 02-01-PLAN.md (HTTP retry + normalizers foundation)
+Stopped at: Completed 02-02-PLAN.md (3 API scrapers: GitHub, npm, HuggingFace)
 Resume file: None
