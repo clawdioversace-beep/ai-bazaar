@@ -82,12 +82,11 @@ Plans:
   3. Calling `get_listing` with a valid slug or ID returns the full listing detail record
   4. Calling `submit_listing` with a URL creates a new catalog entry (or enqueues enrichment)
   5. The catalog entry schema is accessible as an MCP resource from the server
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 04-01: MCP server setup at `/api/mcp` using @modelcontextprotocol/sdk 1.26.0, Streamable HTTP transport
-- [ ] 04-02: `search_catalog`, `get_listing`, `submit_listing` tools wired to CatalogService/SearchService
-- [ ] 04-03: Catalog schema as MCP resource, cursor pagination matching MCP registry spec, `.well-known` metadata
+- [ ] 04-01-PLAN.md — Install mcp-handler + MCP SDK, create route handler with 3 tools (search_catalog, get_listing, submit_listing) and catalog schema resource
+- [ ] 04-02-PLAN.md — Integration tests for MCP tool logic, dev server smoke test for endpoint reachability
 
 ### Phase 5: Submission and Community
 **Goal**: Anyone — human or agent — can add a tool to the catalog without an account, and the catalog exposes a machine-readable feed for power users and crawlers.
@@ -128,6 +127,6 @@ Phases 1 -> 2 -> (3, 4, 5 in parallel) -> 6
 | 1. Catalog Foundation | 3/3 | Complete | 2026-02-19 |
 | 2. Scraping Pipeline | 3/3 | Complete | 2026-02-19 |
 | 3. Web Frontend | 3/3 | Complete | 2026-02-19 |
-| 4. MCP Protocol Endpoint | 0/3 | Not started | - |
+| 4. MCP Protocol Endpoint | 0/2 | Not started | - |
 | 5. Submission and Community | 0/2 | Not started | - |
 | 6. Starter Packs | 0/2 | Not started | - |
