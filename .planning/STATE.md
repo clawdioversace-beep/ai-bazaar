@@ -19,9 +19,9 @@ Progress: [█████████████] 78%
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 13
+- Total plans completed: 14
 - Average duration: 6 min
-- Total execution time: 1.42 hours
+- Total execution time: 1.50 hours
 
 **By Phase:**
 
@@ -31,11 +31,11 @@ Progress: [█████████████] 78%
 | 02-scraping-pipeline | 3/3 | 21 min | 7 min |
 | 03-web-frontend | 3/3 | 13 min | 4 min |
 | 04-mcp-protocol-endpoint | 2/2 | 25 min | 13 min |
-| 05-submission-and-community | 2/3 | 6 min | 3 min |
+| 05-submission-and-community | 3/3 | 11 min | 4 min |
 
 **Recent Trend:**
-- Last 5 plans: 05-02 (4 min), 05-03 (2 min), 04-02 (7 min), 04-01 (18 min), 03-03 (4 min)
-- Trend: Phase 5 progressing well; upvote system with optimistic UI complete
+- Last 5 plans: 05-01 (5 min), 05-02 (4 min), 05-03 (2 min), 04-02 (7 min), 04-01 (18 min)
+- Trend: Phase 5 complete; all community features deployed
 
 *Updated after each plan completion*
 
@@ -46,6 +46,11 @@ Progress: [█████████████] 78%
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
+- 05-01: Use Server Actions for progressive enhancement (submission form works without JavaScript)
+- 05-01: Split Server Component wrapper from Client Component form to support metadata export
+- 05-01: Derive tool name from URL if not provided (GitHub repo, npm package, or hostname)
+- 05-01: Use 'framework' as safe default category for submissions (enrichment will fix later)
+- 05-01: Return duplicate slug in form state to enable "View it here" link to existing listing
 - 05-02: React 19 useOptimistic hook used for instant upvote UI feedback before server responds
 - 05-02: Session-based duplicate prevention via sessionStorage (no auth required, resets per browser tab)
 - 05-02: Atomic SQL increment using drizzle-orm sql template literal to prevent race conditions
@@ -111,5 +116,5 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-02-19
-Stopped at: Completed 05-02-PLAN.md (anonymous upvote system) — Phase 5 plan 2/3 complete
+Stopped at: Completed 05-01-PLAN.md (permissionless submission form) — Phase 5 complete
 Resume file: None
