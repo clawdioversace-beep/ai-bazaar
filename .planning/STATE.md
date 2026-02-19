@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-18)
 
 **Core value:** Any agent or human can find the right AI/Web3 tool for their need in under 60 seconds — agents via MCP protocol query, humans via search or curated bundle.
-**Current focus:** Phase 5 - Submission and Community (Phase 1-4 complete)
+**Current focus:** Phase 6 - Starter Packs (Phase 1-5 complete)
 
 ## Current Position
 
-Phase: 5 of 6 (Submission and Community)
+Phase: 5 of 6 (Submission and Community) — COMPLETE
 Plan: 3 of 3 in current phase — COMPLETE
-Status: Phase 5 complete (submission form, upvote system, JSON Feed all complete)
-Last activity: 2026-02-19 — Completed 05-01 (permissionless submission form)
+Status: Phase 5 verified (13/13 must-haves passed). Ready for Phase 6.
+Last activity: 2026-02-19 — Phase 5 verified and complete
 
-Progress: [█████████████] 78%
+Progress: [██████████████] 83%
 
 ## Performance Metrics
 
@@ -103,18 +103,17 @@ Recent decisions affecting current work:
 
 ### Pending Todos
 
-- Phase 4: Debug MCP tool registration issue (tools/list returns roll_dice instead of custom tools)
-- Phase 4: Test MCP server with a client once tool registration is fixed
-- Ready for Phase 5 (Telegram Bot) or Phase 6 (Verification & Health Checks) — service layer independently verified
+- Phase 5: Run migration for upvotes column: `TURSO_DATABASE_URL=file:./dev.db bun src/db/migrate.ts`
+- Phase 4: MCP tool registration fixed (roll_dice shadow removed in commit 621a744)
+- Ready for Phase 6 (Starter Packs) — last phase before v1.0 milestone
 
 ### Blockers/Concerns
 
-- Phase 4: MCP tool registration not working — tools/list returns "roll_dice" example instead of custom tools (does NOT block Phase 5/6, service layer independently verified)
 - Phase 2: GitHub PAT and HF_TOKEN required before scraping workers can run — Jet must provision
 - General: Vercel Hobby plan is non-commercial — if any monetization is added, upgrade to Pro ($20/mo) required
 
 ## Session Continuity
 
 Last session: 2026-02-19
-Stopped at: Completed 05-01-PLAN.md (permissionless submission form) — Phase 5 complete
+Stopped at: Phase 5 verified and complete. Ready for Phase 6 (Starter Packs).
 Resume file: None

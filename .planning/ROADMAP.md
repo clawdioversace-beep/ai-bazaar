@@ -14,9 +14,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Catalog Foundation** - DB schema, CatalogService, SearchService — the contract all interfaces consume *(completed 2026-02-19)*
 - [x] **Phase 2: Scraping Pipeline** - GitHub/npm/HuggingFace scrapers, normalizers, pre-seed 200+ entries *(completed 2026-02-19)*
-- [ ] **Phase 3: Web Frontend** - Browse, search, listing detail, submission form, upvotes
-- [ ] **Phase 4: MCP Protocol Endpoint** - Machine-readable catalog via Streamable HTTP, agent tools
-- [ ] **Phase 5: Submission and Community** - Permissionless form, JSON feed, upvote system
+- [x] **Phase 3: Web Frontend** - Browse, search, listing detail, submission form, upvotes *(completed 2026-02-19)*
+- [x] **Phase 4: MCP Protocol Endpoint** - Machine-readable catalog via Streamable HTTP, agent tools *(completed 2026-02-19)*
+- [x] **Phase 5: Submission and Community** - Permissionless form, JSON feed, upvote system *(completed 2026-02-19)*
 - [ ] **Phase 6: Starter Packs** - Curated bundles for non-technical user onboarding
 
 ## Phase Details
@@ -129,5 +129,5 @@ Phases 1 -> 2 -> (3, 4, 5 in parallel) -> 6
 | 2. Scraping Pipeline | 3/3 | Complete | 2026-02-19 |
 | 3. Web Frontend | 3/3 | Complete | 2026-02-19 |
 | 4. MCP Protocol Endpoint | 2/2 | Complete | 2026-02-19 |
-| 5. Submission and Community | 0/3 | Not started | - |
+| 5. Submission and Community | 3/3 | Complete | 2026-02-19 |
 | 6. Starter Packs | 0/2 | Not started | - |
