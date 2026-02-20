@@ -8,6 +8,8 @@ import {
 } from '@/services/search';
 import { CATEGORY_LABELS } from '@/lib/categories';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: 'AI Bazaar - Discover AI, Agent & Web3 Tools',
 };

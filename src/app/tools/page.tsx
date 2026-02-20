@@ -6,6 +6,8 @@ import { FilterPanel } from '@/components/filter-panel';
 import { Pagination } from '@/components/pagination';
 import Link from 'next/link';
 
+export const dynamic = 'force-dynamic';
+
 const PAGE_SIZE = 24;
 
 export const metadata = {

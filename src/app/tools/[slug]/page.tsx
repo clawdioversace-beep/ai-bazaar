@@ -5,6 +5,8 @@ import { getListingBySlug } from '@/services/catalog';
 import { CATEGORY_LABELS, type Category } from '@/lib/categories';
 import { UpvoteButton } from '@/components/upvote-button';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * Generate dynamic metadata for listing detail pages.
  * Creates SEO-friendly title, description, and OpenGraph tags for social sharing.

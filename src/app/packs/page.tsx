@@ -1,6 +1,8 @@
 import { listPacks } from '@/services/packs';
 import PackCard from '@/components/pack-card';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: 'Starter Packs | AI Bazaar',
   description:

@@ -3,6 +3,8 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { getPackWithTools } from '@/services/packs';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * Generate dynamic metadata for pack detail pages.
  * Creates SEO-friendly title, description, and OpenGraph tags.
