@@ -4,6 +4,7 @@ import { CategoryNav } from '@/components/category-nav';
 import {
   getFeaturedListings,
   getNewThisWeek,
+  getRecentlyAdded,
   countByCategory,
 } from '@/services/search';
 import { CATEGORY_LABELS } from '@/lib/categories';
@@ -21,6 +22,10 @@ export default async function HomePage() {
     getNewThisWeek(12),
     countByCategory(),
   ]);
+
+  // If fewer than 6 quality items from this week, fall back to recently added
+  const showRecent = newListings.length < 6;
+  const recentListings = showRecent ? await getRecentlyAdded(12) : [];
 
   // Map category counts to include labels
   const categoriesWithLabels = categoryCounts.map((cat) => ({
@@ -61,21 +66,29 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* New this week */}
+      {/* New this week / Recently added fallback */}
       <section className="flex flex-col gap-6">
         <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-50">
-          New This Week
+          {showRecent ? 'Recently Added' : 'New This Week'}
         </h2>
-        {newListings.length > 0 ? (
+        {showRecent ? (
+          recentListings.length > 0 ? (
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {recentListings.map((listing) => (
+                <ListingCard key={listing.id} listing={listing} />
+              ))}
+            </div>
+          ) : (
+            <p className="text-zinc-600 dark:text-zinc-400">
+              Check back soon for new tools!
+            </p>
+          )
+        ) : (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {newListings.map((listing) => (
               <ListingCard key={listing.id} listing={listing} />
             ))}
           </div>
-        ) : (
-          <p className="text-zinc-600 dark:text-zinc-400">
-            Check back soon for new tools!
-          </p>
         )}
       </section>
 

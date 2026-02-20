@@ -147,23 +147,66 @@ export async function getFeaturedListings(limit = 6): Promise<Listing[]> {
 }
 
 /**
- * Returns listings created within the last 7 days.
+ * Returns quality-filtered listings created within the last 7 days.
  *
- * Used for "New This Week" homepage sections. Dead links are excluded.
- * Results are sorted by creation date descending (newest first).
+ * Used for "New This Week" homepage section. Applies quality filters to
+ * exclude hex ID names, empty descriptions, and templated placeholder
+ * descriptions that slip through the scraper. Dead links are always excluded.
+ *
+ * Timestamps are stored as Unix seconds (INTEGER), not Date objects.
+ * Quality filters:
+ * - name != '' (not empty)
+ * - name NOT GLOB hex pattern (not a 20+ char hex string)
+ * - LENGTH(description) >= 10 (meaningful description)
+ * - description NOT LIKE 'HuggingFace model %' (not a templated placeholder)
  *
  * @param limit - Maximum results to return (default 12)
- * @returns Recently created listings (last 7 days)
+ * @returns Quality listings created in the last 7 days, newest first
  */
 export async function getNewThisWeek(limit = 12): Promise<Listing[]> {
-  const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+  // Timestamps stored as Unix seconds — compute cutoff in seconds
+  const sevenDaysAgoUnix = Math.floor(Date.now() / 1000) - 7 * 24 * 60 * 60;
 
-  return db.query.listings.findMany({
-    where: (l, { gte, eq, and }) =>
-      and(eq(l.deadLink, false), gte(l.createdAt, sevenDaysAgo)),
-    limit,
-    orderBy: (l, { desc }) => [desc(l.createdAt)],
-  }) as Promise<Listing[]>;
+  const result = await db.run(sql`
+    SELECT *
+    FROM listings
+    WHERE dead_link = 0
+    AND created_at >= ${sevenDaysAgoUnix}
+    AND name != ''
+    AND name NOT GLOB '[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]*'
+    AND LENGTH(description) >= 10
+    AND description NOT LIKE 'HuggingFace model %'
+    ORDER BY created_at DESC
+    LIMIT ${limit}
+  `);
+
+  return result.rows as unknown as Listing[];
+}
+
+/**
+ * Returns quality-filtered listings regardless of date, for use as a fallback
+ * when fewer than 6 new-this-week listings pass quality filters.
+ *
+ * Applies the same quality filters as getNewThisWeek minus the date constraint.
+ * Dead links are always excluded. Results are sorted newest first.
+ *
+ * @param limit - Maximum results to return (default 12)
+ * @returns Most recent quality listings, newest first
+ */
+export async function getRecentlyAdded(limit = 12): Promise<Listing[]> {
+  const result = await db.run(sql`
+    SELECT *
+    FROM listings
+    WHERE dead_link = 0
+    AND name != ''
+    AND name NOT GLOB '[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]*'
+    AND LENGTH(description) >= 10
+    AND description NOT LIKE 'HuggingFace model %'
+    ORDER BY created_at DESC
+    LIMIT ${limit}
+  `);
+
+  return result.rows as unknown as Listing[];
 }
 
 /**
