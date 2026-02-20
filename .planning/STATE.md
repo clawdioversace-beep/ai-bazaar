@@ -11,7 +11,7 @@ See: .planning/PROJECT.md (updated 2026-02-19)
 
 Milestone: v1.0 MVP — SHIPPED 2026-02-19
 Status: All 6 phases complete and verified. Ready for deployment or next milestone.
-Last activity: 2026-02-19 — v1.0 milestone archived
+Last activity: 2026-02-20 - Completed quick task 1: Fix broken HuggingFace listings
 
 Progress: [████████████████████] 100%
 
@@ -116,6 +116,12 @@ Recent decisions affecting current work:
 
 - Phase 2: GitHub PAT and HF_TOKEN required before scraping workers can run — Jet must provision
 - General: Vercel Hobby plan is non-commercial — if any monetization is added, upgrade to Pro ($20/mo) required
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 1 | Fix broken HuggingFace listings — enrich hex IDs, hide unresolved, quality filters on New This Week | 2026-02-20 | efd73b9 | [1-fix-broken-huggingface-listings-enrich-h](./quick/1-fix-broken-huggingface-listings-enrich-h/) |
 
 ## Session Continuity
 
