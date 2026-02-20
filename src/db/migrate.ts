@@ -109,6 +109,21 @@ async function main() {
   `);
 
   console.log('Starter pack tables created (starter_packs, pack_tools).');
+
+  // Add hype_score columns
+  console.log('Adding hype score columns...');
+  try {
+    await client.execute(`ALTER TABLE listings ADD COLUMN hype_score integer DEFAULT 0`);
+  } catch (e: any) {
+    if (!e.message?.includes('duplicate column')) throw e;
+  }
+  try {
+    await client.execute(`ALTER TABLE listings ADD COLUMN hype_updated_at integer`);
+  } catch (e: any) {
+    if (!e.message?.includes('duplicate column')) throw e;
+  }
+  console.log('Hype score columns ready.');
+
   console.log('Migration complete.');
   client.close();
 }
@@ -165,6 +180,19 @@ async function runRemoteMigrations() {
     await client.execute(`ALTER TABLE listings ADD COLUMN upvotes integer DEFAULT 0`);
   } catch (e: any) {
     // Column may already exist — safe to ignore duplicate column errors
+    if (!e.message?.includes('duplicate column')) throw e;
+  }
+
+  // 0003: hype score columns
+  console.log('  Adding hype score columns...');
+  try {
+    await client.execute(`ALTER TABLE listings ADD COLUMN hype_score integer DEFAULT 0`);
+  } catch (e: any) {
+    if (!e.message?.includes('duplicate column')) throw e;
+  }
+  try {
+    await client.execute(`ALTER TABLE listings ADD COLUMN hype_updated_at integer`);
+  } catch (e: any) {
     if (!e.message?.includes('duplicate column')) throw e;
   }
 

@@ -26,6 +26,8 @@ export async function scheduleAllJobs(): Promise<void> {
   const githubQueue = new Queue('scrape-github', { embedded: true });
   const npmQueue = new Queue('scrape-npm', { embedded: true });
   const hfQueue = new Queue('scrape-huggingface', { embedded: true });
+  const githubTrendingQueue = new Queue('scrape-github-trending', { embedded: true });
+  const productHuntQueue = new Queue('scrape-producthunt', { embedded: true });
   const deadLinkQueue = new Queue('check-dead-links', { embedded: true });
 
   // GitHub scrape jobs - daily at 2 AM UTC
@@ -79,6 +81,32 @@ export async function scheduleAllJobs(): Promise<void> {
     console.log(`  - ${tag}: scheduled`);
   }
 
+  // GitHub Trending scrape job - daily at 2:30 AM UTC
+  console.log('\n[scheduler] Scheduling GitHub Trending scrape (daily at 2:30 AM UTC)...');
+  await githubTrendingQueue.add(
+    'scrape-trending',
+    { maxResults: 50 },
+    {
+      repeat: {
+        pattern: '30 2 * * *', // Daily at 2:30 AM UTC
+      },
+    }
+  );
+  console.log('  - trending: scheduled');
+
+  // Product Hunt scrape job - daily at 4:30 AM UTC
+  console.log('\n[scheduler] Scheduling Product Hunt scrape (daily at 4:30 AM UTC)...');
+  await productHuntQueue.add(
+    'scrape-ph',
+    { maxResults: 100 },
+    {
+      repeat: {
+        pattern: '30 4 * * *', // Daily at 4:30 AM UTC
+      },
+    }
+  );
+  console.log('  - producthunt: scheduled');
+
   // Dead link check job - daily at 5 AM UTC
   console.log('\n[scheduler] Scheduling dead link check (daily at 5 AM UTC)...');
   await deadLinkQueue.add(
@@ -93,7 +121,7 @@ export async function scheduleAllJobs(): Promise<void> {
   console.log('  - check-all: scheduled');
 
   console.log('\n[scheduler] All jobs scheduled successfully.');
-  console.log(`  Total recurring jobs: ${githubTopics.length + npmKeywords.length + hfTags.length + 1}`);
+  console.log(`  Total recurring jobs: ${githubTopics.length + npmKeywords.length + hfTags.length + 2 + 1}`);
 }
 
 // Run scheduler if this file is executed directly

@@ -19,6 +19,8 @@ import { Worker } from 'bunqueue/client';
 import { scrapeGitHub } from '../scrapers/github-scraper';
 import { scrapeNpm } from '../scrapers/npm-scraper';
 import { scrapeHuggingFace } from '../scrapers/huggingface-scraper';
+import { scrapeGitHubTrending } from '../scrapers/github-trending-scraper';
+import { scrapeProductHunt } from '../scrapers/producthunt-scraper';
 import { checkDeadLink, markDeadLink, getAllListings } from '../services/catalog';
 
 // Track all workers for graceful shutdown
@@ -80,6 +82,44 @@ const hfWorker = new Worker(
 );
 
 workers.push(hfWorker);
+
+/**
+ * GitHub Trending scrape worker.
+ * Processes jobs from the 'scrape-github-trending' queue.
+ */
+const githubTrendingWorker = new Worker(
+  'scrape-github-trending',
+  async (job) => {
+    const { maxResults } = job.data as { maxResults?: number };
+    console.log(`[github-trending-worker] Processing job: maxResults=${maxResults ?? 50}`);
+    return scrapeGitHubTrending(maxResults ?? 50);
+  },
+  {
+    embedded: true,
+    concurrency: 1,
+  }
+);
+
+workers.push(githubTrendingWorker);
+
+/**
+ * Product Hunt scrape worker.
+ * Processes jobs from the 'scrape-producthunt' queue.
+ */
+const productHuntWorker = new Worker(
+  'scrape-producthunt',
+  async (job) => {
+    const { maxResults } = job.data as { maxResults?: number };
+    console.log(`[producthunt-worker] Processing job: maxResults=${maxResults ?? 100}`);
+    return scrapeProductHunt(maxResults ?? 100);
+  },
+  {
+    embedded: true,
+    concurrency: 1,
+  }
+);
+
+workers.push(productHuntWorker);
 
 /**
  * Dead link checker worker.

@@ -102,6 +102,15 @@ export const listings = sqliteTable('listings', {
 
   /** Row last-modified timestamp (updated on every write) */
   updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
+
+  /**
+   * Hype score (0-100) computed from stars, downloads, recency, and upvotes.
+   * 0 = not yet scored or no signals. Updated by compute-hype-scores script.
+   */
+  hypeScore: integer('hype_score').default(0),
+
+  /** Timestamp of last hype score computation (Unix ms) */
+  hypeUpdatedAt: integer('hype_updated_at', { mode: 'timestamp' }),
 });
 
 /** Full listing record returned by SELECT queries */
