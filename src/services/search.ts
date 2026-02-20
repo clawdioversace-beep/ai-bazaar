@@ -399,6 +399,27 @@ export async function getFilterOptions(): Promise<{
 }
 
 /**
+ * Returns top listings by hype score for the Trending section.
+ *
+ * Only returns listings with a non-zero hype score.
+ * Dead links are always excluded.
+ *
+ * @param limit - Maximum results to return (default 6)
+ * @returns Top listings sorted by hype_score descending
+ */
+export async function getTrendingListings(limit = 6): Promise<Listing[]> {
+  const result = await db.run(sql`
+    SELECT *
+    FROM listings
+    WHERE dead_link = 0
+    AND hype_score > 0
+    ORDER BY hype_score DESC
+    LIMIT ${limit}
+  `);
+  return result.rows as unknown as Listing[];
+}
+
+/**
  * Rebuilds the FTS5 index from the current listings table contents.
  *
  * Call this after any bulk insert operation that bypasses the FTS5 sync

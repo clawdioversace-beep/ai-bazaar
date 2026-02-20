@@ -31,6 +31,16 @@ export function ListingCard({ listing }: ListingCardProps) {
 
   return (
     <div className="group relative flex flex-col gap-3 rounded-lg border border-zinc-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900">
+      {/* Hype score badge — shown when score > 0 */}
+      {listing.hypeScore !== null && listing.hypeScore > 0 && (
+        <div className="absolute right-3 top-3 flex items-center gap-1 rounded-full bg-orange-100 px-2 py-0.5 text-xs font-semibold text-orange-700 dark:bg-orange-900/30 dark:text-orange-300">
+          <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 23c-3.5 0-7-2.5-7-7 0-3.5 2-6 4-8 .5-.5 1.5 0 1.5.5 0 2 1 3 2.5 4.5 .5-1.5 1-3 1-5 0-.5.5-1 1-.5 2 1.5 4 4 4 7.5 0 4.5-3.5 8-7 8z"/>
+          </svg>
+          {listing.hypeScore}
+        </div>
+      )}
+
       {/* Name as link to detail page */}
       <Link
         href={`/tools/${listing.slug}`}
