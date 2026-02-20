@@ -2,7 +2,9 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { getListingBySlug } from '@/services/catalog';
+import { getRelatedListings } from '@/services/search';
 import { CATEGORY_LABELS, type Category } from '@/lib/categories';
+import { ListingCard } from '@/components/listing-card';
 import { UpvoteButton } from '@/components/upvote-button';
 
 export const dynamic = 'force-dynamic';
@@ -62,6 +64,9 @@ export default async function ListingPage({
   const chainSupport = listing.chainSupport
     ? (JSON.parse(listing.chainSupport) as string[])
     : [];
+
+  // Fetch related tools in same category
+  const relatedListings = await getRelatedListings(listing.id, listing.category, 4);
 
   // Format numbers with commas for readability
   const formatNumber = (num: number | null): string => {
@@ -231,7 +236,7 @@ export default async function ListingPage({
                     d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
                   />
                 </svg>
-                Source Code
+                Visit Tool →
               </a>
               {listing.docsUrl && (
                 <a
@@ -356,6 +361,20 @@ export default async function ListingPage({
           </div>
         </div>
       </div>
+
+      {/* Related Tools */}
+      {relatedListings.length > 0 && (
+        <div className="mt-4">
+          <h2 className="mb-4 text-xl font-bold text-zinc-900 dark:text-zinc-50">
+            Related Tools
+          </h2>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {relatedListings.map((related) => (
+              <ListingCard key={related.id} listing={related} />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

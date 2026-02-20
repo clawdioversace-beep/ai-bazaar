@@ -21,6 +21,8 @@ export const CATEGORIES = [
   'saas-tool',
   'api-service',
   'developer-tool',
+  'productivity',
+  'content-creation',
 ] as const;
 
 /**
@@ -43,4 +45,6 @@ export const CATEGORY_LABELS: Record<Category, string> = {
   'saas-tool': 'SaaS Tool',
   'api-service': 'API Service',
   'developer-tool': 'Developer Tool',
+  'productivity': 'Productivity',
+  'content-creation': 'Content Creation',
 };

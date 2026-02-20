@@ -31,8 +31,8 @@ export function ListingCard({ listing }: ListingCardProps) {
 
   return (
     <div className="group relative flex flex-col gap-3 rounded-lg border border-zinc-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900">
-      {/* Hype score badge — shown when score > 0 */}
-      {listing.hypeScore !== null && listing.hypeScore > 0 && (
+      {/* Hype score badge — shown when score > 70 */}
+      {listing.hypeScore !== null && listing.hypeScore > 70 && (
         <div className="absolute right-3 top-3 flex items-center gap-1 rounded-full bg-orange-100 px-2 py-0.5 text-xs font-semibold text-orange-700 dark:bg-orange-900/30 dark:text-orange-300">
           <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path d="M12 23c-3.5 0-7-2.5-7-7 0-3.5 2-6 4-8 .5-.5 1.5 0 1.5.5 0 2 1 3 2.5 4.5 .5-1.5 1-3 1-5 0-.5.5-1 1-.5 2 1.5 4 4 4 7.5 0 4.5-3.5 8-7 8z"/>
@@ -72,6 +72,25 @@ export function ListingCard({ listing }: ListingCardProps) {
             <span>{listing.stars.toLocaleString()}</span>
           </span>
         )}
+        {listing.downloads !== null && listing.downloads > 0 && (
+          <span className="flex items-center gap-1 text-zinc-600 dark:text-zinc-400">
+            <svg className="h-3 w-3 fill-current" viewBox="0 0 20 20" aria-hidden="true">
+              <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
+            </svg>
+            <span>{listing.downloads.toLocaleString()}</span>
+          </span>
+        )}
+        <a
+          href={listing.sourceUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="ml-auto text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300"
+          title="Visit tool"
+        >
+          <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+          </svg>
+        </a>
       </div>
 
       {/* Runtime badge */}

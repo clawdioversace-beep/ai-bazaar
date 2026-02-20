@@ -61,7 +61,7 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
     chain: params.chain,
     runtime: params.runtime,
     protocol,
-    sort: params.sort === 'recent' ? 'recent' : 'popular',
+    sort: params.sort === 'recent' ? 'recent' : params.sort === 'trending' ? 'trending' : 'popular',
     query: params.q,
     limit: PAGE_SIZE,
     offset,

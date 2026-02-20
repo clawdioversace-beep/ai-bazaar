@@ -41,6 +41,7 @@ export function FilterPanel({ categories, chains, runtimes }: FilterPanelProps) 
   const currentRuntime = searchParams.get('runtime') || '';
   const currentProtocol = searchParams.get('protocol') || '';
   const currentSort = searchParams.get('sort') || 'popular';
+  const currentQuery = searchParams.get('q') || '';
 
   /**
    * Update a single filter parameter and navigate to the new URL.
@@ -70,7 +71,7 @@ export function FilterPanel({ categories, chains, runtimes }: FilterPanelProps) 
 
   // Check if any filters are active
   const hasActiveFilters =
-    currentCategory || currentChain || currentRuntime || currentProtocol || currentSort !== 'popular';
+    currentCategory || currentChain || currentRuntime || currentProtocol || currentQuery || currentSort !== 'popular';
 
   return (
     <div className="mb-6 rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
@@ -96,6 +97,28 @@ export function FilterPanel({ categories, chains, runtimes }: FilterPanelProps) 
           isOpen ? 'block' : 'hidden'
         } space-y-4 p-4 md:flex md:flex-wrap md:items-center md:gap-4 md:space-y-0`}
       >
+        {/* Search input */}
+        <div className="flex flex-col gap-1 md:flex-row md:items-center md:gap-2">
+          <label
+            htmlFor="search-filter"
+            className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
+          >
+            Search
+          </label>
+          <input
+            id="search-filter"
+            type="text"
+            placeholder="Search tools..."
+            defaultValue={currentQuery}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                updateFilter('q', (e.target as HTMLInputElement).value);
+              }
+            }}
+            className="rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50 dark:placeholder-zinc-500 md:w-48"
+          />
+        </div>
+
         {/* Category filter */}
         <div className="flex flex-col gap-1 md:flex-row md:items-center md:gap-2">
           <label
@@ -208,6 +231,16 @@ export function FilterPanel({ categories, chains, runtimes }: FilterPanelProps) 
               }`}
             >
               Recent
+            </button>
+            <button
+              onClick={() => updateFilter('sort', 'trending')}
+              className={`rounded px-3 py-1 text-sm font-medium transition-colors ${
+                currentSort === 'trending'
+                  ? 'bg-blue-600 text-white'
+                  : 'text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800'
+              }`}
+            >
+              Trending
             </button>
           </div>
         </div>

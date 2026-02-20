@@ -223,8 +223,8 @@ export interface BrowseParams {
   runtime?: string;
   /** Filter by protocol: 'mcp' | 'acp' */
   protocol?: 'mcp' | 'acp';
-  /** Sort order: 'recent' (createdAt DESC) or 'popular' (stars+downloads DESC) */
-  sort?: 'recent' | 'popular';
+  /** Sort order: 'recent' (createdAt DESC), 'popular' (stars+downloads DESC), or 'trending' (hype_score DESC) */
+  sort?: 'recent' | 'popular' | 'trending';
   /** Optional text search query */
   query?: string;
   /** Maximum results to return (default 24) */
@@ -330,6 +330,8 @@ export async function browseListings(params: BrowseParams): Promise<BrowseResult
   // Build ORDER BY clause
   if (sort === 'recent') {
     baseQuery = sql`${baseQuery} ORDER BY l.created_at DESC`;
+  } else if (sort === 'trending') {
+    baseQuery = sql`${baseQuery} ORDER BY l.hype_score DESC NULLS LAST, l.stars DESC`;
   } else {
     // popular (default)
     baseQuery = sql`${baseQuery} ORDER BY l.stars DESC, l.downloads DESC`;
@@ -432,4 +434,32 @@ export async function getTrendingListings(limit = 6): Promise<Listing[]> {
  */
 export async function rebuildFtsIndex(): Promise<void> {
   await db.run(sql`INSERT INTO listings_fts(listings_fts) VALUES('rebuild')`);
+}
+
+/**
+ * Returns related listings for a given tool.
+ *
+ * Finds listings in the same category, excluding the current tool.
+ * Sorted by stars descending to show the most popular related tools.
+ *
+ * @param listingId - ID of the current listing to exclude
+ * @param category - Category to match on
+ * @param limit - Maximum results (default 4)
+ * @returns Related listings sorted by popularity
+ */
+export async function getRelatedListings(
+  listingId: string,
+  category: string,
+  limit = 4,
+): Promise<Listing[]> {
+  const result = await db.run(sql`
+    SELECT *
+    FROM listings
+    WHERE dead_link = 0
+    AND category = ${category}
+    AND id != ${listingId}
+    ORDER BY stars DESC, downloads DESC
+    LIMIT ${limit}
+  `);
+  return result.rows as unknown as Listing[];
 }
