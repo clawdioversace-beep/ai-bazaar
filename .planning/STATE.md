@@ -11,7 +11,7 @@ See: .planning/PROJECT.md (updated 2026-02-19)
 
 Milestone: v1.0 MVP — SHIPPED 2026-02-19
 Status: All 6 phases complete and verified. Ready for deployment or next milestone.
-Last activity: 2026-02-20 - Completed quick task 1: Fix broken HuggingFace listings
+Last activity: 2026-02-20 - Completed quick task 3: Upgrade data pipeline with scrapers + hype scores
 
 Progress: [████████████████████] 100%
 
@@ -45,6 +45,11 @@ Progress: [████████████████████] 100%
 
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
+
+- quick-3: Stay TypeScript/Bun — no Python/Crawl4AI dependency; HTML scrapers use regex (no cheerio/jsdom)
+- quick-3: Hype weights redistributed (stars 30%, downloads 25%, recency 25%, upvotes 20%) — lack social_mentions_7d signal
+- quick-3: Recency uses updatedAt (refreshed on every scraper upsert) not createdAt — reflects freshness of re-confirmation
+- quick-3: client.batch() API for atomic hype score updates — 3206 rows updated in single transaction
 
 - 06-02: Server Components only for pack pages (no client-side JavaScript needed for read-only discovery)
 - 06-02: Scrollytelling layout with step numbers for pack detail pages (visual hierarchy + narrative flow)
@@ -122,9 +127,10 @@ Recent decisions affecting current work:
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 1 | Fix broken HuggingFace listings — enrich hex IDs, hide unresolved, quality filters on New This Week | 2026-02-20 | efd73b9 | [1-fix-broken-huggingface-listings-enrich-h](./quick/1-fix-broken-huggingface-listings-enrich-h/) |
+| 3 | Upgrade data pipeline — Product Hunt + GitHub Trending scrapers, hype score algorithm (0-100), Trending homepage section, hype badges on cards | 2026-02-20 | b33e7ea | [3-upgrade-data-pipeline-with-crawl4ai-scra](./quick/3-upgrade-data-pipeline-with-crawl4ai-scra/) |
 
 ## Session Continuity
 
-Last session: 2026-02-19
-Stopped at: Phase 6 Plan 02 complete. Pack browse and detail pages built. Ready for Plan 03 (admin UI).
+Last session: 2026-02-20
+Stopped at: Quick task 3 complete. Data pipeline upgraded with PH + GitHub Trending scrapers, hype scores on 3206 listings.
 Resume file: None
