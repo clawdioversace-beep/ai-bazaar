@@ -3,12 +3,12 @@
  *
  * CATEGORIES is the single source of truth for valid category values.
  * Any service, scraper, or form that assigns a category MUST use one
- * of these six values. Category validation is enforced at parse time
+ * of these nine values. Category validation is enforced at parse time
  * via the Zod CatalogEntry schema (see catalog-schema.ts).
  */
 
 /**
- * The six canonical categories for catalog entries.
+ * The nine canonical categories for catalog entries.
  * Used by CatalogEntrySchema as z.enum(CATEGORIES).
  */
 export const CATEGORIES = [
@@ -18,6 +18,9 @@ export const CATEGORIES = [
   'defi-tool',
   'infra',
   'framework',
+  'saas-tool',
+  'api-service',
+  'developer-tool',
 ] as const;
 
 /**
@@ -37,4 +40,7 @@ export const CATEGORY_LABELS: Record<Category, string> = {
   'defi-tool': 'DeFi Tool',
   'infra': 'Infrastructure',
   'framework': 'Framework',
+  'saas-tool': 'SaaS Tool',
+  'api-service': 'API Service',
+  'developer-tool': 'Developer Tool',
 };
