@@ -144,6 +144,18 @@ async function main() {
   `);
   console.log('Reads table created.');
 
+  // Create subscribers table
+  console.log('Creating subscribers table...');
+  await client.execute(`
+    CREATE TABLE IF NOT EXISTS subscribers (
+      id TEXT PRIMARY KEY NOT NULL,
+      email TEXT NOT NULL UNIQUE,
+      source TEXT NOT NULL,
+      created_at INTEGER NOT NULL
+    )
+  `);
+  console.log('Subscribers table created.');
+
   console.log('Migration complete.');
   client.close();
 }
@@ -232,6 +244,17 @@ async function runRemoteMigrations() {
       published_at INTEGER,
       created_at INTEGER NOT NULL,
       featured INTEGER NOT NULL DEFAULT 0
+    )
+  `);
+
+  // 0005: subscribers table
+  console.log('  Creating subscribers table...');
+  await client.execute(`
+    CREATE TABLE IF NOT EXISTS subscribers (
+      id TEXT PRIMARY KEY NOT NULL,
+      email TEXT NOT NULL UNIQUE,
+      source TEXT NOT NULL,
+      created_at INTEGER NOT NULL
     )
   `);
 

@@ -256,3 +256,17 @@ export type Read = typeof reads.$inferSelect;
 
 /** Read shape for INSERT operations */
 export type NewRead = typeof reads.$inferInsert;
+
+/**
+ * Email subscribers — collected for weekly newsletter.
+ * Stored locally until Beehiiv integration is configured.
+ */
+export const subscribers = sqliteTable('subscribers', {
+  id: text('id').primaryKey(),
+  email: text('email').notNull().unique(),
+  source: text('source').notNull(), // "hero", "banner", "footer"
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+});
+
+export type Subscriber = typeof subscribers.$inferSelect;
+export type NewSubscriber = typeof subscribers.$inferInsert;

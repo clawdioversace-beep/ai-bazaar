@@ -2,6 +2,8 @@ import Link from 'next/link';
 import { ListingCard } from '@/components/listing-card';
 import { ReadCard } from '@/components/read-card';
 import { CategoryNav } from '@/components/category-nav';
+import { SubscribeForm } from '@/components/subscribe-form';
+import { SubscribeBanner } from '@/components/subscribe-banner';
 import {
   getFeaturedListings,
   getNewThisWeek,
@@ -57,6 +59,12 @@ export default async function HomePage() {
         >
           Browse All Tools
         </Link>
+        <div className="flex flex-col items-center gap-2">
+          <p className="text-sm text-zinc-500 dark:text-zinc-500">
+            Get the top 5 new AI tools delivered weekly
+          </p>
+          <SubscribeForm source="hero" />
+        </div>
       </section>
 
       {/* Featured listings */}
@@ -145,6 +153,9 @@ export default async function HomePage() {
         </h2>
         <CategoryNav categories={categoriesWithLabels} />
       </section>
+
+      {/* Scroll-triggered subscribe banner */}
+      <SubscribeBanner />
     </div>
   );
 }
