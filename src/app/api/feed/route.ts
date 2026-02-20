@@ -73,7 +73,7 @@ export async function GET(request: NextRequest) {
         title: listing.name,
         content_text: listing.description,
         summary: listing.tagline,
-        date_published: listing.createdAt?.toISOString() ?? new Date().toISOString(),
+        date_published: listing.createdAt ? new Date(listing.createdAt).toISOString() : new Date().toISOString(),
         tags: safeJsonParse(listing.tags, []),
         _ai_bazaar: {
           category: listing.category,
