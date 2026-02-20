@@ -124,6 +124,26 @@ async function main() {
   }
   console.log('Hype score columns ready.');
 
+  // Create reads table
+  console.log('Creating reads table...');
+  await client.execute(`
+    CREATE TABLE IF NOT EXISTS reads (
+      id TEXT PRIMARY KEY NOT NULL,
+      slug TEXT NOT NULL UNIQUE,
+      title TEXT NOT NULL,
+      summary TEXT NOT NULL,
+      source_url TEXT NOT NULL UNIQUE,
+      source_name TEXT NOT NULL,
+      author TEXT,
+      tags TEXT NOT NULL,
+      category TEXT NOT NULL,
+      published_at INTEGER,
+      created_at INTEGER NOT NULL,
+      featured INTEGER NOT NULL DEFAULT 0
+    )
+  `);
+  console.log('Reads table created.');
+
   console.log('Migration complete.');
   client.close();
 }
@@ -195,6 +215,25 @@ async function runRemoteMigrations() {
   } catch (e: any) {
     if (!e.message?.includes('duplicate column')) throw e;
   }
+
+  // 0004: reads table
+  console.log('  Creating reads table...');
+  await client.execute(`
+    CREATE TABLE IF NOT EXISTS reads (
+      id TEXT PRIMARY KEY NOT NULL,
+      slug TEXT NOT NULL UNIQUE,
+      title TEXT NOT NULL,
+      summary TEXT NOT NULL,
+      source_url TEXT NOT NULL UNIQUE,
+      source_name TEXT NOT NULL,
+      author TEXT,
+      tags TEXT NOT NULL,
+      category TEXT NOT NULL,
+      published_at INTEGER,
+      created_at INTEGER NOT NULL,
+      featured INTEGER NOT NULL DEFAULT 0
+    )
+  `);
 
   console.log('  Remote migrations applied.');
 }

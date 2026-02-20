@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ListingCard } from '@/components/listing-card';
+import { ReadCard } from '@/components/read-card';
 import { CategoryNav } from '@/components/category-nav';
 import {
   getFeaturedListings,
@@ -8,6 +9,7 @@ import {
   countByCategory,
   getTrendingListings,
 } from '@/services/search';
+import { getFeaturedReads } from '@/services/reads';
 import { CATEGORY_LABELS } from '@/lib/categories';
 
 export const dynamic = 'force-dynamic';
@@ -18,11 +20,12 @@ export const metadata = {
 
 export default async function HomePage() {
   // Fetch data server-side
-  const [featuredListings, newListings, categoryCounts, trendingListings] = await Promise.all([
+  const [featuredListings, newListings, categoryCounts, trendingListings, topReads] = await Promise.all([
     getFeaturedListings(6),
     getNewThisWeek(12),
     countByCategory(),
     getTrendingListings(6),
+    getFeaturedReads(3),
   ]);
 
   // If fewer than 6 quality items from this week, fall back to recently added
@@ -112,6 +115,28 @@ export default async function HomePage() {
           </div>
         )}
       </section>
+
+      {/* Top Reads */}
+      {topReads.length > 0 && (
+        <section className="flex flex-col gap-6">
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-50">
+              Top Reads
+            </h2>
+            <Link
+              href="/reads"
+              className="text-sm font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+            >
+              View all reads &rarr;
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {topReads.map((read) => (
+              <ReadCard key={read.id} read={read} />
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Category navigation */}
       <section className="flex flex-col gap-6">

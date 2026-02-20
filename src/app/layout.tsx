@@ -60,6 +60,12 @@ export default function RootLayout({
                 Packs
               </Link>
               <Link
+                href="/reads"
+                className="text-sm font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+              >
+                Reads
+              </Link>
+              <Link
                 href="/submit"
                 className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-700 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
               >

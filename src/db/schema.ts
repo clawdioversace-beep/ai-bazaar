@@ -206,3 +206,53 @@ export type PackTool = typeof packTools.$inferSelect;
 
 /** Pack-tool junction shape for INSERT operations */
 export type NewPackTool = typeof packTools.$inferInsert;
+
+/**
+ * Curated reads — external links to the best AI threads, articles, tutorials, and guides.
+ *
+ * Each read points to an external URL with a title, summary, source info, and tags.
+ * No detail page — cards link directly to the external source.
+ */
+export const reads = sqliteTable('reads', {
+  /** UUID primary key */
+  id: text('id').primaryKey(),
+
+  /** URL-safe slug for URL construction and dedup */
+  slug: text('slug').notNull().unique(),
+
+  /** Display title of the read */
+  title: text('title').notNull(),
+
+  /** 1-3 sentence summary of the content */
+  summary: text('summary').notNull(),
+
+  /** External link to the content */
+  sourceUrl: text('source_url').notNull().unique(),
+
+  /** Source platform name: "Twitter", "Blog", "YouTube", etc. */
+  sourceName: text('source_name').notNull(),
+
+  /** Original author if known */
+  author: text('author'),
+
+  /** JSON array of tags, same format as listings */
+  tags: text('tags').notNull(),
+
+  /** Content type: "thread", "article", "tutorial", "video", "guide" */
+  category: text('category').notNull(),
+
+  /** When the original content was published */
+  publishedAt: integer('published_at', { mode: 'timestamp' }),
+
+  /** Row creation timestamp */
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+
+  /** Whether this read is featured on the homepage */
+  featured: integer('featured', { mode: 'boolean' }).notNull().default(false),
+});
+
+/** Full read record returned by SELECT queries */
+export type Read = typeof reads.$inferSelect;
+
+/** Read shape for INSERT operations */
+export type NewRead = typeof reads.$inferInsert;
