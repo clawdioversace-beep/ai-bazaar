@@ -14,7 +14,8 @@
     "seed:prod": "bun src/scripts/seed-catalog.ts",
     "worker": "TURSO_DATABASE_URL=file:./dev.db bun src/workers/scrape-worker.ts",
     "worker:prod": "bun src/workers/scrape-worker.ts",
-    "schedule": "TURSO_DATABASE_URL=file:./dev.db bun src/jobs/schedule-scrapes.ts"
+    "schedule": "TURSO_DATABASE_URL=file:./dev.db bun src/jobs/schedule-scrapes.ts",
+    "enrich-hf": "TURSO_DATABASE_URL=file:./dev.db bun src/scripts/enrich-huggingface.ts"
   },
   "dependencies": {
     "@huggingface/hub": "^2.10.1",
@@ -27,7 +28,7 @@
     "octokit": "^5.0.5",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "zod": "^3.25.0"
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

@@ -71,14 +71,36 @@ function categorizeFromTags(tags: string[] | undefined): Category {
 }
 
 /**
+ * Returns true if the given ID is a raw hex hash rather than a valid
+ * HuggingFace `owner/model` format ID.
+ *
+ * The HF SDK occasionally returns 24-char hex hashes instead of real
+ * model IDs. These are unusable as names or source URLs and must be
+ * rejected at ingestion time.
+ *
+ * @param id - The HuggingFace ID string to check
+ * @returns true if the ID is a hex-only string (20+ hex chars, no slash)
+ */
+export function isHexId(id: string): boolean {
+  return /^[0-9a-f]{20,}$/i.test(id);
+}
+
+/**
  * Normalize a HuggingFace entry (model or space) to CatalogEntryInput.
  *
  * @param entry - Raw HuggingFace object (unknown type for safety)
  * @returns CatalogEntryInput ready for CatalogEntrySchema.parse()
  * @throws ZodError if entry doesn't match HuggingFaceEntrySchema
+ * @throws Error if the entry ID is a raw hex hash (not a valid owner/model ID)
  */
 export function normalizeHuggingFaceEntry(entry: unknown): CatalogEntryInput {
   const validated = HuggingFaceEntrySchema.parse(entry);
+
+  // Reject hex-only IDs — they are internal HF object hashes, not real model IDs.
+  // The scraper's try/catch will catch this and increment the error counter.
+  if (isHexId(validated.id)) {
+    throw new Error(`Skipping hex ID: ${validated.id}`);
+  }
 
   const slug = createSlug(validated.id);
   const category = categorizeFromTags(validated.tags);
