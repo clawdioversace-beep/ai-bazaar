@@ -40,6 +40,11 @@ test.db
 *.db-shm
 *.db-wal
 
+# Python (Crawl4AI scrapers)
+scrapers/.venv/
+__pycache__/
+scrapers/output/*.json
+
 # vercel
 .vercel
 

@@ -8,6 +8,7 @@
  * - scrape-github: GitHub topic scrape jobs
  * - scrape-npm: npm keyword scrape jobs
  * - scrape-huggingface: HuggingFace tag scrape jobs
+ * - scrape-crawl4ai: Crawl4AI Python scrapers + TS ingest
  * - check-dead-links: Dead link health check jobs
  *
  * Usage:
@@ -15,13 +16,16 @@
  *   bun run worker:prod  # Production (requires TURSO_DATABASE_URL env var)
  */
 
+import { join } from 'node:path';
 import { Worker } from 'bunqueue/client';
 import { scrapeGitHub } from '../scrapers/github-scraper';
 import { scrapeNpm } from '../scrapers/npm-scraper';
 import { scrapeHuggingFace } from '../scrapers/huggingface-scraper';
-import { scrapeGitHubTrending } from '../scrapers/github-trending-scraper';
-import { scrapeProductHunt } from '../scrapers/producthunt-scraper';
 import { checkDeadLink, markDeadLink, getAllListings } from '../services/catalog';
+
+// @ts-ignore - Bun-specific property
+const SCRAPERS_DIR = join(import.meta.dir, '../../scrapers');
+const VENV_PYTHON = join(SCRAPERS_DIR, '.venv/bin/python');
 
 // Track all workers for graceful shutdown
 const workers: Worker[] = [];
@@ -84,15 +88,66 @@ const hfWorker = new Worker(
 workers.push(hfWorker);
 
 /**
- * GitHub Trending scrape worker.
- * Processes jobs from the 'scrape-github-trending' queue.
+ * Crawl4AI scrape worker.
+ * Runs all 3 Python scrapers in parallel, then ingests output.
  */
-const githubTrendingWorker = new Worker(
-  'scrape-github-trending',
-  async (job) => {
-    const { maxResults } = job.data as { maxResults?: number };
-    console.log(`[github-trending-worker] Processing job: maxResults=${maxResults ?? 50}`);
-    return scrapeGitHubTrending(maxResults ?? 50);
+const crawl4aiWorker = new Worker(
+  'scrape-crawl4ai',
+  async () => {
+    console.log('[crawl4ai-worker] Starting Crawl4AI scrapers...');
+
+    const scripts = ['scrape_github_trending.py', 'scrape_producthunt.py', 'scrape_taaft.py'];
+
+    // Run all Python scrapers in parallel
+    const results = await Promise.all(
+      scripts.map(async (script) => {
+        try {
+          // @ts-ignore - Bun global
+          const proc = Bun.spawn([VENV_PYTHON, join(SCRAPERS_DIR, script)], {
+            cwd: SCRAPERS_DIR,
+            stdout: 'pipe',
+            stderr: 'pipe',
+          });
+          const exitCode = await proc.exited;
+          const stdout = await new Response(proc.stdout).text();
+          if (stdout) console.log(stdout.trim());
+          if (exitCode !== 0) {
+            const stderr = await new Response(proc.stderr).text();
+            console.error(`[crawl4ai-worker] ${script} failed (exit ${exitCode}): ${stderr.trim()}`);
+            return false;
+          }
+          return true;
+        } catch (err) {
+          console.error(`[crawl4ai-worker] ${script} error: ${err}`);
+          return false;
+        }
+      })
+    );
+
+    const succeeded = results.filter(Boolean).length;
+    console.log(`[crawl4ai-worker] Scrapers: ${succeeded}/${scripts.length} succeeded`);
+
+    // Run ingest
+    console.log('[crawl4ai-worker] Running ingest...');
+    try {
+      // @ts-ignore - Bun global
+      const ingestProc = Bun.spawn(
+        // @ts-ignore - Bun-specific property
+        ['bun', join(import.meta.dir, '../scripts/ingest-crawl4ai.ts')],
+        { stdout: 'pipe', stderr: 'pipe', env: { ...process.env } }
+      );
+      const ingestExit = await ingestProc.exited;
+      const ingestOut = await new Response(ingestProc.stdout).text();
+      if (ingestOut) console.log(ingestOut.trim());
+      if (ingestExit !== 0) {
+        const ingestErr = await new Response(ingestProc.stderr).text();
+        console.error(`[crawl4ai-worker] Ingest failed: ${ingestErr.trim()}`);
+      }
+    } catch (err) {
+      console.error(`[crawl4ai-worker] Ingest error: ${err}`);
+    }
+
+    return { scrapers: succeeded, total: scripts.length };
   },
   {
     embedded: true,
@@ -100,26 +155,7 @@ const githubTrendingWorker = new Worker(
   }
 );
 
-workers.push(githubTrendingWorker);
-
-/**
- * Product Hunt scrape worker.
- * Processes jobs from the 'scrape-producthunt' queue.
- */
-const productHuntWorker = new Worker(
-  'scrape-producthunt',
-  async (job) => {
-    const { maxResults } = job.data as { maxResults?: number };
-    console.log(`[producthunt-worker] Processing job: maxResults=${maxResults ?? 100}`);
-    return scrapeProductHunt(maxResults ?? 100);
-  },
-  {
-    embedded: true,
-    concurrency: 1,
-  }
-);
-
-workers.push(productHuntWorker);
+workers.push(crawl4aiWorker);
 
 /**
  * Dead link checker worker.

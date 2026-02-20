@@ -18,6 +18,9 @@
     "enrich-hf": "TURSO_DATABASE_URL=file:./dev.db bun src/scripts/enrich-huggingface.ts",
     "scrape:all": "TURSO_DATABASE_URL=file:./dev.db bun src/scripts/run-all-scrapers.ts",
     "scrape:all:prod": "bun src/scripts/run-all-scrapers.ts",
+    "scrape:setup": "bash scrapers/setup.sh",
+    "scrape:crawl4ai": "cd scrapers && .venv/bin/python scrape_github_trending.py && .venv/bin/python scrape_producthunt.py && .venv/bin/python scrape_taaft.py",
+    "scrape:ingest": "TURSO_DATABASE_URL=file:./dev.db bun src/scripts/ingest-crawl4ai.ts",
     "hype:compute": "TURSO_DATABASE_URL=file:./dev.db bun src/scripts/compute-hype-scores.ts",
     "hype:compute:prod": "bun src/scripts/compute-hype-scores.ts"
   },

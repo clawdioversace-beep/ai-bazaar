@@ -2,10 +2,11 @@
  * Scrape job scheduler.
  *
  * Enqueues recurring scrape jobs to bunqueue for daily re-indexing
- * of all catalog sources (GitHub, npm, HuggingFace) and dead link checks.
+ * of all catalog sources (GitHub, npm, HuggingFace, Crawl4AI) and dead link checks.
  *
  * Schedule:
- * - GitHub scrape: daily at 2 AM UTC (4 jobs, one per topic)
+ * - GitHub scrape: daily at 2 AM UTC (6 jobs, one per topic)
+ * - Crawl4AI scrape: daily at 2:30 AM UTC (1 job — runs 3 Python scrapers + ingest)
  * - npm scrape: daily at 3 AM UTC (6 jobs, one per keyword)
  * - HuggingFace scrape: daily at 4 AM UTC (3 jobs, one per tag)
  * - Dead link check: daily at 5 AM UTC (1 job)
@@ -26,8 +27,7 @@ export async function scheduleAllJobs(): Promise<void> {
   const githubQueue = new Queue('scrape-github', { embedded: true });
   const npmQueue = new Queue('scrape-npm', { embedded: true });
   const hfQueue = new Queue('scrape-huggingface', { embedded: true });
-  const githubTrendingQueue = new Queue('scrape-github-trending', { embedded: true });
-  const productHuntQueue = new Queue('scrape-producthunt', { embedded: true });
+  const crawl4aiQueue = new Queue('scrape-crawl4ai', { embedded: true });
   const deadLinkQueue = new Queue('check-dead-links', { embedded: true });
 
   // GitHub scrape jobs - daily at 2 AM UTC
@@ -46,6 +46,20 @@ export async function scheduleAllJobs(): Promise<void> {
     );
     console.log(`  - ${topic}: scheduled`);
   }
+
+  // Crawl4AI scrape job - daily at 2:30 AM UTC
+  // Runs all 3 Python scrapers (GitHub Trending, Product Hunt, TAAFT) + ingest
+  console.log('\n[scheduler] Scheduling Crawl4AI scrape (daily at 2:30 AM UTC)...');
+  await crawl4aiQueue.add(
+    'scrape-crawl4ai',
+    {},
+    {
+      repeat: {
+        pattern: '30 2 * * *', // Daily at 2:30 AM UTC
+      },
+    }
+  );
+  console.log('  - crawl4ai (github-trending + producthunt + taaft): scheduled');
 
   // npm scrape jobs - daily at 3 AM UTC
   const npmKeywords = ['mcp', 'ai-agent', 'web3', 'agent-framework', 'defi', 'docker'];
@@ -81,32 +95,6 @@ export async function scheduleAllJobs(): Promise<void> {
     console.log(`  - ${tag}: scheduled`);
   }
 
-  // GitHub Trending scrape job - daily at 2:30 AM UTC
-  console.log('\n[scheduler] Scheduling GitHub Trending scrape (daily at 2:30 AM UTC)...');
-  await githubTrendingQueue.add(
-    'scrape-trending',
-    { maxResults: 50 },
-    {
-      repeat: {
-        pattern: '30 2 * * *', // Daily at 2:30 AM UTC
-      },
-    }
-  );
-  console.log('  - trending: scheduled');
-
-  // Product Hunt scrape job - daily at 4:30 AM UTC
-  console.log('\n[scheduler] Scheduling Product Hunt scrape (daily at 4:30 AM UTC)...');
-  await productHuntQueue.add(
-    'scrape-ph',
-    { maxResults: 100 },
-    {
-      repeat: {
-        pattern: '30 4 * * *', // Daily at 4:30 AM UTC
-      },
-    }
-  );
-  console.log('  - producthunt: scheduled');
-
   // Dead link check job - daily at 5 AM UTC
   console.log('\n[scheduler] Scheduling dead link check (daily at 5 AM UTC)...');
   await deadLinkQueue.add(
@@ -121,7 +109,7 @@ export async function scheduleAllJobs(): Promise<void> {
   console.log('  - check-all: scheduled');
 
   console.log('\n[scheduler] All jobs scheduled successfully.');
-  console.log(`  Total recurring jobs: ${githubTopics.length + npmKeywords.length + hfTags.length + 2 + 1}`);
+  console.log(`  Total recurring jobs: ${githubTopics.length + npmKeywords.length + hfTags.length + 1 + 1}`);
 }
 
 // Run scheduler if this file is executed directly
