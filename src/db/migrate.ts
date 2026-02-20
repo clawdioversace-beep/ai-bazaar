@@ -31,13 +31,22 @@ const client = createClient({ url, authToken });
 const db = drizzle(client, { schema });
 
 async function main() {
-  console.log('Running Drizzle migrations...');
-  await migrate(db, { migrationsFolder: './src/db/migrations' });
-  console.log('Schema migrations applied.');
+  const isRemote = url!.startsWith('libsql://');
 
-  // Apply FTS5 triggers directly — drizzle-kit's turso dialect runner does not
-  // correctly execute multi-statement SQL containing SQLite BEGIN...END blocks.
-  // Each trigger is applied as a separate statement via the libSQL client.
+  if (isRemote) {
+    // Remote Turso: execute each statement individually — Turso HTTP client
+    // rejects multi-statement SQL batches from Drizzle's migrator.
+    console.log('Remote Turso detected — running statements individually...');
+    await runRemoteMigrations();
+  } else {
+    // Local SQLite: Drizzle migrator works fine with file:// URLs.
+    console.log('Running Drizzle migrations...');
+    await migrate(db, { migrationsFolder: './src/db/migrations' });
+    console.log('Schema migrations applied.');
+  }
+
+  // Apply FTS5 triggers — always via client.execute() since drizzle-kit
+  // cannot handle BEGIN...END blocks regardless of transport.
   console.log('Applying FTS5 sync triggers...');
 
   await client.execute(`
@@ -65,7 +74,7 @@ async function main() {
 
   console.log('FTS5 triggers applied (listings_ai, listings_ad, listings_au).');
 
-  // Apply starter pack tables — manual migration not tracked in drizzle-kit journal
+  // Apply starter pack tables
   console.log('Creating starter pack tables...');
 
   await client.execute(`
@@ -102,6 +111,64 @@ async function main() {
   console.log('Starter pack tables created (starter_packs, pack_tools).');
   console.log('Migration complete.');
   client.close();
+}
+
+/**
+ * Run all migrations as individual statements for remote Turso.
+ * Turso's HTTP transport rejects multi-statement SQL batches.
+ */
+async function runRemoteMigrations() {
+  // 0000: listings table
+  console.log('  Creating listings table...');
+  await client.execute(`
+    CREATE TABLE IF NOT EXISTS listings (
+      id text PRIMARY KEY NOT NULL,
+      slug text NOT NULL,
+      name text NOT NULL,
+      tagline text NOT NULL,
+      description text NOT NULL,
+      category text NOT NULL,
+      tags text NOT NULL,
+      source_url text NOT NULL,
+      docs_url text,
+      license_type text,
+      runtime text,
+      chain_support text,
+      mcp_compatible integer DEFAULT false,
+      acp_compatible integer DEFAULT false,
+      stars integer DEFAULT 0,
+      downloads integer DEFAULT 0,
+      last_verified_at integer,
+      dead_link integer DEFAULT false,
+      submitted_by text,
+      verified integer DEFAULT false,
+      created_at integer NOT NULL,
+      updated_at integer NOT NULL
+    )
+  `);
+  await client.execute(`CREATE UNIQUE INDEX IF NOT EXISTS listings_slug_unique ON listings (slug)`);
+  await client.execute(`CREATE UNIQUE INDEX IF NOT EXISTS listings_source_url_unique ON listings (source_url)`);
+
+  // 0001: FTS5 virtual table
+  console.log('  Creating FTS5 index...');
+  await client.execute(`
+    CREATE VIRTUAL TABLE IF NOT EXISTS listings_fts USING fts5(
+      name, tagline, description, tags,
+      content='listings', content_rowid='rowid'
+    )
+  `);
+  await client.execute(`INSERT INTO listings_fts(listings_fts) VALUES('rebuild')`);
+
+  // 0002: upvotes column
+  console.log('  Adding upvotes column...');
+  try {
+    await client.execute(`ALTER TABLE listings ADD COLUMN upvotes integer DEFAULT 0`);
+  } catch (e: any) {
+    // Column may already exist — safe to ignore duplicate column errors
+    if (!e.message?.includes('duplicate column')) throw e;
+  }
+
+  console.log('  Remote migrations applied.');
 }
 
 main().catch((err) => {
