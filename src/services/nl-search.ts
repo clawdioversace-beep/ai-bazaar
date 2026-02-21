@@ -3,7 +3,8 @@
  *
  * Natural Language Search orchestration.
  *
- * Pipeline: User query → Intent extraction (Groq 8B) → FTS5 retrieval → Context building
+ * Pipeline: User query → Intent extraction (Groq 8B) → Pinecone semantic search
+ *           (falls back to FTS5 if Pinecone is unavailable) → Context building
  *
  * The synthesis step (Groq 70B streaming) happens in the API route via Vercel AI SDK
  * streamText. This service handles everything up to building the context for synthesis.
@@ -15,6 +16,7 @@ import { searchCatalog, browseListings } from '@/services/search';
 import type { Listing } from '@/db/schema';
 import { CATEGORY_LABELS } from '@/lib/categories';
 import type { Category } from '@/lib/categories';
+import { getPineconeIndex, embedQuery } from '@/lib/pinecone';
 
 /** Parsed intent from user query */
 export interface SearchIntent {
@@ -62,27 +64,91 @@ export async function extractIntent(query: string): Promise<SearchIntent> {
 }
 
 /**
- * Perform the full NL search pipeline: intent extraction → FTS5 retrieval → context building.
+ * Semantic search via Pinecone vector similarity.
+ *
+ * Embeds the query and retrieves the top-K most similar tool descriptions.
+ * Returns null if Pinecone is not configured or the query fails.
+ */
+async function pineconeSearch(
+  query: string,
+  category: string | null,
+  topK = 15
+): Promise<Partial<Listing>[] | null> {
+  try {
+    const [index, queryVector] = await Promise.all([
+      getPineconeIndex(),
+      embedQuery(query),
+    ]);
+
+    if (!index || !queryVector) return null;
+
+    const queryOptions: Parameters<typeof index.query>[0] = {
+      vector: queryVector,
+      topK,
+      includeMetadata: true,
+    };
+
+    // Apply category filter if present
+    if (category) {
+      queryOptions.filter = { category: { $eq: category } };
+    }
+
+    const result = await index.query(queryOptions);
+
+    if (!result.matches || result.matches.length === 0) return null;
+
+    // Map Pinecone matches back to partial Listing shape
+    return result.matches.map((match) => {
+      const m = match.metadata as Record<string, unknown>;
+      return {
+        id: match.id,
+        slug: String(m.slug ?? ''),
+        name: String(m.name ?? ''),
+        tagline: String(m.tagline ?? ''),
+        category: String(m.category ?? ''),
+        stars: typeof m.stars === 'number' ? m.stars : null,
+        downloads: typeof m.downloads === 'number' ? m.downloads : null,
+        hypeScore: typeof m.hypeScore === 'number' ? m.hypeScore : null,
+        sourceUrl: String(m.sourceUrl ?? ''),
+      };
+    });
+  } catch (err) {
+    console.error('[nl-search] Pinecone search failed:', err);
+    return null;
+  }
+}
+
+/**
+ * Perform the full NL search pipeline: intent extraction → Pinecone semantic retrieval
+ * (with FTS5 fallback) → context building.
  *
  * Returns the search results and a formatted context string ready for LLM synthesis.
  */
 export async function nlSearch(query: string): Promise<NLSearchResult> {
   const intent = await extractIntent(query);
 
-  let listings: Listing[] = [];
+  let listings: Partial<Listing>[] = [];
 
-  try {
-    // Try FTS5 search with extracted keywords
-    listings = await searchCatalog({
-      query: intent.keywords,
-      category: intent.category ?? undefined,
-      limit: 15,
-    });
-  } catch {
-    // FTS5 match might fail on certain query patterns — try browse fallback
+  // 1. Try Pinecone semantic search first
+  const semanticResults = await pineconeSearch(query, intent.category);
+  if (semanticResults && semanticResults.length > 0) {
+    listings = semanticResults;
   }
 
-  // If FTS5 returned nothing, try broader search without category filter
+  // 2. Fall back to FTS5 keyword search if Pinecone returned nothing
+  if (listings.length === 0) {
+    try {
+      listings = await searchCatalog({
+        query: intent.keywords,
+        category: intent.category ?? undefined,
+        limit: 15,
+      });
+    } catch {
+      // FTS5 match might fail on certain query patterns
+    }
+  }
+
+  // 3. Try FTS5 without category filter
   if (listings.length === 0 && intent.category) {
     try {
       listings = await searchCatalog({
@@ -90,11 +156,11 @@ export async function nlSearch(query: string): Promise<NLSearchResult> {
         limit: 15,
       });
     } catch {
-      // Still nothing — try browse by category
+      // ignore
     }
   }
 
-  // Final fallback: browse by category sorted by popularity
+  // 4. Final fallback: browse by category sorted by popularity
   if (listings.length === 0 && intent.category) {
     const result = await browseListings({
       category: intent.category,
@@ -105,9 +171,9 @@ export async function nlSearch(query: string): Promise<NLSearchResult> {
   }
 
   // Build context string for LLM synthesis
-  const context = buildContext(listings);
+  const context = buildContext(listings as Listing[]);
 
-  return { intent, listings, context };
+  return { intent, listings: listings as Listing[], context };
 }
 
 /**
