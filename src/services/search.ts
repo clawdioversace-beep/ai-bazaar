@@ -124,7 +124,9 @@ export async function browseByCategory(
  */
 export async function countByCategory(): Promise<Array<{ category: string; count: number }>> {
   const result = await db.run(
-    sql`SELECT category, COUNT(*) as count FROM listings WHERE dead_link = 0 GROUP BY category ORDER BY count DESC`,
+    sql`SELECT category, COUNT(*) as count FROM listings WHERE dead_link = 0
+    AND name NOT GLOB '[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]*'
+    GROUP BY category ORDER BY count DESC`,
   );
   return result.rows as unknown as Array<{ category: string; count: number }>;
 }
@@ -139,11 +141,15 @@ export async function countByCategory(): Promise<Array<{ category: string; count
  * @returns Top listings by stars, dead links excluded
  */
 export async function getFeaturedListings(limit = 6): Promise<Listing[]> {
-  return db.query.listings.findMany({
-    where: (l, { eq }) => eq(l.deadLink, false),
-    limit,
-    orderBy: (l, { desc }) => [desc(l.stars)],
-  }) as Promise<Listing[]>;
+  const result = await db.run(sql`
+    SELECT *
+    FROM listings
+    WHERE dead_link = 0
+    AND name NOT GLOB '[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]*'
+    ORDER BY stars DESC
+    LIMIT ${limit}
+  `);
+  return result.rows as unknown as Listing[];
 }
 
 /**
@@ -276,8 +282,9 @@ export async function browseListings(params: BrowseParams): Promise<BrowseResult
   } = params;
 
   // Build SQL query using sql`` template for proper parameter binding
-  // Start with base query
-  let baseQuery = sql`SELECT l.* FROM listings l WHERE l.dead_link = 0`;
+  // Start with base query — exclude dead links and hex ID listings
+  let baseQuery = sql`SELECT l.* FROM listings l WHERE l.dead_link = 0
+    AND l.name NOT GLOB '[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]*'`;
 
   // Add filters
   if (category !== undefined) {
@@ -308,6 +315,7 @@ export async function browseListings(params: BrowseParams): Promise<BrowseResult
       JOIN listings l ON listings_fts.rowid = l.rowid
       WHERE listings_fts MATCH ${query}
       AND l.dead_link = 0
+      AND l.name NOT GLOB '[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]*'
     `;
     // Re-apply filters after FTS join
     if (category !== undefined) {
@@ -415,6 +423,7 @@ export async function getTrendingListings(limit = 6): Promise<Listing[]> {
     FROM listings
     WHERE dead_link = 0
     AND hype_score > 0
+    AND name NOT GLOB '[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]*'
     ORDER BY hype_score DESC
     LIMIT ${limit}
   `);

@@ -26,9 +26,11 @@
     "hype:compute:prod": "bun src/scripts/compute-hype-scores.ts"
   },
   "dependencies": {
+    "@ai-sdk/groq": "^3.0.24",
     "@huggingface/hub": "^2.10.1",
     "@libsql/client": "^0.17.0",
     "@modelcontextprotocol/sdk": "^1.25.2",
+    "ai": "^6.0.97",
     "bunqueue": "^2.4.6",
     "drizzle-orm": "^0.45.1",
     "mcp-handler": "^1.0.7",

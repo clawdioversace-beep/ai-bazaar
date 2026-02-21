@@ -4,14 +4,15 @@ import { ReadCard } from '@/components/read-card';
 import { CategoryNav } from '@/components/category-nav';
 import { SubscribeForm } from '@/components/subscribe-form';
 import { SubscribeBanner } from '@/components/subscribe-banner';
+import { AskSearch } from '@/components/ask-search';
 import {
-  getFeaturedListings,
   getNewThisWeek,
   getRecentlyAdded,
   countByCategory,
   getTrendingListings,
 } from '@/services/search';
 import { getFeaturedReads } from '@/services/reads';
+import { listPacksWithToolCount } from '@/services/packs';
 import { CATEGORY_LABELS } from '@/lib/categories';
 
 export const dynamic = 'force-dynamic';
@@ -21,20 +22,18 @@ export const metadata = {
 };
 
 export default async function HomePage() {
-  // Fetch data server-side
-  const [featuredListings, newListings, categoryCounts, trendingListings, topReads] = await Promise.all([
-    getFeaturedListings(6),
+  const [newListings, categoryCounts, trendingListings, topReads, packs] = await Promise.all([
     getNewThisWeek(12),
     countByCategory(),
     getTrendingListings(6),
     getFeaturedReads(3),
+    listPacksWithToolCount(),
   ]);
 
   // If fewer than 6 quality items from this week, fall back to recently added
   const showRecent = newListings.length < 6;
   const recentListings = showRecent ? await getRecentlyAdded(12) : [];
 
-  // Map category counts to include labels
   const categoriesWithLabels = categoryCounts.map((cat) => ({
     ...cat,
     label:
@@ -42,24 +41,27 @@ export default async function HomePage() {
       cat.category,
   }));
 
+  // Total tools count for hero
+  const totalTools = categoryCounts.reduce((sum, cat) => sum + cat.count, 0);
+
   return (
     <div className="flex flex-col gap-12">
-      {/* Hero section */}
+      {/* Hero section — action-oriented with NL search */}
       <section className="flex flex-col items-center gap-6 py-8 text-center">
         <h1 className="text-4xl font-bold text-zinc-900 dark:text-zinc-50 sm:text-5xl">
-          Discover AI, Agent & Web3 Tools
+          What are you building?
         </h1>
         <p className="max-w-2xl text-lg text-zinc-600 dark:text-zinc-400">
-          Permissionless discovery platform for AI, agent, and Web3 tools. Find
-          MCP servers, AI agents, DeFi tools, and more.
+          Discover the right AI, agent, and Web3 tools from {totalTools.toLocaleString()}+ listings.
+          Ask a question or browse the catalog.
         </p>
-        <Link
-          href="/tools"
-          className="rounded-lg bg-zinc-900 px-6 py-3 font-medium text-white hover:bg-zinc-700 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
-        >
-          Browse All Tools
-        </Link>
-        <div className="flex flex-col items-center gap-2">
+
+        {/* NL Search bar — the hero CTA */}
+        <div className="w-full max-w-2xl">
+          <AskSearch />
+        </div>
+
+        <div className="flex flex-col items-center gap-2 pt-2">
           <p className="text-sm text-zinc-500 dark:text-zinc-500">
             Get the top 5 new AI tools delivered weekly
           </p>
@@ -67,19 +69,48 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Featured listings */}
-      <section className="flex flex-col gap-6">
-        <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-50">
-          Top Tools
-        </h2>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {featuredListings.map((listing) => (
-            <ListingCard key={listing.id} listing={listing} />
-          ))}
-        </div>
-      </section>
+      {/* Starter Packs — curated collections front and center */}
+      {packs.length > 0 && (
+        <section className="flex flex-col gap-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-50">
+                Starter Packs
+              </h2>
+              <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+                New to AI tools? Start with a curated collection.
+              </p>
+            </div>
+            <Link
+              href="/packs"
+              className="text-sm font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+            >
+              View all &rarr;
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {packs.map((pack) => (
+              <Link
+                key={pack.id}
+                href={`/packs/${pack.slug}`}
+                className="group flex flex-col gap-3 rounded-lg border border-zinc-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900"
+              >
+                <h3 className="text-lg font-semibold text-zinc-900 group-hover:text-zinc-700 dark:text-zinc-50 dark:group-hover:text-zinc-300">
+                  {pack.name}
+                </h3>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400 line-clamp-2">
+                  {pack.description}
+                </p>
+                <span className="text-xs font-medium text-zinc-500 dark:text-zinc-500">
+                  {pack.tools.length} tools
+                </span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
-      {/* Hot Right Now — only shown when hype scores have been computed */}
+      {/* Hot Right Now — trending section */}
       {trendingListings.length > 0 && (
         <section className="flex flex-col gap-6">
           <div className="flex items-center gap-2">
@@ -146,7 +177,7 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* Category navigation */}
+      {/* Category navigation — for power users */}
       <section className="flex flex-col gap-6">
         <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-50">
           Browse by Category

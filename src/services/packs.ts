@@ -72,3 +72,22 @@ export async function listPacks() {
     orderBy: [asc(starterPacks.createdAt)],
   });
 }
+
+/**
+ * Fetch all starter packs with their tool count for homepage display.
+ *
+ * Returns packs with nested tools (just enough to count them and show
+ * the pack description). Used on the homepage for the curated packs section.
+ *
+ * @returns Array of packs with tools array included
+ */
+export async function listPacksWithToolCount() {
+  return await db.query.starterPacks.findMany({
+    orderBy: [asc(starterPacks.createdAt)],
+    with: {
+      tools: {
+        columns: { toolId: true },
+      },
+    },
+  });
+}

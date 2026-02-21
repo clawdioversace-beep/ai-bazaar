@@ -111,6 +111,9 @@ export const listings = sqliteTable('listings', {
 
   /** Timestamp of last hype score computation (Unix ms) */
   hypeUpdatedAt: integer('hype_updated_at', { mode: 'timestamp' }),
+
+  /** Optional affiliate/referral URL. When set, /go/[slug] redirects here instead of sourceUrl. */
+  affiliateUrl: text('affiliate_url'),
 });
 
 /** Full listing record returned by SELECT queries */
@@ -270,3 +273,18 @@ export const subscribers = sqliteTable('subscribers', {
 
 export type Subscriber = typeof subscribers.$inferSelect;
 export type NewSubscriber = typeof subscribers.$inferInsert;
+
+/**
+ * Click tracking for affiliate link redirects.
+ * Records each click-through via /go/[slug] for analytics.
+ */
+export const clicks = sqliteTable('clicks', {
+  id: text('id').primaryKey(),
+  toolId: text('tool_id').notNull().references(() => listings.id, { onDelete: 'cascade' }),
+  clickedAt: integer('clicked_at', { mode: 'timestamp' }).notNull(),
+  referrerPage: text('referrer_page'),
+  userAgent: text('user_agent'),
+});
+
+export type Click = typeof clicks.$inferSelect;
+export type NewClick = typeof clicks.$inferInsert;

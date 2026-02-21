@@ -156,6 +156,30 @@ async function main() {
   `);
   console.log('Subscribers table created.');
 
+  // Add affiliate_url column
+  console.log('Adding affiliate_url column...');
+  try {
+    await client.execute(`ALTER TABLE listings ADD COLUMN affiliate_url TEXT`);
+  } catch (e: any) {
+    if (!e.message?.includes('duplicate column')) throw e;
+  }
+  console.log('Affiliate URL column ready.');
+
+  // Create clicks tracking table
+  console.log('Creating clicks table...');
+  await client.execute(`
+    CREATE TABLE IF NOT EXISTS clicks (
+      id TEXT PRIMARY KEY NOT NULL,
+      tool_id TEXT NOT NULL REFERENCES listings(id) ON DELETE CASCADE,
+      clicked_at INTEGER NOT NULL,
+      referrer_page TEXT,
+      user_agent TEXT
+    )
+  `);
+  await client.execute(`CREATE INDEX IF NOT EXISTS idx_clicks_tool_id ON clicks(tool_id)`);
+  await client.execute(`CREATE INDEX IF NOT EXISTS idx_clicks_clicked_at ON clicks(clicked_at)`);
+  console.log('Clicks table created.');
+
   console.log('Migration complete.');
   client.close();
 }
@@ -257,6 +281,28 @@ async function runRemoteMigrations() {
       created_at INTEGER NOT NULL
     )
   `);
+
+  // Affiliate URL column
+  console.log('  Adding affiliate_url column...');
+  try {
+    await client.execute(`ALTER TABLE listings ADD COLUMN affiliate_url TEXT`);
+  } catch (e: any) {
+    if (!e.message?.includes('duplicate column')) throw e;
+  }
+
+  // Clicks tracking table
+  console.log('  Creating clicks table...');
+  await client.execute(`
+    CREATE TABLE IF NOT EXISTS clicks (
+      id TEXT PRIMARY KEY NOT NULL,
+      tool_id TEXT NOT NULL REFERENCES listings(id) ON DELETE CASCADE,
+      clicked_at INTEGER NOT NULL,
+      referrer_page TEXT,
+      user_agent TEXT
+    )
+  `);
+  await client.execute(`CREATE INDEX IF NOT EXISTS idx_clicks_tool_id ON clicks(tool_id)`);
+  await client.execute(`CREATE INDEX IF NOT EXISTS idx_clicks_clicked_at ON clicks(clicked_at)`);
 
   console.log('  Remote migrations applied.');
 }
