@@ -115,7 +115,7 @@ export function FilterPanel({ categories, chains, runtimes }: FilterPanelProps) 
                 updateFilter('q', (e.target as HTMLInputElement).value);
               }
             }}
-            className="rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50 dark:placeholder-zinc-500 md:w-48"
+            className="rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50 dark:placeholder-zinc-500 md:w-48"
           />
         </div>
 
@@ -131,7 +131,7 @@ export function FilterPanel({ categories, chains, runtimes }: FilterPanelProps) 
             id="category-filter"
             value={currentCategory}
             onChange={(e) => updateFilter('category', e.target.value)}
-            className="rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
+            className="rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
           >
             <option value="">All Categories</option>
             {categories.map(({ category, label, count }) => (
@@ -154,7 +154,7 @@ export function FilterPanel({ categories, chains, runtimes }: FilterPanelProps) 
             id="chain-filter"
             value={currentChain}
             onChange={(e) => updateFilter('chain', e.target.value)}
-            className="rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
+            className="rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
           >
             <option value="">All Chains</option>
             {chains.map((chain) => (
@@ -177,7 +177,7 @@ export function FilterPanel({ categories, chains, runtimes }: FilterPanelProps) 
             id="runtime-filter"
             value={currentRuntime}
             onChange={(e) => updateFilter('runtime', e.target.value)}
-            className="rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
+            className="rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
           >
             <option value="">All Runtimes</option>
             {runtimes.map((runtime) => (
@@ -200,7 +200,7 @@ export function FilterPanel({ categories, chains, runtimes }: FilterPanelProps) 
             id="protocol-filter"
             value={currentProtocol}
             onChange={(e) => updateFilter('protocol', e.target.value)}
-            className="rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
+            className="rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
           >
             <option value="">All Protocols</option>
             <option value="mcp">MCP Compatible</option>
@@ -216,7 +216,7 @@ export function FilterPanel({ categories, chains, runtimes }: FilterPanelProps) 
               onClick={() => updateFilter('sort', 'popular')}
               className={`rounded px-3 py-1 text-sm font-medium transition-colors ${
                 currentSort === 'popular'
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-indigo-600 text-white'
                   : 'text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800'
               }`}
             >
@@ -226,7 +226,7 @@ export function FilterPanel({ categories, chains, runtimes }: FilterPanelProps) 
               onClick={() => updateFilter('sort', 'recent')}
               className={`rounded px-3 py-1 text-sm font-medium transition-colors ${
                 currentSort === 'recent'
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-indigo-600 text-white'
                   : 'text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800'
               }`}
             >
@@ -236,7 +236,7 @@ export function FilterPanel({ categories, chains, runtimes }: FilterPanelProps) 
               onClick={() => updateFilter('sort', 'trending')}
               className={`rounded px-3 py-1 text-sm font-medium transition-colors ${
                 currentSort === 'trending'
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-indigo-600 text-white'
                   : 'text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800'
               }`}
             >
@@ -249,7 +249,7 @@ export function FilterPanel({ categories, chains, runtimes }: FilterPanelProps) 
         {hasActiveFilters && (
           <button
             onClick={clearAll}
-            className="text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 md:ml-auto"
+            className="text-sm font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 md:ml-auto"
           >
             Clear all
           </button>

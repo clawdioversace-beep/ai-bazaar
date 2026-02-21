@@ -3,6 +3,10 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --color-brand: #1e1b4b;
+  --color-accent: #f59e0b;
+  --color-accent-2: #6366f1;
+  --color-surface: #faf5ff;
 }
 
 @theme inline {
@@ -16,13 +20,14 @@
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --color-surface: #1e1b3a;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
 }
 
 /* Utility for truncating text to N lines */

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
+import { Footer } from "@/components/footer";
+import { MobileNav } from "@/components/mobile-nav";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -14,9 +16,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AI Bazaar - Discover AI, Agent & Web3 Tools",
+  title: "AI Bazaar - Where Builders Discover What's Worth Using",
   description:
-    "Permissionless discovery platform for AI, agent, and Web3 tools. Find MCP servers, AI agents, DeFi tools, and more.",
+    "Opinionated AI learning hub for builders. Discover curated starter packs, trending tools, and expert picks across AI agents, MCP servers, DeFi, and Web3.",
 };
 
 export default function RootLayout({
@@ -24,15 +26,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const currentYear = new Date().getFullYear();
-
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {/* Header */}
-        <header className="border-b border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+        <header className="relative border-b border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
           <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
             <Link
               href="/"
@@ -40,44 +40,47 @@ export default function RootLayout({
             >
               AI Bazaar
             </Link>
-            <nav className="flex gap-6">
+            {/* Desktop nav */}
+            <nav className="hidden items-center gap-6 sm:flex">
               <Link
                 href="/"
-                className="text-sm font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+                className="text-sm font-medium text-zinc-600 hover:text-indigo-600 dark:text-zinc-400 dark:hover:text-indigo-400"
               >
                 Home
               </Link>
               <Link
                 href="/ask"
-                className="text-sm font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+                className="text-sm font-medium text-zinc-600 hover:text-indigo-600 dark:text-zinc-400 dark:hover:text-indigo-400"
               >
                 Ask AI
               </Link>
               <Link
                 href="/tools"
-                className="text-sm font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+                className="text-sm font-medium text-zinc-600 hover:text-indigo-600 dark:text-zinc-400 dark:hover:text-indigo-400"
               >
-                Browse
+                Explore
               </Link>
               <Link
                 href="/packs"
-                className="text-sm font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+                className="text-sm font-medium text-zinc-600 hover:text-indigo-600 dark:text-zinc-400 dark:hover:text-indigo-400"
               >
                 Packs
               </Link>
               <Link
                 href="/reads"
-                className="text-sm font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+                className="text-sm font-medium text-zinc-600 hover:text-indigo-600 dark:text-zinc-400 dark:hover:text-indigo-400"
               >
-                Reads
+                Learn
               </Link>
               <Link
                 href="/submit"
-                className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-700 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
+                className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-400"
               >
-                Submit a Tool
+                Share a Tool
               </Link>
             </nav>
+            {/* Mobile nav */}
+            <MobileNav />
           </div>
         </header>
 
@@ -87,13 +90,7 @@ export default function RootLayout({
         </main>
 
         {/* Footer */}
-        <footer className="border-t border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-          <div className="mx-auto max-w-7xl px-4 py-6 text-center sm:px-6 lg:px-8">
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">
-              AI Bazaar {currentYear}
-            </p>
-          </div>
-        </footer>
+        <Footer />
       </body>
     </html>
   );

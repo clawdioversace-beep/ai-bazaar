@@ -28,7 +28,7 @@ export function ReadCard({ read }: ReadCardProps) {
       href={read.sourceUrl}
       target="_blank"
       rel="noopener noreferrer"
-      className="group flex flex-col gap-3 rounded-lg border border-zinc-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900"
+      className="group flex flex-col gap-3 rounded-xl border border-zinc-200 bg-white p-4 shadow-sm transition-all duration-200 hover:shadow-md hover:border-zinc-300 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-700"
     >
       {/* Source badge + category */}
       <div className="flex items-center gap-2 text-xs">
@@ -46,7 +46,7 @@ export function ReadCard({ read }: ReadCardProps) {
       </div>
 
       {/* Title */}
-      <h3 className="text-base font-semibold text-zinc-900 group-hover:text-zinc-700 dark:text-zinc-50 dark:group-hover:text-zinc-300 line-clamp-2">
+      <h3 className="text-base font-bold text-zinc-900 group-hover:text-indigo-600 dark:text-zinc-50 dark:group-hover:text-indigo-400 transition-colors line-clamp-2">
         {read.title}
       </h3>
 
@@ -70,7 +70,7 @@ export function ReadCard({ read }: ReadCardProps) {
       )}
 
       {/* Read link */}
-      <span className="mt-auto text-sm font-medium text-zinc-900 group-hover:text-zinc-600 dark:text-zinc-50 dark:group-hover:text-zinc-300">
+      <span className="mt-auto text-sm font-medium text-indigo-600 dark:text-indigo-400">
         Read &rarr;
       </span>
     </a>

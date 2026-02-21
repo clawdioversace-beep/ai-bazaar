@@ -19,10 +19,6 @@ export interface ListingCardProps {
 export function ListingCard({ listing }: ListingCardProps) {
   // Parse JSON fields
   const tags = listing.tags ? (JSON.parse(listing.tags) as string[]) : [];
-  const chainSupport = listing.chainSupport
-    ? (JSON.parse(listing.chainSupport) as string[])
-    : [];
-
   // Truncate tagline to 2 lines max (approx 120 chars)
   const truncatedTagline =
     listing.tagline.length > 120
@@ -30,7 +26,7 @@ export function ListingCard({ listing }: ListingCardProps) {
       : listing.tagline;
 
   return (
-    <div className="group relative flex flex-col gap-3 rounded-lg border border-zinc-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900">
+    <div className="group relative flex flex-col gap-3 rounded-xl border border-zinc-200 bg-white p-5 shadow-sm transition-all duration-200 hover:shadow-md hover:border-zinc-300 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-700">
       {/* Hype score badge — shown when score > 70 */}
       {listing.hypeScore !== null && listing.hypeScore > 70 && (
         <div className="absolute right-3 top-3 flex items-center gap-1 rounded-full bg-orange-100 px-2 py-0.5 text-xs font-semibold text-orange-700 dark:bg-orange-900/30 dark:text-orange-300">
@@ -44,19 +40,19 @@ export function ListingCard({ listing }: ListingCardProps) {
       {/* Name as link to detail page */}
       <Link
         href={`/tools/${listing.slug}`}
-        className="text-lg font-semibold text-zinc-900 group-hover:text-zinc-700 dark:text-zinc-50 dark:group-hover:text-zinc-300"
+        className="text-base font-bold text-zinc-900 group-hover:text-indigo-600 dark:text-zinc-50 dark:group-hover:text-indigo-400 transition-colors"
       >
         {listing.name}
       </Link>
 
       {/* Tagline */}
-      <p className="text-sm text-zinc-600 dark:text-zinc-400 line-clamp-2">
+      <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400 line-clamp-2">
         {truncatedTagline}
       </p>
 
       {/* Category and stars */}
       <div className="flex items-center gap-2 text-xs">
-        <span className="rounded-full bg-zinc-100 px-2 py-1 font-medium text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
+        <span className="rounded-full bg-indigo-50 px-2.5 py-1 font-semibold text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300">
           {CATEGORY_LABELS[listing.category as keyof typeof CATEGORY_LABELS] ||
             listing.category}
         </span>
@@ -72,19 +68,11 @@ export function ListingCard({ listing }: ListingCardProps) {
             <span>{listing.stars.toLocaleString()}</span>
           </span>
         )}
-        {listing.downloads !== null && listing.downloads > 0 && (
-          <span className="flex items-center gap-1 text-zinc-600 dark:text-zinc-400">
-            <svg className="h-3 w-3 fill-current" viewBox="0 0 20 20" aria-hidden="true">
-              <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
-            </svg>
-            <span>{listing.downloads.toLocaleString()}</span>
-          </span>
-        )}
         <a
           href={listing.sourceUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="ml-auto text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300"
+          className="ml-auto text-zinc-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
           title="Visit tool"
         >
           <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -92,29 +80,6 @@ export function ListingCard({ listing }: ListingCardProps) {
           </svg>
         </a>
       </div>
-
-      {/* Runtime badge */}
-      {listing.runtime && (
-        <div className="flex items-center gap-2">
-          <span className="rounded bg-zinc-100 px-2 py-0.5 text-xs font-medium text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
-            {listing.runtime}
-          </span>
-        </div>
-      )}
-
-      {/* Chain support badges */}
-      {chainSupport.length > 0 && (
-        <div className="flex flex-wrap gap-1">
-          {chainSupport.slice(0, 3).map((chain) => (
-            <span
-              key={chain}
-              className="rounded bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
-            >
-              {chain}
-            </span>
-          ))}
-        </div>
-      )}
 
       {/* Tags (first 3) */}
       {tags.length > 0 && (

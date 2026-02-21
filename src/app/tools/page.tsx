@@ -11,9 +11,9 @@ export const dynamic = 'force-dynamic';
 const PAGE_SIZE = 24;
 
 export const metadata = {
-  title: 'Browse Tools | AI Bazaar',
+  title: 'Explore Tools | AI Bazaar',
   description:
-    'Browse the complete catalog of AI agents, MCP servers, Web3 tools, DeFi tools, infrastructure, and frameworks. Filter by category, chain, runtime, and protocol.',
+    'Explore the complete catalog of AI agents, MCP servers, Web3 tools, DeFi tools, infrastructure, and frameworks. Filter by category, chain, runtime, and protocol.',
 };
 
 interface BrowsePageProps {
@@ -88,11 +88,11 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-50">
-          Browse Tools
+        <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+          Explore Tools
         </h1>
         <p className="mt-2 text-zinc-600 dark:text-zinc-400">
-          {browseResult.total.toLocaleString()} tools available
+          Discover {browseResult.total.toLocaleString()}+ AI, agent, and Web3 tools
         </p>
       </div>
 

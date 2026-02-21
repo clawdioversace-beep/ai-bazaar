@@ -18,10 +18,10 @@ interface ToolResult {
 }
 
 const EXAMPLE_QUERIES = [
-  'I want to build an AI agent that trades on Solana',
-  'MCP servers for code review and development',
-  'Best framework for building a chatbot',
-  'Tools for DeFi yield farming on Ethereum',
+  'What tools do I need to build an AI agent?',
+  'I want to build an MCP server for my team',
+  'Best stack for a DeFi trading bot on Solana',
+  'How do I add AI to my Next.js app?',
 ];
 
 /**
@@ -149,7 +149,7 @@ export function AskSearch() {
         <button
           type="submit"
           disabled={isLoading || query.trim().length < 3}
-          className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
+          className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-indigo-500 dark:hover:bg-indigo-400"
         >
           {isLoading ? (
             <span className="flex items-center gap-2">
@@ -292,7 +292,7 @@ function ToolCard({ tool }: { tool: ToolResult }) {
   return (
     <Link
       href={`/tools/${tool.slug}`}
-      className="flex flex-col gap-2 rounded-lg border border-zinc-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900"
+      className="flex flex-col gap-2 rounded-xl border border-zinc-200 bg-white p-4 shadow-sm transition-all duration-200 hover:shadow-md hover:border-zinc-300 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-700"
     >
       <div className="flex items-start justify-between gap-2">
         <span className="font-semibold text-zinc-900 dark:text-zinc-50">

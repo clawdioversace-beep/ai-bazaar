@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { ListingCard } from '@/components/listing-card';
 import { ReadCard } from '@/components/read-card';
 import { CategoryNav } from '@/components/category-nav';
-import { SubscribeForm } from '@/components/subscribe-form';
 import { SubscribeBanner } from '@/components/subscribe-banner';
 import { AskSearch } from '@/components/ask-search';
 import {
@@ -18,7 +17,7 @@ import { CATEGORY_LABELS } from '@/lib/categories';
 export const dynamic = 'force-dynamic';
 
 export const metadata = {
-  title: 'AI Bazaar - Discover AI, Agent & Web3 Tools',
+  title: 'AI Bazaar - Where Builders Discover What\'s Worth Using',
 };
 
 export default async function HomePage() {
@@ -46,66 +45,92 @@ export default async function HomePage() {
 
   return (
     <div className="flex flex-col gap-12">
-      {/* Hero section — action-oriented with NL search */}
-      <section className="flex flex-col items-center gap-6 py-8 text-center">
-        <h1 className="text-4xl font-bold text-zinc-900 dark:text-zinc-50 sm:text-5xl">
-          What are you building?
+      {/* Hero section — welcome-first with NL search */}
+      <section className="flex flex-col items-center gap-4 py-16 text-center">
+        <span className="rounded-full bg-amber-100 px-4 py-1.5 text-sm font-semibold text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
+          {totalTools.toLocaleString()}+ tools curated for builders
+        </span>
+        <h1 className="text-5xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-6xl">
+          Discover what&apos;s worth building with
         </h1>
-        <p className="max-w-2xl text-lg text-zinc-600 dark:text-zinc-400">
-          Discover the right AI, agent, and Web3 tools from {totalTools.toLocaleString()}+ listings.
-          Ask a question or browse the catalog.
+        <p className="max-w-2xl text-lg leading-relaxed text-zinc-600 dark:text-zinc-400">
+          Explore curated starter packs, trending tools, and expert picks —
+          whether you&apos;re building agents, DeFi apps, or MCP servers.
         </p>
-
-        {/* NL Search bar — the hero CTA */}
-        <div className="w-full max-w-2xl">
+        <div className="w-full max-w-2xl pt-4">
           <AskSearch />
-        </div>
-
-        <div className="flex flex-col items-center gap-2 pt-2">
-          <p className="text-sm text-zinc-500 dark:text-zinc-500">
-            Get the top 5 new AI tools delivered weekly
-          </p>
-          <SubscribeForm source="hero" />
         </div>
       </section>
 
-      {/* Starter Packs — curated collections front and center */}
+      {/* Starter Packs — editorial feature with tinted background */}
       {packs.length > 0 && (
-        <section className="flex flex-col gap-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-50">
-                Starter Packs
-              </h2>
-              <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-                New to AI tools? Start with a curated collection.
-              </p>
-            </div>
-            <Link
-              href="/packs"
-              className="text-sm font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
-            >
-              View all &rarr;
-            </Link>
-          </div>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {packs.map((pack) => (
-              <Link
-                key={pack.id}
-                href={`/packs/${pack.slug}`}
-                className="group flex flex-col gap-3 rounded-lg border border-zinc-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900"
-              >
-                <h3 className="text-lg font-semibold text-zinc-900 group-hover:text-zinc-700 dark:text-zinc-50 dark:group-hover:text-zinc-300">
-                  {pack.name}
-                </h3>
-                <p className="text-sm text-zinc-600 dark:text-zinc-400 line-clamp-2">
-                  {pack.description}
+        <section className="rounded-2xl bg-violet-50 p-8 dark:bg-violet-950/20">
+          <div className="flex flex-col gap-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+                  Starter Packs
+                </h2>
+                <p className="mt-1 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+                  New to AI tools? Start with a curated collection.
                 </p>
-                <span className="text-xs font-medium text-zinc-500 dark:text-zinc-500">
-                  {pack.tools.length} tools
-                </span>
+              </div>
+              <Link
+                href="/packs"
+                className="text-sm font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300"
+              >
+                View all &rarr;
               </Link>
-            ))}
+            </div>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {packs.map((pack) => (
+                <Link
+                  key={pack.id}
+                  href={`/packs/${pack.slug}`}
+                  className="group flex flex-col gap-4 rounded-xl bg-white p-6 shadow-sm ring-1 ring-zinc-200 transition-all duration-200 hover:shadow-lg hover:ring-indigo-300 dark:bg-zinc-900 dark:ring-zinc-800 dark:hover:ring-indigo-700"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-semibold text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
+                      Starter Pack
+                    </span>
+                    <span className="text-xs text-zinc-500">{pack.tools.length} tools</span>
+                  </div>
+                  <h3 className="text-lg font-bold text-zinc-900 group-hover:text-indigo-600 dark:text-zinc-50 dark:group-hover:text-indigo-400 transition-colors">
+                    {pack.name}
+                  </h3>
+                  <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400 line-clamp-2">
+                    {pack.description}
+                  </p>
+                  <span className="mt-auto text-sm font-medium text-indigo-600 dark:text-indigo-400">
+                    Explore pack &rarr;
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Learn — elevated reads with tinted background */}
+      {topReads.length > 0 && (
+        <section className="rounded-2xl bg-amber-50/50 p-8 dark:bg-amber-950/10">
+          <div className="flex flex-col gap-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+                Learn
+              </h2>
+              <Link
+                href="/reads"
+                className="text-sm font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300"
+              >
+                Explore more &rarr;
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {topReads.map((read) => (
+                <ReadCard key={read.id} read={read} />
+              ))}
+            </div>
           </div>
         </section>
       )}
@@ -117,7 +142,7 @@ export default async function HomePage() {
             <svg className="h-6 w-6 text-orange-500" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M12 23c-3.5 0-7-2.5-7-7 0-3.5 2-6 4-8 .5-.5 1.5 0 1.5.5 0 2 1 3 2.5 4.5 .5-1.5 1-3 1-5 0-.5.5-1 1-.5 2 1.5 4 4 4 7.5 0 4.5-3.5 8-7 8z"/>
             </svg>
-            <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-50">
+            <h2 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
               Hot Right Now
             </h2>
           </div>
@@ -131,7 +156,7 @@ export default async function HomePage() {
 
       {/* New this week / Recently added fallback */}
       <section className="flex flex-col gap-6">
-        <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-50">
+        <h2 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
           {showRecent ? 'Recently Added' : 'New This Week'}
         </h2>
         {showRecent ? (
@@ -155,32 +180,10 @@ export default async function HomePage() {
         )}
       </section>
 
-      {/* Top Reads */}
-      {topReads.length > 0 && (
-        <section className="flex flex-col gap-6">
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-50">
-              Top Reads
-            </h2>
-            <Link
-              href="/reads"
-              className="text-sm font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
-            >
-              View all reads &rarr;
-            </Link>
-          </div>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {topReads.map((read) => (
-              <ReadCard key={read.id} read={read} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Category navigation — for power users */}
+      {/* Category navigation — explore by category */}
       <section className="flex flex-col gap-6">
-        <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-50">
-          Browse by Category
+        <h2 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+          Explore by Category
         </h2>
         <CategoryNav categories={categoriesWithLabels} />
       </section>
