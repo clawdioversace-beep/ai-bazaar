@@ -1,0 +1,274 @@
+---
+slug: "security-guide-for-ai-builders"
+title: "Keeping Your Stuff Safe: Security for AI Builders"
+tagline: "What to protect, what's safe to share, and the mistakes that cost people real money"
+difficulty: "beginner"
+readingTime: "7 min"
+category: "getting-started"
+tags: ["security", "api-keys", "env", "crypto", "secrets"]
+relatedPacks: ["defi-dev-starter", "solana-builder-kit"]
+relatedTools: []
+publishedAt: "2026-02-25"
+prevGuide: "terminal-basics-for-ai-users"
+nextGuide: "first-projects-with-ai-coding-tools"
+---
+
+## The One Rule
+
+If a string of text can grant access to your money, your accounts, or your infrastructure — **it's a secret and must never be shared, committed to git, or pasted into a public chat.**
+
+Everything else is probably fine.
+
+That's the whole mental model. The rest of this guide teaches you to recognize secrets and handle them properly.
+
+---
+
+## What MUST Be Secret
+
+These are the things that, if leaked, can cost you real money or compromise your accounts:
+
+### API Keys
+
+```
+sk-abc123def456ghi789jklmnop         # OpenAI
+sk-ant-api03-abc123...               # Anthropic / Claude
+AIzaSyD-abc123...                    # Google
+```
+
+API keys let anyone make requests on your account — and run up your bill. One leaked OpenAI key on GitHub can rack up thousands of dollars in hours.
+
+### Private Keys and Seed Phrases (Crypto)
+
+```
+[43,168,77,234,12,...]               # Solana keypair (JSON array)
+0xabc123def456...                     # Ethereum/EVM private key
+abandon ability able about above...   # 12-24 word seed phrase
+```
+
+**This is the big one.** Private keys control wallets. If someone gets your private key, they can drain every token instantly and irreversibly. There is no customer support, no chargebacks, no recovery.
+
+### Database Credentials
+
+```
+postgresql://user:password@host:5432/dbname
+mongodb+srv://user:password@cluster.mongodb.net
+```
+
+Database connection strings contain usernames and passwords. A leaked connection string means someone can read, modify, or delete all your data.
+
+### OAuth Tokens and Session Secrets
+
+```
+ghp_abc123...                        # GitHub personal access token
+xoxb-abc123...                       # Slack bot token
+JWT_SECRET=mysupersecretvalue        # Session signing key
+```
+
+These grant access to third-party services or let attackers forge user sessions.
+
+---
+
+## What's Safe to Share
+
+These things are fine to share, commit to git, and discuss publicly:
+
+- **Source code** (as long as secrets are removed)
+- **package.json / bun.lock / requirements.txt** (dependency lists)
+- **Configuration files** (tsconfig.json, tailwind.config.ts, drizzle.config.ts)
+- **Error messages and stack traces** (redact any URLs with credentials)
+- **Public keys** (only private keys are secret)
+- **RPC endpoint URLs** (like `https://api.mainnet-beta.solana.com` — these are public)
+- **Wallet addresses** (your public address is like a bank account number — safe to share)
+- **`.env.example` files** (templates with placeholder values, not real secrets)
+
+---
+
+## The .env File Pattern
+
+The industry-standard way to handle secrets:
+
+### How it works
+
+1. Create a `.env` file with your real secrets:
+
+```bash
+# .env (NEVER commit this)
+DATABASE_URL=postgresql://admin:s3cret@localhost:5432/mydb
+API_KEY=sk-abc123def456
+STRIPE_SECRET=sk_live_abc123
+```
+
+2. Create a `.env.example` with placeholder values:
+
+```bash
+# .env.example (DO commit this)
+DATABASE_URL=postgresql://user:password@localhost:5432/dbname
+API_KEY=your-api-key-here
+STRIPE_SECRET=your-stripe-secret-here
+```
+
+3. Add `.env` to your `.gitignore`:
+
+```bash
+# .gitignore
+.env
+.env.local
+.env.production
+```
+
+### Setting up a new project
+
+When you clone a project that uses `.env`:
+
+```bash
+cp .env.example .env    # Create your .env from the template
+nano .env               # Add your real values
+```
+
+---
+
+## Git Secrets: The Number One Mistake
+
+The most common security mistake in software: **accidentally committing a secret to git.**
+
+### Why it's dangerous
+
+Even if you delete the file in a later commit, **the secret is still in the git history.** Anyone who clones the repo can see every previous commit. Bots actively scan GitHub for leaked API keys — they'll find yours within minutes.
+
+### How to check if you've leaked secrets
+
+```bash
+# Search your git history for common secret patterns
+git log -p | grep -i "api_key\|secret\|password\|private"
+
+# Search current files
+grep -r "sk-\|sk_live\|ghp_\|xoxb-" . --include="*.ts" --include="*.js" --include="*.env"
+```
+
+### What to do if you've leaked a secret
+
+1. **Rotate the key immediately.** Go to the service's dashboard and generate a new key. The old one is compromised — no exceptions.
+2. **Remove from git history** (optional but recommended):
+
+```bash
+# Use git-filter-repo (install first: pip install git-filter-repo)
+git filter-repo --invert-paths --path path/to/file-with-secret
+```
+
+3. **Force push** the cleaned history (if working alone on the repo).
+
+### Prevention
+
+Add these to every `.gitignore`:
+
+```bash
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*secret*
+*keypair*
+```
+
+---
+
+## AI Tool Safety
+
+When you use AI coding tools like Claude Code or Cursor, the AI reads your project files to understand your code. Here's what to know:
+
+### What AI tools can see
+
+- All files in your project directory (unless excluded)
+- File contents, structure, and git history
+- Terminal output from commands they run
+
+### What to exclude
+
+Create a `.claudeignore` file (works like `.gitignore`) to prevent Claude Code from reading sensitive files:
+
+```bash
+# .claudeignore
+.env
+.env.*
+*.pem
+*.key
+secrets/
+```
+
+### Claude Code's built-in protections
+
+Claude Code has a deny-list system in its settings. You can block access to specific files:
+
+```json
+{
+  "deny": [
+    "Read(~/.ssh/*)",
+    "Read(*private*key*)",
+    "Read(*secret*)",
+    "Read(*mnemonic*)"
+  ]
+}
+```
+
+This means even if you accidentally ask Claude Code to read a private key file, it'll refuse.
+
+### General rules for AI tools
+
+1. Never paste private keys or seed phrases into any AI chat
+2. Use `.env` files (AI tools know to skip them)
+3. If an AI tool accidentally outputs a secret, rotate that secret immediately
+4. Review AI-generated code that handles authentication — verify it doesn't log secrets
+
+---
+
+## Crypto-Specific Security
+
+If you're building in crypto/Web3, the stakes are higher because transactions are irreversible.
+
+### Wallet keypair files
+
+Wallet keypair files (like Solana's JSON keypair) contain your private key. These files should:
+- Never be in your project directory
+- Never be committed to git
+- Be stored in a secure location (like `~/.config/solana/`)
+- Have restrictive file permissions: `chmod 600 keypair.json`
+
+### RPC endpoints
+
+Public RPC endpoints (like `https://api.mainnet-beta.solana.com`) are safe to share. But **paid RPC endpoints** often include an API key in the URL:
+
+```bash
+# This is a secret (contains API key):
+https://mainnet.helius-rpc.com/?api-key=abc123
+
+# This is public:
+https://api.mainnet-beta.solana.com
+```
+
+### Test vs production
+
+- **Devnet/testnet** keys are low-risk (no real money)
+- **Mainnet** keys are high-risk (real money)
+- Even so, treat all keys as secrets — it builds good habits
+
+### Hardware wallets for production
+
+If your project handles significant funds, use a hardware wallet (Ledger, Trezor) for signing. Your code should request signatures from the hardware wallet — never store mainnet private keys on a server.
+
+---
+
+## Quick Checklist
+
+Before you push any code:
+
+- [ ] `.env` is in `.gitignore`
+- [ ] No API keys or secrets in source code
+- [ ] No private keys or seed phrases anywhere in the repo
+- [ ] `.env.example` has placeholder values, not real ones
+- [ ] Database connection strings use environment variables
+- [ ] No secrets in commit messages or PR descriptions
+
+**If in doubt, treat it as secret.** The cost of over-protecting something is zero. The cost of under-protecting something can be catastrophic.
+
+> Now that you know what's safe, it's time to build something. Check out our [First Projects guide](/guides/first-projects-with-ai-coding-tools) for 5 beginner wins.

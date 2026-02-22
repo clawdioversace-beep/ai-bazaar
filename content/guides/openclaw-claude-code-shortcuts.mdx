@@ -1,0 +1,265 @@
+---
+slug: "openclaw-claude-code-shortcuts"
+title: "OpenClaw + Claude Code: Commands Cheat Sheet"
+tagline: "Every command, shortcut, and workflow tip for both tools in one place"
+difficulty: "beginner"
+readingTime: "6 min"
+category: "openclaw"
+tags: ["openclaw", "claude-code", "commands", "shortcuts", "cheatsheet"]
+relatedPacks: ["ai-agent-toolbox"]
+relatedTools: []
+publishedAt: "2026-02-25"
+prevGuide: "openclaw-skills-and-plugins"
+nextGuide: "essential-github-repos-ai-builders"
+---
+
+## OpenClaw CLI Commands
+
+These commands manage your OpenClaw installation, agents, and gateway.
+
+### Core
+
+| Command | What it does |
+|---------|-------------|
+| `openclaw setup` | Initialize OpenClaw configuration and workspace |
+| `openclaw onboard` | Interactive wizard for gateway, workspace, and skills |
+| `openclaw gateway` | Start the WebSocket gateway (runs your agents) |
+| `openclaw status` | Show gateway status, connected agents, and channels |
+
+### Agent Management
+
+| Command | What it does |
+|---------|-------------|
+| `openclaw agent` | Run a single agent turn (for testing) |
+| `openclaw agent --message "text"` | Send a message to the agent and get a response |
+| `openclaw agents list` | List all configured agents |
+| `openclaw agents create <name>` | Create a new isolated agent |
+
+### Configuration
+
+| Command | What it does |
+|---------|-------------|
+| `openclaw configure` | Set up credentials, devices, agent defaults |
+| `openclaw models` | Discover and configure LLM models |
+| `openclaw channels telegram setup` | Configure Telegram bot connection |
+| `openclaw channels telegram allow <id>` | Add a Telegram user to the allowlist |
+
+### Plugins & Skills
+
+| Command | What it does |
+|---------|-------------|
+| `openclaw plugins list` | Show installed plugins |
+| `openclaw plugins install <name>` | Install a plugin |
+| `openclaw plugins enable <name>` | Enable a disabled plugin |
+| `openclaw plugins disable <name>` | Disable a plugin without removing it |
+
+### Scheduling
+
+| Command | What it does |
+|---------|-------------|
+| `openclaw cron list` | Show all scheduled jobs |
+| `openclaw cron add` | Create a new cron job |
+| `openclaw cron remove <id>` | Delete a cron job |
+
+### System
+
+| Command | What it does |
+|---------|-------------|
+| `openclaw daemon start` | Run the gateway as a background service |
+| `openclaw daemon stop` | Stop the background service |
+| `openclaw daemon status` | Check if the daemon is running |
+| `openclaw memory search <query>` | Search the agent's memory |
+
+---
+
+## Claude Code Slash Commands
+
+Claude Code is Anthropic's terminal-based AI coding tool. These commands work inside a Claude Code session.
+
+### Essential Commands
+
+| Command | What it does |
+|---------|-------------|
+| `/help` | Show all available commands |
+| `/clear` | Clear conversation history and start fresh |
+| `/compact` | Compress conversation history to save context |
+| `/model` | Switch between Claude models (Opus, Sonnet, Haiku) |
+| `/cost` | Show token usage and cost for this session |
+
+### Project Commands
+
+| Command | What it does |
+|---------|-------------|
+| `/init` | Create a CLAUDE.md file for the current project |
+| `/review` | Review recent code changes |
+| `/pr-comments` | Summarize and address PR review comments |
+
+### Session Commands
+
+| Command | What it does |
+|---------|-------------|
+| `/fast` | Toggle fast mode (same model, faster output) |
+| `/status` | Show current session status |
+| `/config` | View or modify configuration |
+
+---
+
+## Claude Code Keyboard Shortcuts
+
+These work inside the Claude Code terminal interface:
+
+| Shortcut | Action |
+|----------|--------|
+| `Enter` | Send message (when input is single-line) |
+| `Shift+Enter` | New line in input |
+| `Escape` | Cancel current operation |
+| `Ctrl+C` | Interrupt running tool or exit |
+| `Up arrow` | Previous message in history |
+| `Down arrow` | Next message in history |
+| `Tab` | Accept autocomplete suggestion |
+
+---
+
+## CLAUDE.md Power Tips
+
+CLAUDE.md files are how you configure Claude Code's behavior for your project. They work at two levels:
+
+### User-level (global)
+
+`~/.claude/CLAUDE.md` applies to every project you open in Claude Code. Put your preferences here:
+
+```markdown
+# Global Preferences
+- Default to Bun instead of npm
+- Keep responses concise
+- Always use TypeScript
+```
+
+### Project-level
+
+`./CLAUDE.md` in your project root applies only to that project:
+
+```markdown
+# Project: My App
+- Use Tailwind for styling
+- Database: PostgreSQL via Drizzle ORM
+- Run tests with: bun test
+```
+
+### Hierarchy
+
+Project-level CLAUDE.md overrides user-level for that project. Claude Code reads both and merges them.
+
+### The .claude/ directory
+
+Your `~/.claude/` directory contains:
+
+```
+~/.claude/
+├── CLAUDE.md              # Global instructions
+├── settings.json          # Permissions and plugin config
+├── settings.local.json    # Local overrides (not synced)
+├── commands/              # Custom slash commands
+├── scripts/               # Utility scripts
+├── hooks/                 # Event hooks (status line, etc.)
+└── plugins/               # Installed plugins
+```
+
+---
+
+## GSD Workflow Commands
+
+If you use the GSD (Get Shit Done) workflow system with Claude Code, these commands manage your project lifecycle:
+
+### Starting a project
+
+| Command | What it does |
+|---------|-------------|
+| `/gsd:new-project` | Initialize a new project (questions → research → roadmap) |
+| `/gsd:new-milestone` | Start a new milestone cycle |
+
+### Planning & building
+
+| Command | What it does |
+|---------|-------------|
+| `/gsd:discuss-phase N` | Gather context for phase N through questions |
+| `/gsd:plan-phase N` | Create a detailed plan for phase N |
+| `/gsd:execute-phase N` | Build phase N from its plan |
+| `/gsd:verify-work N` | Verify phase N passes all requirements |
+
+### Quick tasks
+
+| Command | What it does |
+|---------|-------------|
+| `/gsd:quick` | Execute a small task with atomic commits |
+| `/gsd:add-todo` | Add a task to the backlog |
+| `/gsd:check-todos` | List pending todos |
+
+### Session management
+
+| Command | What it does |
+|---------|-------------|
+| `/gsd:pause-work` | Snapshot current state for later resume |
+| `/gsd:resume-work` | Continue from a paused session |
+| `/gsd:progress` | Check project progress and decide next action |
+
+### Utilities
+
+| Command | What it does |
+|---------|-------------|
+| `/gsd:help` | Show all GSD commands |
+| `/gsd:settings` | Configure GSD workflow options |
+| `/gsd:debug` | Start a systematic debugging session |
+| `/gsd:map-codebase` | Analyze codebase structure |
+
+---
+
+## Combining OpenClaw + Claude Code
+
+The power combo: use Claude Code as your coding assistant and OpenClaw as your autonomous agent.
+
+### The workflow
+
+1. **Claude Code** handles coding tasks — reading your codebase, writing code, running tests, deploying
+2. **OpenClaw** handles autonomous tasks — monitoring, alerting, research, scheduled jobs
+3. **Both** can communicate via Telegram — Claude Code sends updates, OpenClaw handles async tasks
+
+### Example setup
+
+```
+Claude Code (terminal)
+  └── Your CTO — reads code, builds features, commits
+  └── Uses: /gsd:quick, /gsd:execute-phase, /review
+
+OpenClaw (background)
+  └── Your assistant — monitors, researches, alerts
+  └── Uses: Telegram, cron jobs, memory, web search
+```
+
+### Communication between them
+
+Claude Code can send messages to your Telegram (where OpenClaw also lives):
+
+```bash
+# From Claude Code, notify via Telegram
+~/.claude/scripts/telegram-notify.sh --update "Feature X is done"
+```
+
+And OpenClaw can be configured to watch for specific events and react.
+
+### When to use which
+
+| Task | Use |
+|------|-----|
+| Write code | Claude Code |
+| Refactor a file | Claude Code |
+| Run tests | Claude Code |
+| Research a topic | OpenClaw |
+| Monitor prices | OpenClaw |
+| Scheduled reminders | OpenClaw |
+| Deploy an app | Claude Code |
+| Daily briefing | OpenClaw |
+
+The key insight: Claude Code is a session-based tool (you start it, work, stop it). OpenClaw is always-on (daemon/gateway running in the background). Use each for what it's designed for.
+
+> Ready to discover the best tools for your projects? Check out [20 GitHub Repos Every AI Builder Should Star](/guides/essential-github-repos-ai-builders).

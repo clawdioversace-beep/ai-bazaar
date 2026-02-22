@@ -12,6 +12,8 @@ import {
 } from '@/services/search';
 import { getFeaturedReads } from '@/services/reads';
 import { listPacksWithToolCount } from '@/services/packs';
+import { listGuides } from '@/lib/guides';
+import { GuideCard } from '@/components/guide-card';
 import { CATEGORY_LABELS } from '@/lib/categories';
 
 export const dynamic = 'force-dynamic';
@@ -28,6 +30,8 @@ export default async function HomePage() {
     getFeaturedReads(3),
     listPacksWithToolCount(),
   ]);
+
+  const featuredGuides = listGuides().slice(0, 3);
 
   // If fewer than 6 quality items from this week, fall back to recently added
   const showRecent = newListings.length < 6;
@@ -129,6 +133,35 @@ export default async function HomePage() {
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {topReads.map((read) => (
                 <ReadCard key={read.id} read={read} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Guides — educational content with tinted background */}
+      {featuredGuides.length > 0 && (
+        <section className="rounded-2xl bg-emerald-50/50 p-8 dark:bg-emerald-950/10">
+          <div className="flex flex-col gap-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+                  Guides
+                </h2>
+                <p className="mt-1 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+                  Practical guides for getting started with AI tools.
+                </p>
+              </div>
+              <Link
+                href="/guides"
+                className="text-sm font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300"
+              >
+                View all &rarr;
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {featuredGuides.map((guide) => (
+                <GuideCard key={guide.slug} guide={guide} />
               ))}
             </div>
           </div>

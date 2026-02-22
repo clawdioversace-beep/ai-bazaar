@@ -1,0 +1,356 @@
+---
+slug: "terminal-basics-for-ai-users"
+title: "Terminal Basics for AI Users"
+tagline: "The 20 commands that unlock every AI coding tool"
+difficulty: "beginner"
+readingTime: "12 min"
+category: "getting-started"
+tags: ["terminal", "cli", "git", "commands"]
+relatedPacks: ["ai-agent-toolbox"]
+relatedTools: []
+publishedAt: "2026-02-25"
+prevGuide: "choosing-your-ai-coding-model"
+nextGuide: "security-guide-for-ai-builders"
+---
+
+## Why You Need the Terminal
+
+Every powerful AI coding tool — Claude Code, MCP servers, agent frameworks, package managers — runs in the terminal. If you want to use AI to build real software, you need to be comfortable here.
+
+Good news: you don't need to master the terminal. You need about 20 commands to be productive. This guide covers all of them.
+
+---
+
+## Opening Your Terminal
+
+### macOS
+- Press `Cmd + Space`, type "Terminal", hit Enter
+- **Better option:** Download [iTerm2](https://iterm2.com/) — it's free and much nicer
+
+### Windows
+- Press `Win + X`, select "Windows Terminal"
+- **Or:** Search for "PowerShell" in the Start menu
+- **For AI tools:** Install [WSL](https://learn.microsoft.com/en-us/windows/wsl/install) (Windows Subsystem for Linux) — many tools expect a Linux-like environment
+
+### Linux
+- Press `Ctrl + Alt + T` on most distributions
+- Or find "Terminal" in your applications menu
+
+---
+
+## Navigating the Filesystem
+
+Think of your filesystem as nested folders. The terminal just lets you move between them with text commands instead of clicking.
+
+### Where am I?
+
+```bash
+pwd
+```
+
+**P**rint **W**orking **D**irectory. Shows your current location. You'll see something like `/Users/yourname` or `/home/yourname`.
+
+### What's in this folder?
+
+```bash
+ls
+```
+
+Lists everything in the current directory. Add flags for more detail:
+
+```bash
+ls -la    # Show hidden files + file sizes + permissions
+ls -lt    # Sort by most recently modified
+```
+
+### Moving between folders
+
+```bash
+cd Documents          # Go into the Documents folder
+cd ..                 # Go up one level
+cd ~                  # Go to your home directory
+cd /                  # Go to the root of the filesystem
+cd ~/projects/my-app  # Go directly to a specific path
+```
+
+**Pro tip:** Press `Tab` to autocomplete folder names. Type `cd Doc` then press Tab — the terminal will complete it to `cd Documents/`.
+
+### Creating folders and files
+
+```bash
+mkdir my-project              # Create a folder
+mkdir -p projects/my-app/src  # Create nested folders in one go
+touch index.ts                # Create an empty file
+```
+
+### Deleting things
+
+```bash
+rm file.txt           # Delete a file
+rm -r my-folder       # Delete a folder and everything in it
+```
+
+**Warning:** There's no recycle bin in the terminal. `rm` is permanent. Double-check before you delete.
+
+---
+
+## Finding Files
+
+### By name
+
+```bash
+find . -name "*.ts"              # Find all TypeScript files
+find . -name "package.json"      # Find a specific file
+```
+
+The `.` means "start searching from the current directory."
+
+### By content
+
+```bash
+grep -r "API_KEY" .              # Search for text inside files
+grep -r "function login" src/    # Search in a specific folder
+```
+
+`-r` means recursive (search inside subfolders too).
+
+---
+
+## Reading and Editing Files
+
+### Quick file preview
+
+```bash
+cat README.md         # Print entire file contents
+head -20 README.md    # Show first 20 lines
+tail -20 server.log   # Show last 20 lines
+```
+
+### Editing files
+
+For quick edits, use `nano` (comes pre-installed):
+
+```bash
+nano .env             # Open file in a simple editor
+```
+
+In nano: `Ctrl + O` to save, `Ctrl + X` to exit.
+
+For real coding, use a proper editor like VS Code or Cursor:
+
+```bash
+code .                # Open current folder in VS Code
+cursor .              # Open current folder in Cursor
+```
+
+---
+
+## Git in 5 Commands
+
+Git tracks changes to your code. Every AI coding project uses it. You need these 5 commands:
+
+### 1. Clone a project
+
+```bash
+git clone https://github.com/user/repo.git
+```
+
+Downloads a project from GitHub to your computer.
+
+### 2. Check what changed
+
+```bash
+git status
+```
+
+Shows which files you've modified, added, or deleted.
+
+### 3. Stage your changes
+
+```bash
+git add .                    # Stage all changes
+git add src/index.ts         # Stage a specific file
+```
+
+Staging means "mark these changes to be saved."
+
+### 4. Save your changes (commit)
+
+```bash
+git commit -m "Add login page"
+```
+
+Creates a snapshot of your staged changes with a descriptive message.
+
+### 5. Push to GitHub
+
+```bash
+git push
+```
+
+Uploads your commits to the remote repository (GitHub).
+
+**The full workflow:**
+
+```bash
+git status                    # See what changed
+git add .                     # Stage everything
+git commit -m "Your message"  # Save snapshot
+git push                      # Upload to GitHub
+```
+
+That's it. You can learn branching, merging, and rebasing later when you need them.
+
+---
+
+## Package Managers
+
+Package managers install libraries (other people's code) that your project uses.
+
+### npm (Node.js)
+The default for JavaScript/TypeScript projects.
+
+```bash
+npm install              # Install all dependencies from package.json
+npm install express      # Add a new package
+npm run dev              # Run a script defined in package.json
+```
+
+### Bun
+A faster alternative to npm. Same commands, faster execution.
+
+```bash
+bun install              # Install dependencies
+bun add express          # Add a new package
+bun run dev              # Run a script
+```
+
+### pip (Python)
+For Python projects.
+
+```bash
+pip install requests     # Install a package
+pip install -r requirements.txt  # Install all dependencies
+```
+
+**How to know which one to use:** Look at the project files.
+- Has `package.json` + `bun.lock`? → Use `bun`
+- Has `package.json` + `package-lock.json`? → Use `npm`
+- Has `requirements.txt` or `pyproject.toml`? → Use `pip`
+
+---
+
+## Environment Variables and .env Files
+
+Environment variables store configuration values that change between environments (your machine vs production). They're also where API keys live.
+
+### The .env file
+
+Most projects use a `.env` file in the project root:
+
+```bash
+# .env
+DATABASE_URL=postgresql://localhost:5432/mydb
+API_KEY=sk-abc123def456
+PORT=3000
+```
+
+Your code reads these values at runtime. In Node.js:
+
+```javascript
+const apiKey = process.env.API_KEY;
+```
+
+### Important rules
+
+1. **Never commit `.env` to git** — it contains secrets
+2. **Do commit `.env.example`** — shows what variables are needed (without real values)
+3. **Bun loads `.env` automatically** — no extra setup needed
+4. **Node.js needs `dotenv`** — or use the `--env-file` flag
+
+### Creating a .env file from an example
+
+```bash
+cp .env.example .env     # Copy the template
+nano .env                # Edit and add your real values
+```
+
+---
+
+## Common Gotchas and Fixes
+
+### "command not found"
+
+The program isn't installed, or your terminal doesn't know where to find it.
+
+```bash
+# Check if it's installed
+which node      # Shows path if installed, nothing if not
+
+# Common fixes:
+# 1. Install it (e.g., brew install node on macOS)
+# 2. Restart your terminal (close and reopen)
+# 3. Source your profile: source ~/.zshrc (macOS) or source ~/.bashrc (Linux)
+```
+
+### "permission denied"
+
+You're trying to do something that requires admin access.
+
+```bash
+sudo npm install -g typescript   # Run with admin privileges
+```
+
+Use `sudo` sparingly. If everything needs `sudo`, something is misconfigured.
+
+### "EACCES" errors with npm
+
+npm is trying to write to a directory you don't own. Fix:
+
+```bash
+mkdir ~/.npm-global
+npm config set prefix '~/.npm-global'
+# Add to your shell profile: export PATH=~/.npm-global/bin:$PATH
+```
+
+Or just use Bun — it doesn't have this problem.
+
+### "port already in use"
+
+Another process is using the same port.
+
+```bash
+# Find what's using port 3000
+lsof -i :3000
+
+# Kill it
+kill -9 <PID>     # Replace <PID> with the process ID from above
+```
+
+---
+
+## Quick Reference Cheat Sheet
+
+| Action | Command |
+|--------|---------|
+| Where am I? | `pwd` |
+| What's here? | `ls -la` |
+| Go to folder | `cd folder-name` |
+| Go up | `cd ..` |
+| Go home | `cd ~` |
+| Create folder | `mkdir folder-name` |
+| Create file | `touch filename` |
+| Delete file | `rm filename` |
+| Delete folder | `rm -r folder-name` |
+| Read file | `cat filename` |
+| Find file | `find . -name "filename"` |
+| Search in files | `grep -r "text" .` |
+| Install packages | `npm install` or `bun install` |
+| Run project | `npm run dev` or `bun run dev` |
+| Git status | `git status` |
+| Git save | `git add . && git commit -m "message"` |
+| Git upload | `git push` |
+
+You now know enough terminal to use any AI coding tool. The rest you'll pick up as you build.
+
+> Next up: learn what to keep secret and what's safe to share in our [Security Guide](/guides/security-guide-for-ai-builders).

@@ -1,0 +1,306 @@
+---
+slug: "openclaw-md-files-explained"
+title: "The .md Files That Define Your Agent"
+tagline: "IDENTITY, SOUL, MEMORY, and the other files that make OpenClaw agents unique"
+difficulty: "beginner"
+readingTime: "9 min"
+category: "openclaw"
+tags: ["openclaw", "soul-md", "identity-md", "configuration", "personality"]
+relatedPacks: ["ai-agent-toolbox"]
+relatedTools: []
+publishedAt: "2026-02-25"
+prevGuide: "openclaw-model-selection"
+nextGuide: "openclaw-skills-and-plugins"
+---
+
+## The Big Idea
+
+Your OpenClaw agent wakes up fresh every session. It doesn't inherently remember who it is, who you are, or what it did yesterday. The `.md` files in your workspace ARE its memory and personality — they get loaded at the start of every conversation.
+
+This is what makes OpenClaw different from ChatGPT or Claude. You don't just configure behavior through settings — you **write your agent's identity as editable text files.** Change a file, change the agent.
+
+All workspace files live in `~/.openclaw/workspace/`.
+
+---
+
+## IDENTITY.md — "Who Am I?"
+
+This file defines your agent's name, vibe, and self-image.
+
+### What it contains
+
+```markdown
+# Identity
+
+**Name:** Clawdio Versace
+**Type:** AI Agent
+**Emoji:** ...
+**Vibe:** Confident, strategic, proactive. Speaks with authority
+but stays practical. Part CTO, part trusted advisor.
+```
+
+### What to customize
+
+- **Name** — give your agent a name that fits its role. A personal assistant might be "Nova". A coding agent might be "Atlas". A crypto research agent might be "Volt".
+- **Vibe** — this shapes the tone of every response. "Chill and concise" produces different responses than "Professional and thorough."
+- **Type** — AI Agent, Assistant, Research Partner, Coding Buddy — whatever role makes sense.
+
+### Tips
+
+- Keep it short (10-20 lines). The agent loads this into context every session.
+- The name and emoji help you recognize which agent you're talking to (useful when you have multiple agents).
+- Don't overthink it — you can change it anytime.
+
+---
+
+## SOUL.md — "How Do I Think?"
+
+The most important file. SOUL.md defines your agent's operating philosophy, behavior rules, and boundaries. Think of it as the agent's constitution.
+
+### What it contains
+
+```markdown
+# Soul
+
+## Core Truths
+- Proactive beats reactive. Don't wait to be asked — anticipate needs.
+- Clarity over cleverness. Say what you mean directly.
+- Admit uncertainty. "I don't know" is better than a confident wrong answer.
+
+## Boundaries
+- Never share private information outside approved channels
+- Never execute destructive actions without confirmation
+- Always disclose when you're uncertain about something
+
+## Operating Mode
+- Default to action. When given a task, start doing it.
+- When blocked, state the blocker and propose alternatives.
+- Keep responses concise unless detail is requested.
+```
+
+### What to customize
+
+- **Core Truths** — the principles your agent follows. These shape decision-making.
+- **Boundaries** — hard rules the agent won't break. Security policies go here.
+- **Operating Mode** — how the agent approaches tasks. Proactive vs reactive, verbose vs concise.
+- **Communication Style** — formal vs casual, detailed vs brief.
+
+### Tips
+
+- SOUL.md is where you encode what matters to you. If you hate verbose responses, say "Keep responses under 3 paragraphs unless asked for detail."
+- Review and update this file as you learn what works. Your first version won't be perfect.
+- This is also where security rules live — "Never execute `rm -rf`" or "Never share API keys."
+
+---
+
+## USER.md — "Who Is My Human?"
+
+Information about you that helps the agent personalize its behavior.
+
+### What it contains
+
+```markdown
+# User
+
+**Name:** Jet
+**Timezone:** Asia/Kuala_Lumpur (GMT+8)
+**Pronouns:** he/him
+
+## Context
+- Non-technical but strong product instincts
+- Deep expertise in crypto markets and DeFi
+- Manages multiple projects simultaneously
+- Prefers plain language, hates jargon
+```
+
+### What to customize
+
+- **Basic info** — name, timezone, preferences
+- **Context** — your background, expertise, what you're working on
+- **Communication preferences** — how you like to receive information
+
+### Tips
+
+- The agent auto-updates USER.md over time as it learns about you.
+- Review it occasionally to correct anything that's wrong.
+- Include your timezone — it helps the agent schedule things and reference times correctly.
+
+---
+
+## AGENTS.md — "How Should I Work?"
+
+Workspace-level instructions that apply to all agents. This is the operational playbook.
+
+### What it contains
+
+```markdown
+# Agents
+
+## Operator Mindset
+- "I can't" is forbidden. Find a way or explain why it's impossible.
+- When given a task, start immediately. Don't ask for permission to begin.
+- When uncertain, make your best judgment call and explain your reasoning.
+
+## Session Startup
+1. Check for pending tasks
+2. Review recent memory
+3. Greet the user if this is a new conversation
+
+## Safety
+- Never execute commands that could cause data loss without confirmation
+- Always confirm before making external API calls that cost money
+```
+
+### What to customize
+
+- **Mindset** — how autonomous should the agent be?
+- **Session startup** — what should happen when a new conversation begins?
+- **Safety rules** — operational guardrails
+
+### Tips
+
+- AGENTS.md is about workflow, not personality. SOUL.md is personality.
+- Keep startup checklists short — the agent loads this every session.
+
+---
+
+## MEMORY.md — "What Do I Remember?"
+
+Long-term curated memory that persists across sessions. This is the agent's institutional knowledge.
+
+### What it contains
+
+```markdown
+# Memory
+
+## Key Decisions
+- 2026-02-20: Chose Next.js 16 for AI Bazaar (over Remix)
+- 2026-02-18: Using Turso for database (SQLite edge)
+
+## User Preferences
+- Jet prefers Bun over npm for TypeScript projects
+- Always use atomic commits with descriptive messages
+
+## Project Context
+- AI Bazaar is a tool discovery platform
+- Currently in MVP phase, not yet deployed
+```
+
+### How it works
+
+- **The agent curates this file.** After important conversations, it updates MEMORY.md with key decisions, preferences, and context.
+- **Daily notes** go in `~/.openclaw/workspace/memory/YYYY-MM-DD.md` — these are raw session logs.
+- **MEMORY.md** is the distilled wisdom — only the most important stuff.
+
+### Tips
+
+- Review MEMORY.md periodically. Remove outdated info, add context the agent might have missed.
+- MEMORY.md is private — it's loaded only in direct sessions, never in group chats.
+- If the agent keeps forgetting something, add it to MEMORY.md manually.
+
+---
+
+## TOOLS.md — "What's Available?"
+
+Notes about the local environment — what tools, APIs, and resources the agent can access.
+
+### What it contains
+
+```markdown
+# Tools
+
+## Available APIs
+- Helius: Solana RPC (key in env)
+- CoinGecko: Price data (free, no key)
+
+## Local Environment
+- OS: macOS, Apple Silicon
+- Runtime: Bun 1.3+
+- Editor: Cursor + Claude Code
+
+## SSH Hosts
+- build-server: 192.168.1.100
+```
+
+### What to customize
+
+- List APIs and services the agent should know about
+- Note any local setup quirks (architecture, installed tools)
+- Reference external services without including actual API keys
+
+### Tips
+
+- Don't put actual API keys here — use references like "key in env" or "configured in .env"
+- This file helps the agent understand what it can do without asking you
+
+---
+
+## HEARTBEAT.md — "What Should I Check?"
+
+Configuration for periodic wake-ups. When enabled, the agent wakes up on a schedule and checks the things listed here.
+
+### What it contains
+
+```markdown
+# Heartbeat
+
+Check these on each heartbeat:
+
+1. **Inbox** — Are there unread Telegram messages?
+2. **Cron status** — Did any scheduled jobs fail?
+3. **System health** — Is the gateway running? Any errors in logs?
+
+## Rules
+- Only alert me if something needs attention
+- Stay silent (HEARTBEAT_OK) if everything is fine
+- Batch multiple alerts into one message
+```
+
+### What to customize
+
+- What to monitor (email, notifications, job status)
+- Alert thresholds (when to bother you vs stay quiet)
+- How often to check (configured in `openclaw.json`, not here)
+
+### Tips
+
+- Start with heartbeat disabled. Enable it once you know what you want monitored.
+- The "stay silent" rule is important — you don't want a notification every 12 hours saying "everything is fine."
+
+---
+
+## BOOTSTRAP.md — "The Birth Certificate"
+
+A first-run conversation script that helps set up the agent's personality. It only runs once, during the very first session after installation.
+
+### What it contains
+
+A guided conversation where the agent asks you questions:
+- "What should I call you?"
+- "What kind of assistant do you need?"
+- "What's my communication style?"
+
+Based on your answers, the agent writes IDENTITY.md and SOUL.md.
+
+### Tips
+
+- After the first run, BOOTSTRAP.md is no longer used. You can delete it or keep it for reference.
+- If you want to "reset" your agent's personality, recreate BOOTSTRAP.md and delete IDENTITY.md + SOUL.md.
+
+---
+
+## Customization Priority
+
+If you're just getting started, customize in this order:
+
+1. **SOUL.md** — Most impact. Shapes every interaction.
+2. **IDENTITY.md** — Quick win. Give it a name and vibe.
+3. **USER.md** — Add your timezone and basic context.
+4. **MEMORY.md** — Let the agent build this naturally, then curate.
+5. **TOOLS.md** — Add when you start integrating external services.
+6. **HEARTBEAT.md** — Add when you want proactive monitoring.
+7. **AGENTS.md** — Fine-tune once you understand how sessions work.
+
+The beauty of this system is that it's all just text files. Open them in any editor, change what you want, and the agent adapts immediately. No config UI, no settings panels — just markdown.
+
+> Next: Extend your agent's capabilities with [Skills and Plugins](/guides/openclaw-skills-and-plugins).

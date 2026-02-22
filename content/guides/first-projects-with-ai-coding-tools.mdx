@@ -1,0 +1,259 @@
+---
+slug: "first-projects-with-ai-coding-tools"
+title: "Your First Win: 5 Projects to Build with AI"
+tagline: "Concrete, achievable projects that build confidence — from portfolio site to AI agent"
+difficulty: "beginner"
+readingTime: "10 min"
+category: "getting-started"
+tags: ["projects", "beginner", "tutorial", "portfolio", "telegram-bot"]
+relatedPacks: ["ai-agent-toolbox", "defi-dev-starter", "solana-builder-kit"]
+relatedTools: []
+publishedAt: "2026-02-25"
+prevGuide: "security-guide-for-ai-builders"
+nextGuide: "openclaw-installation-guide"
+---
+
+## Why "First Wins" Matter
+
+The goal of your first project isn't to build the next unicorn. It's to prove to yourself that you can make a computer do something useful with AI help. That confidence compounds — each project teaches you patterns you'll reuse forever.
+
+These 5 projects are ordered from easiest to most ambitious. Each one teaches a fundamental skill.
+
+---
+
+## Project 1: Personal Portfolio Site
+
+**Time:** 30-60 minutes | **Teaches:** HTML/CSS, deployment, working with AI tools
+
+A single-page site that says who you are and what you're building. It's the most common first project for a reason — you end up with something real you can show people.
+
+### What you'll build
+- A responsive single-page site with your name, bio, and links
+- Deployed to a public URL anyone can visit
+
+### How to build it
+
+1. Open your AI coding tool (Cursor or Claude Code)
+2. Tell it: *"Create a personal portfolio site with my name, a short bio section, a projects section with 3 placeholder cards, and a contact section with links to my GitHub and Twitter. Use plain HTML and Tailwind CSS via CDN. Make it dark-themed and responsive."*
+3. The AI will generate the entire site
+4. Preview it locally, tweak the content
+5. Deploy to Vercel:
+
+```bash
+npm install -g vercel    # Install Vercel CLI
+vercel                   # Deploy (follow the prompts)
+```
+
+### What you'll learn
+- How to prompt AI for code generation
+- How to iterate on AI output ("make the header sticky", "change the color scheme")
+- How deployment works (local → internet)
+
+---
+
+## Project 2: Telegram Bot
+
+**Time:** 1-2 hours | **Teaches:** APIs, bot tokens, environment variables, server processes
+
+A Telegram bot that responds to commands. This is foundational — bots are one of the most common things you'll build with AI.
+
+### What you'll build
+- A bot that responds to `/start`, `/help`, and a custom command
+- Runs on your machine (or a server)
+
+### How to build it
+
+1. **Create a bot:** Open Telegram, search for `@BotFather`, send `/newbot`, follow the prompts. You'll get a token like `123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11`.
+
+2. **Set up your project:**
+
+```bash
+mkdir my-telegram-bot && cd my-telegram-bot
+bun init -y
+bun add grammy
+```
+
+3. **Tell your AI tool:** *"Create a Telegram bot using grammy that responds to /start with a welcome message, /help with a list of commands, and /quote with a random motivational quote. Use the bot token from a BOT_TOKEN environment variable."*
+
+4. **Create your `.env`:**
+
+```bash
+BOT_TOKEN=your-token-from-botfather
+```
+
+5. **Run it:**
+
+```bash
+bun run index.ts
+```
+
+6. Open Telegram, find your bot, send `/start`.
+
+### What you'll learn
+- How API tokens work
+- Environment variables in practice
+- Long-running processes (the bot stays alive listening for messages)
+- The request/response pattern of APIs
+
+---
+
+## Project 3: Crypto Price Alert Script
+
+**Time:** 1-2 hours | **Teaches:** REST APIs, JSON parsing, scheduling, conditional logic
+
+A script that checks cryptocurrency prices and alerts you when they cross a threshold. This is a great introduction to working with external APIs.
+
+### What you'll build
+- A script that fetches live prices from CoinGecko's free API
+- Sends you a Telegram message when a price crosses your target
+- Runs on a schedule (every 5 minutes)
+
+### How to build it
+
+1. **Set up:**
+
+```bash
+mkdir price-alerts && cd price-alerts
+bun init -y
+```
+
+2. **Tell your AI tool:** *"Create a price alert script that: (1) fetches Bitcoin and Ethereum prices from the CoinGecko API (free, no key needed), (2) compares against configurable price targets, (3) sends a Telegram message via bot API when a target is crossed. Store targets in a JSON config file. Use Bun with fetch API."*
+
+3. **The CoinGecko API is free and needs no key:**
+
+```
+https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd
+```
+
+4. **Run on a schedule** using a simple loop or cron:
+
+```bash
+# Run every 5 minutes with cron
+*/5 * * * * cd /path/to/price-alerts && bun run index.ts
+```
+
+### What you'll learn
+- Making HTTP requests to external APIs
+- Parsing JSON responses
+- Working with scheduled tasks (cron)
+- Combining multiple APIs (CoinGecko + Telegram)
+
+---
+
+## Project 4: MCP Server for Your Notes
+
+**Time:** 2-3 hours | **Teaches:** MCP protocol, tool definitions, AI tool integration
+
+MCP (Model Context Protocol) is how AI tools discover and use external capabilities. Building a simple MCP server teaches you the protocol that powers AI agent ecosystems.
+
+### What you'll build
+- An MCP server that lets Claude Code search and read your markdown notes
+- Two tools: `search_notes` and `read_note`
+
+### How to build it
+
+1. **Set up:**
+
+```bash
+mkdir my-notes-mcp && cd my-notes-mcp
+bun init -y
+bun add @modelcontextprotocol/sdk zod
+```
+
+2. **Tell your AI tool:** *"Create an MCP server using @modelcontextprotocol/sdk that exposes two tools: (1) search_notes — takes a query string and returns matching filenames from a ~/notes/ directory by searching file contents, (2) read_note — takes a filename and returns the full contents. Use stdio transport. Make it work with markdown files."*
+
+3. **Create some test notes:**
+
+```bash
+mkdir -p ~/notes
+echo "# Meeting Notes\nDiscussed the new API design" > ~/notes/meeting-2026-02-25.md
+echo "# Ideas\nBuild a price alert bot" > ~/notes/ideas.md
+```
+
+4. **Register with Claude Code** by adding to your MCP config:
+
+```json
+{
+  "mcpServers": {
+    "my-notes": {
+      "command": "bun",
+      "args": ["run", "/path/to/my-notes-mcp/index.ts"]
+    }
+  }
+}
+```
+
+5. Now in Claude Code, you can say "search my notes for API design" and it'll use your MCP server.
+
+### What you'll learn
+- The MCP protocol (how AI tools talk to external services)
+- Tool definitions (input schemas, descriptions)
+- How Claude Code discovers and uses tools
+- Server-side TypeScript
+
+---
+
+## Project 5: AI Content Summarizer
+
+**Time:** 2-3 hours | **Teaches:** LLM API calls, prompt engineering, chaining operations
+
+A command-line tool that takes a URL, fetches the page content, and produces a summary using an AI model. This teaches you the most fundamental pattern in AI engineering: fetch → process → generate.
+
+### What you'll build
+- A CLI script that accepts a URL
+- Fetches and extracts the main content
+- Sends it to an LLM API with a summarization prompt
+- Outputs a clean, structured summary
+
+### How to build it
+
+1. **Set up:**
+
+```bash
+mkdir summarizer && cd summarizer
+bun init -y
+bun add @anthropic-ai/sdk
+```
+
+2. **Tell your AI tool:** *"Create a CLI script that: (1) takes a URL as a command-line argument, (2) fetches the page HTML, (3) extracts the main text content (strip tags, scripts, styles), (4) sends the text to Claude API with a prompt asking for a structured summary with key points, (5) outputs the summary to stdout. Use the Anthropic SDK. Read API key from ANTHROPIC_API_KEY env var."*
+
+3. **Set up your API key:**
+
+```bash
+echo "ANTHROPIC_API_KEY=sk-ant-..." > .env
+```
+
+4. **Run it:**
+
+```bash
+bun run summarize.ts https://example.com/interesting-article
+```
+
+### What you'll learn
+- Making LLM API calls programmatically
+- Prompt engineering (structuring instructions for the AI)
+- Chaining operations (fetch → process → generate)
+- Building useful CLI tools
+
+---
+
+## What to Build Next
+
+After these 5 projects, you've learned the fundamental patterns:
+
+- **Project 1** → UI generation and deployment
+- **Project 2** → APIs and bots
+- **Project 3** → External data and scheduling
+- **Project 4** → The MCP protocol
+- **Project 5** → LLM API integration
+
+Now look at your own life for problems to solve. The best projects come from personal pain points:
+
+- **Annoyed by repetitive tasks?** → Automate them with a script or bot
+- **Want to track something?** → Build a dashboard or alert system
+- **Sharing knowledge?** → Build a tool that helps others learn
+- **Into DeFi?** → Build a portfolio tracker or trade analyzer
+
+The jump from "tutorial project" to "real project" is smaller than you think. You already have the patterns — now apply them to problems you actually care about.
+
+> Want to level up further? Learn about [OpenClaw](/guides/openclaw-installation-guide) — an AI agent framework that gives your AI a personality, memory, and autonomy.

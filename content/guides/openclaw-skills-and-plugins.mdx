@@ -1,0 +1,313 @@
+---
+slug: "openclaw-skills-and-plugins"
+title: "OpenClaw Skills and Plugins"
+tagline: "Extend your agent's capabilities with web search, browser automation, memory, and more"
+difficulty: "intermediate"
+readingTime: "8 min"
+category: "openclaw"
+tags: ["openclaw", "skills", "plugins", "claude-mem", "extensions"]
+relatedPacks: ["ai-agent-toolbox"]
+relatedTools: []
+publishedAt: "2026-02-25"
+prevGuide: "openclaw-md-files-explained"
+nextGuide: "openclaw-claude-code-shortcuts"
+---
+
+## Skills vs Plugins
+
+OpenClaw has two extension mechanisms. They sound similar but serve different purposes:
+
+**Skills** are capabilities your agent can use during conversations. Think of them as "apps" for your agent — web search, code execution, file management, email sending.
+
+**Plugins** are extensions to the OpenClaw gateway itself. They add infrastructure-level features that work across all conversations — like persistent memory, analytics, or new communication channels.
+
+| | Skills | Plugins |
+|---|--------|---------|
+| **Scope** | Per-conversation | System-wide |
+| **What they add** | Tools the agent can use | Gateway features |
+| **Example** | Web search, browser, calculator | Memory system, observation feed |
+| **Configuration** | In skill files | In openclaw.json |
+| **Installed at** | Varies | `~/.openclaw/extensions/` |
+
+---
+
+## Installing Skills
+
+Skills can come bundled with OpenClaw, installed from packages, or created custom.
+
+### Using the CLI
+
+```bash
+# List available skills
+openclaw skills list
+
+# Install a skill
+openclaw skills install <skill-name>
+
+# Enable/disable a skill
+openclaw skills enable <skill-name>
+openclaw skills disable <skill-name>
+```
+
+### Manual installation
+
+Skills follow a standard structure:
+
+```
+skills/
+├── web-search/
+│   ├── skill.json          # Skill manifest (name, description, tools)
+│   ├── index.ts            # Implementation
+│   └── README.md           # Documentation
+```
+
+The `skill.json` defines what tools the skill exposes:
+
+```json
+{
+  "name": "web-search",
+  "description": "Search the web using Brave Search API",
+  "tools": [
+    {
+      "name": "search_web",
+      "description": "Search the web for a given query",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": { "type": "string", "description": "Search query" }
+        },
+        "required": ["query"]
+      }
+    }
+  ]
+}
+```
+
+---
+
+## Essential Skills to Start With
+
+### Web Search
+
+Lets your agent search the internet for current information.
+
+**Why you need it:** Without web search, your agent only knows what's in its training data (which has a knowledge cutoff). With it, the agent can look up current prices, news, documentation, and answers.
+
+**Providers:**
+- Brave Search API (free tier: 2,000 queries/month)
+- SearXNG (self-hosted, unlimited, free)
+
+### Browser Automation
+
+Lets your agent visit websites, fill forms, click buttons, and extract content.
+
+**Why you need it:** Some information isn't available via APIs. Browser automation lets the agent interact with websites like a human would.
+
+**Implementation:** Typically uses Playwright or Puppeteer under the hood.
+
+### Code Execution
+
+Lets your agent write and run code to solve problems.
+
+**Why you need it:** Math, data processing, file manipulation — some tasks are better solved by writing and executing code than by the LLM reasoning about them.
+
+### File Management
+
+Lets your agent read, write, and organize files on your machine.
+
+**Why you need it:** Your agent can manage notes, generate reports, organize downloads, and maintain its own workspace files.
+
+---
+
+## The claude-mem Plugin
+
+The most important plugin for most users. **claude-mem** gives your agent persistent semantic memory that works across sessions.
+
+### What it does
+
+- **Saves observations** — key facts, decisions, and context from conversations
+- **Semantic search** — find relevant memories by meaning, not just keywords
+- **Cross-session memory** — your agent remembers things from weeks ago
+- **Project-scoped** — memories are organized by project for clean separation
+
+### How it works
+
+During conversations, the agent creates "observations" — small records of important facts:
+
+```
+Observation: "Jet decided to use Next.js 16 for AI Bazaar because of
+RSC support and Turbo mode."
+```
+
+These get indexed and stored. In future sessions, when the agent encounters a related topic, it can search its memory:
+
+```
+search(query="tech stack decision for AI Bazaar")
+→ Returns the observation about Next.js 16
+```
+
+### Installation
+
+```bash
+openclaw plugins install claude-mem
+```
+
+### Configuration in openclaw.json
+
+```json
+{
+  "plugins": {
+    "slots": {
+      "memory": "claude-mem"
+    },
+    "entries": {
+      "claude-mem": {
+        "enabled": true,
+        "config": {
+          "syncMemoryFile": true,
+          "workerPort": 37777,
+          "project": "openclaw"
+        }
+      }
+    }
+  }
+}
+```
+
+### Key settings
+
+- `syncMemoryFile: true` — auto-syncs MEMORY.md at session start
+- `workerPort: 37777` — the memory search service port
+- `project` — namespace for memories (keeps different projects separate)
+
+### Using memory in conversations
+
+Your agent uses memory automatically, but you can also interact with it:
+
+- **"Remember that..."** — tells the agent to save something specific
+- **"What do you know about...?"** — triggers a memory search
+- **"Forget that..."** — removes a specific memory
+
+---
+
+## Installing Plugins
+
+### Using the CLI
+
+```bash
+# List installed plugins
+openclaw plugins list
+
+# Install a plugin
+openclaw plugins install <plugin-name>
+
+# Enable/disable
+openclaw plugins enable <plugin-name>
+openclaw plugins disable <plugin-name>
+```
+
+### Plugin structure
+
+Plugins live in `~/.openclaw/extensions/`:
+
+```
+~/.openclaw/extensions/
+└── claude-mem/
+    ├── openclaw.plugin.json    # Plugin manifest
+    ├── package.json            # Dependencies
+    └── plugin/
+        ├── skills/             # Skills provided by this plugin
+        ├── modes/              # Language/style configurations
+        ├── commands/           # Custom slash commands
+        └── hooks/              # Event handlers
+```
+
+### Plugin manifest (openclaw.plugin.json)
+
+```json
+{
+  "id": "claude-mem",
+  "name": "Claude Memory",
+  "description": "Persistent semantic memory with observation indexing",
+  "version": "10.0.4",
+  "type": "memory",
+  "configSchema": {
+    "syncMemoryFile": { "type": "boolean", "default": true },
+    "workerPort": { "type": "number", "default": 37777 }
+  }
+}
+```
+
+---
+
+## Building Your Own Skill
+
+If you need a capability that doesn't exist as a pre-built skill, you can create your own.
+
+### Basic structure
+
+Create a directory with a manifest and implementation:
+
+```
+my-skill/
+├── skill.json              # What tools this skill provides
+└── index.ts                # Implementation
+```
+
+### Minimal example: Random Quote Skill
+
+**skill.json:**
+```json
+{
+  "name": "random-quote",
+  "description": "Get a random inspirational quote",
+  "tools": [
+    {
+      "name": "get_quote",
+      "description": "Returns a random inspirational quote",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  ]
+}
+```
+
+**index.ts:**
+```typescript
+const quotes = [
+  "The best way to predict the future is to create it.",
+  "Done is better than perfect.",
+  "Move fast and fix things.",
+];
+
+export function get_quote() {
+  const quote = quotes[Math.floor(Math.random() * quotes.length)];
+  return { quote };
+}
+```
+
+### Testing your skill
+
+Register it in your agent's config and test through a conversation:
+- "Give me a random quote" → the agent uses your skill
+
+---
+
+## Recommended Setup for Beginners
+
+Start with this minimal setup and add more as you need them:
+
+1. **claude-mem plugin** — persistent memory (install first, most impactful)
+2. **Web search skill** — current information access
+3. **File management skill** — let the agent help organize things
+
+Add these when you're ready:
+4. Browser automation — for interacting with websites
+5. Code execution — for data processing tasks
+6. Custom skills — when you have specific needs
+
+Don't install everything at once. Each skill adds to the agent's context (making it slower and more expensive). Add skills when you actually need them.
+
+> Next: Get the complete command reference in [OpenClaw + Claude Code: Commands Cheat Sheet](/guides/openclaw-claude-code-shortcuts).

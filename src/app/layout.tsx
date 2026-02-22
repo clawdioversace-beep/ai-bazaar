@@ -73,6 +73,12 @@ export default function RootLayout({
                 Learn
               </Link>
               <Link
+                href="/guides"
+                className="text-sm font-medium text-zinc-600 hover:text-indigo-600 dark:text-zinc-400 dark:hover:text-indigo-400"
+              >
+                Guides
+              </Link>
+              <Link
                 href="/submit"
                 className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-400"
               >

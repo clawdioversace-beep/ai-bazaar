@@ -1,0 +1,231 @@
+---
+slug: "openclaw-model-selection"
+title: "Choosing Models for OpenClaw"
+tagline: "Which LLM to use as your agent's brain — free options, paid upgrades, and cost-saving tricks"
+difficulty: "beginner"
+readingTime: "6 min"
+category: "openclaw"
+tags: ["openclaw", "models", "moonshot", "kimi", "llm", "pricing"]
+relatedPacks: ["ai-agent-toolbox"]
+relatedTools: []
+publishedAt: "2026-02-25"
+prevGuide: "openclaw-installation-guide"
+nextGuide: "openclaw-md-files-explained"
+---
+
+## How OpenClaw Uses Models
+
+Your OpenClaw agent needs a "brain" — a large language model (LLM) that processes messages and generates responses. The gateway routes every incoming message (from Telegram, Discord, or web) to your configured model provider, gets a response, and sends it back.
+
+You choose which model to use, and you can change it anytime. Different models have different capabilities, speeds, and costs.
+
+---
+
+## The Default: Moonshot / Kimi
+
+OpenClaw defaults to **Moonshot's Kimi** models. Here's why:
+
+### Why Moonshot?
+
+- **Free tier available** — enough for personal use and experimenting
+- **Large context window** — Kimi K2.5 supports 256K tokens (most models cap at 128K)
+- **Good general performance** — handles conversation, coding, analysis, and creative tasks
+- **Low latency** — fast response times for interactive chat
+
+### Available Kimi Models
+
+| Model | Context Window | Max Output | Best For |
+|-------|---------------|------------|----------|
+| Kimi K2.5 | 256K tokens | 8,192 tokens | General tasks, coding, conversation |
+| Kimi K2 (preview) | 256K tokens | 8,192 tokens | Fallback option |
+
+### Getting a Moonshot API Key
+
+1. Go to [platform.moonshot.ai](https://platform.moonshot.ai)
+2. Sign up for a free account
+3. Navigate to API Keys
+4. Generate a new key
+5. Add it during `openclaw setup` or manually in your agent config
+
+---
+
+## Other Supported Providers
+
+OpenClaw isn't locked to one provider. You can configure any OpenAI-compatible API:
+
+### Claude (Anthropic)
+
+The most capable coding and reasoning model. Significantly better than Kimi for complex tasks.
+
+| Model | Context | Cost (per 1M tokens) |
+|-------|---------|---------------------|
+| Claude Sonnet | 200K | $3 in / $15 out |
+| Claude Opus | 200K | $15 in / $75 out |
+
+**When to use:** Complex coding tasks, multi-step reasoning, working with large codebases.
+
+**Setup:**
+
+```json
+{
+  "providers": {
+    "anthropic": {
+      "baseUrl": "https://api.anthropic.com/v1",
+      "apiKey": "sk-ant-...",
+      "models": [
+        {
+          "id": "claude-sonnet-4-6",
+          "name": "Claude Sonnet",
+          "contextWindow": 200000,
+          "maxTokens": 8192
+        }
+      ]
+    }
+  }
+}
+```
+
+### GPT (OpenAI)
+
+Broad ecosystem, good at creative tasks and general knowledge.
+
+| Model | Context | Cost (per 1M tokens) |
+|-------|---------|---------------------|
+| GPT-4o | 128K | $2.50 in / $10 out |
+| GPT-4o mini | 128K | $0.15 in / $0.60 out |
+
+**When to use:** Creative writing, broad knowledge queries, cost-sensitive applications.
+
+### Local Models (Ollama)
+
+Run models on your own hardware. Zero API costs, complete privacy.
+
+```bash
+# Install Ollama
+curl -fsSL https://ollama.ai/install.sh | sh
+
+# Pull a model
+ollama pull llama3.1
+
+# Configure in OpenClaw
+# baseUrl: http://localhost:11434/v1
+```
+
+**When to use:** Privacy-sensitive tasks, offline operation, experimenting without API costs.
+
+**Trade-off:** Local models are significantly less capable than Claude or GPT-4o. Good for simple tasks, not great for complex coding.
+
+---
+
+## Configuring Models
+
+### Main config: openclaw.json
+
+Your model configuration lives in `~/.openclaw/openclaw.json` under the `models` section:
+
+```json
+{
+  "models": {
+    "providers": {
+      "moonshot": {
+        "baseUrl": "https://api.moonshot.ai/v1",
+        "models": [
+          {
+            "id": "kimi-k2.5",
+            "name": "Kimi K2.5",
+            "contextWindow": 256000,
+            "maxTokens": 8192
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+### Per-agent model assignment
+
+Each agent can use a different model. This is configured in the agent's directory:
+
+```
+~/.openclaw/agents/main/agent/models.json    # Main agent's model config
+~/.openclaw/agents/kimi-coding/agent/models.json  # Secondary agent
+```
+
+This means you can have:
+- A **main agent** running Claude (for complex tasks)
+- A **coding agent** running Kimi (for quick code generation)
+- A **research agent** running GPT-4o mini (for cheap, broad queries)
+
+### Setting the default model
+
+In `openclaw.json`, under `agents.defaults`:
+
+```json
+{
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "moonshot/kimi-k2.5",
+        "fallbacks": [
+          "moonshot/kimi-k2-0905-preview"
+        ]
+      }
+    }
+  }
+}
+```
+
+The **fallback chain** means if the primary model is down or rate-limited, OpenClaw automatically tries the next one.
+
+---
+
+## Cost-Saving Tips
+
+### Use cheap models for background tasks
+
+Your agent doesn't need its best model for everything. Configure cheaper models for:
+
+- **Heartbeat checks** — periodic wake-ups that just scan for updates
+- **Cron jobs** — scheduled tasks like daily summaries
+- **Group chats** — where responses don't need to be as sophisticated
+
+### Monitor your usage
+
+Check your API provider's dashboard regularly. Most providers show:
+- Total tokens used
+- Cost per day/week/month
+- Rate limit status
+
+### The free tier strategy
+
+Start with Moonshot's free tier. It's enough for:
+- Personal conversations
+- Simple automation
+- Learning the system
+
+Upgrade to a paid provider only when you need:
+- Better code generation (→ Claude)
+- Longer responses (→ increase maxTokens)
+- Higher rate limits (→ paid tier of any provider)
+
+### Model switching
+
+You can change models at any time without losing memory or configuration. Your agent's personality (SOUL.md, IDENTITY.md) is stored as files, not in the model. Switching from Kimi to Claude just means your agent gets a smarter brain — same personality, same memory.
+
+---
+
+## Quick Comparison
+
+| Factor | Moonshot (Free) | Claude Sonnet | GPT-4o | Local (Ollama) |
+|--------|----------------|---------------|--------|----------------|
+| Cost | Free | ~$3-15/M tokens | ~$2.50-10/M tokens | Free (hardware cost) |
+| Quality | Good | Excellent | Very Good | Varies |
+| Speed | Fast | Fast | Fast | Depends on hardware |
+| Context | 256K | 200K | 128K | 8-128K |
+| Privacy | Cloud | Cloud | Cloud | Local only |
+| Best for | Getting started | Complex coding | General tasks | Offline/privacy |
+
+**Our recommendation:** Start with Moonshot free, upgrade to Claude Sonnet when you're serious about coding tasks, and keep Moonshot as a fallback.
+
+> Next: Learn what each workspace file does in [The .md Files That Define Your Agent](/guides/openclaw-md-files-explained).

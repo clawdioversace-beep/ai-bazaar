@@ -25,6 +25,7 @@ export function Footer() {
               <Link href="/tools" className="text-sm text-zinc-600 hover:text-indigo-600 dark:text-zinc-400 dark:hover:text-indigo-400">Explore Tools</Link>
               <Link href="/packs" className="text-sm text-zinc-600 hover:text-indigo-600 dark:text-zinc-400 dark:hover:text-indigo-400">Starter Packs</Link>
               <Link href="/reads" className="text-sm text-zinc-600 hover:text-indigo-600 dark:text-zinc-400 dark:hover:text-indigo-400">Learn</Link>
+              <Link href="/guides" className="text-sm text-zinc-600 hover:text-indigo-600 dark:text-zinc-400 dark:hover:text-indigo-400">Guides</Link>
               <Link href="/submit" className="text-sm text-zinc-600 hover:text-indigo-600 dark:text-zinc-400 dark:hover:text-indigo-400">Share a Tool</Link>
               <Link href="/ask" className="text-sm text-zinc-600 hover:text-indigo-600 dark:text-zinc-400 dark:hover:text-indigo-400">Ask AI</Link>
             </nav>

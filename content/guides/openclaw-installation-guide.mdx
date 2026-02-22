@@ -1,0 +1,232 @@
+---
+slug: "openclaw-installation-guide"
+title: "Installing OpenClaw: Zero to Running Agent"
+tagline: "Get your own AI agent with personality, memory, and Telegram access in under 30 minutes"
+difficulty: "beginner"
+readingTime: "10 min"
+category: "openclaw"
+tags: ["openclaw", "installation", "telegram", "agent", "setup"]
+relatedPacks: ["ai-agent-toolbox"]
+relatedTools: []
+publishedAt: "2026-02-25"
+prevGuide: "first-projects-with-ai-coding-tools"
+nextGuide: "openclaw-model-selection"
+---
+
+## What Is OpenClaw?
+
+OpenClaw is a local AI agent framework that runs on your machine. Unlike ChatGPT or Claude's web interface where you talk to a generic AI, OpenClaw lets you create an agent with:
+
+- **A personality** — you define who the agent is, how it behaves, what it cares about
+- **Persistent memory** — it remembers conversations across sessions
+- **Tools and skills** — it can search the web, run code, manage files, and more
+- **Channel access** — talk to it via Telegram, Discord, or a local web interface
+- **Scheduled tasks** — it can wake up on its own, check things, and alert you
+
+Think of it as the difference between renting an apartment (ChatGPT) and owning a house (OpenClaw). You control everything.
+
+---
+
+## Prerequisites
+
+Before installing, make sure you have:
+
+- **macOS or Linux** (Windows works via WSL)
+- **Node.js 18+** — check with `node -v`
+- **npm or bun** — comes with Node.js or install bun from [bun.sh](https://bun.sh)
+- **A Telegram account** — for the easiest way to chat with your agent
+- **A model provider API key** — Moonshot/Kimi offers a free tier (see our [model selection guide](/guides/openclaw-model-selection))
+
+---
+
+## Step 1: Install OpenClaw
+
+Install OpenClaw globally:
+
+```bash
+npm install -g openclaw
+```
+
+Verify the installation:
+
+```bash
+openclaw --version
+```
+
+You should see a version number. If you get "command not found", try closing and reopening your terminal.
+
+---
+
+## Step 2: Initial Setup
+
+Run the setup wizard:
+
+```bash
+openclaw setup
+```
+
+This creates the `~/.openclaw/` directory and walks you through initial configuration:
+
+1. **Gateway port** — defaults to `18789`. Press Enter to accept unless you have a conflict.
+2. **Model provider** — choose your LLM provider. Moonshot/Kimi is recommended for beginners (free tier available).
+3. **API key** — paste your provider's API key when prompted.
+
+After setup, your directory structure looks like:
+
+```
+~/.openclaw/
+├── openclaw.json          # Main configuration
+├── workspace/             # Your agent's personality files
+├── agents/                # Agent configurations
+├── identity/              # Device authentication
+└── logs/                  # Operation logs
+```
+
+---
+
+## Step 3: First Boot — Meet Your Agent
+
+Start the OpenClaw gateway:
+
+```bash
+openclaw gateway
+```
+
+On first boot, OpenClaw reads the `BOOTSTRAP.md` file in your workspace. This is a first-run conversation that helps you set up your agent's personality:
+
+- **Name your agent** — give it a name (e.g., "Atlas", "Nova", "Clawdio")
+- **Define its vibe** — professional? casual? sarcastic? enthusiastic?
+- **Set boundaries** — what should it help with? what should it refuse?
+
+The agent will write its own `IDENTITY.md` and `SOUL.md` based on your answers. After this first conversation, `BOOTSTRAP.md` is no longer needed.
+
+---
+
+## Step 4: Connect Telegram
+
+The fastest way to interact with your agent is via Telegram.
+
+### Create a Telegram bot
+
+1. Open Telegram and search for `@BotFather`
+2. Send `/newbot`
+3. Choose a name (e.g., "My AI Agent")
+4. Choose a username (must end in `bot`, e.g., `myai_agent_bot`)
+5. BotFather gives you a token like: `123456789:ABCdefGHIjklMNOpqrSTUvwxYZ`
+
+### Add the token to OpenClaw
+
+```bash
+openclaw channels telegram setup
+```
+
+Paste your bot token when prompted. OpenClaw will configure the Telegram channel.
+
+### Set up security
+
+OpenClaw uses an allowlist to control who can talk to your bot:
+
+```bash
+openclaw channels telegram allow <your-telegram-user-id>
+```
+
+To find your Telegram user ID, search for `@userinfobot` on Telegram and send `/start`.
+
+### Start chatting
+
+1. Open Telegram
+2. Search for your bot by its username
+3. Send any message
+4. Your agent responds
+
+---
+
+## Step 5: Verify It Works
+
+Run a quick health check:
+
+```bash
+openclaw status
+```
+
+You should see:
+- Gateway: running on port 18789
+- Agent: main (active)
+- Channels: telegram (connected)
+- Model: your configured model
+
+Try these interactions with your agent via Telegram:
+- Send "Hello, who are you?" — it should respond with its personality
+- Send "What can you do?" — it should describe its capabilities
+- Send "Remember that my favorite color is blue" — then in a new session, ask "What's my favorite color?" to test memory
+
+---
+
+## Troubleshooting
+
+### "Port 18789 already in use"
+
+Another process is using that port. Either:
+
+```bash
+# Find and kill the process
+lsof -i :18789
+kill -9 <PID>
+
+# Or change the port in openclaw.json
+# Edit gateway.port to a different number (e.g., 18790)
+```
+
+### "API key invalid" or model errors
+
+1. Double-check your API key in `~/.openclaw/agents/main/agent/auth-profiles.json`
+2. Verify the key works by testing the provider's API directly
+3. Check if you've exceeded the free tier limits
+
+### Telegram bot not responding
+
+1. Make sure the gateway is running (`openclaw gateway`)
+2. Check that your Telegram user ID is in the allowlist
+3. Look at the logs: `~/.openclaw/logs/` for error messages
+4. Try restarting: `openclaw gateway` (stop and start again)
+
+### "Module not found" errors
+
+```bash
+# Reinstall OpenClaw
+npm install -g openclaw
+
+# Or if using bun
+bun install -g openclaw
+```
+
+---
+
+## What's in Your Workspace
+
+After setup, your `~/.openclaw/workspace/` directory contains the files that define your agent. These are all editable markdown files:
+
+| File | Purpose |
+|------|---------|
+| `IDENTITY.md` | Agent's name, personality, emoji |
+| `SOUL.md` | Core philosophy and behavior rules |
+| `USER.md` | Information about you (auto-updated) |
+| `AGENTS.md` | Workspace-level instructions |
+| `MEMORY.md` | Curated long-term memory |
+| `TOOLS.md` | Local environment notes |
+| `HEARTBEAT.md` | Periodic check-in configuration |
+
+Learn more about each file in our [.md Files Explained](/guides/openclaw-md-files-explained) guide.
+
+---
+
+## Next Steps
+
+Now that your agent is running:
+
+1. **Customize its personality** — edit `IDENTITY.md` and `SOUL.md`
+2. **Choose the right model** — read our [Model Selection guide](/guides/openclaw-model-selection)
+3. **Add capabilities** — install skills and plugins ([Skills guide](/guides/openclaw-skills-and-plugins))
+4. **Learn the config files** — understand what each [.md file does](/guides/openclaw-md-files-explained)
+
+> Your agent is alive. Now make it yours.
