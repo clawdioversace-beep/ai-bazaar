@@ -51,3 +51,8 @@ scrapers/output/*.json
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Content engine outputs (generated daily, not committed)
+outputs/daily-brief-*.md
+outputs/reply-targets-*.md
+data/tweet-performance.json
