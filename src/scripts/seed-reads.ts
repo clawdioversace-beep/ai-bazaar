@@ -10,7 +10,7 @@ const READS = [
   {
     title: 'Building Effective Agents',
     summary: 'Anthropic\'s guide to building effective AI agents — covers workflows, orchestration patterns, and when to use agents vs simpler solutions.',
-    sourceUrl: 'https://www.anthropic.com/engineering/building-effective-agents',
+    sourceUrl: 'https://www.anthropic.com/research/building-effective-agents',
     sourceName: 'Blog',
     author: 'Anthropic',
     tags: ['agents', 'claude', 'architecture'],
@@ -20,7 +20,7 @@ const READS = [
   {
     title: 'Model Context Protocol: Introduction',
     summary: 'The official introduction to MCP — a standard protocol for connecting AI assistants to external data sources and tools.',
-    sourceUrl: 'https://modelcontextprotocol.io/introduction',
+    sourceUrl: 'https://modelcontextprotocol.io/docs/introduction',
     sourceName: 'Blog',
     author: 'Anthropic',
     tags: ['mcp', 'protocol', 'tools'],
@@ -30,7 +30,7 @@ const READS = [
   {
     title: 'How to Build an MCP Server in TypeScript',
     summary: 'Step-by-step tutorial for building a Model Context Protocol server from scratch using the official TypeScript SDK.',
-    sourceUrl: 'https://modelcontextprotocol.io/quickstart/server',
+    sourceUrl: 'https://modelcontextprotocol.io/docs/quickstart/server',
     sourceName: 'Blog',
     author: 'MCP Team',
     tags: ['mcp', 'typescript', 'tutorial'],
@@ -49,7 +49,7 @@ const READS = [
   {
     title: 'LangGraph: Build Stateful AI Agents',
     summary: 'Tutorial on building production-ready AI agents with LangGraph — covers state machines, tool integration, and human-in-the-loop patterns.',
-    sourceUrl: 'https://langchain-ai.github.io/langgraph/tutorials/introduction/',
+    sourceUrl: 'https://langchain-ai.github.io/langgraph/tutorials/',
     sourceName: 'Blog',
     author: 'LangChain',
     tags: ['langgraph', 'agents', 'python'],
@@ -58,7 +58,7 @@ const READS = [
   {
     title: 'RAG is Dead, Long Live RAG',
     summary: 'Deep dive into why naive RAG fails and what advanced retrieval patterns (hybrid search, reranking, query decomposition) actually work in production.',
-    sourceUrl: 'https://www.philschmid.de/rag-is-dead-long-live-rag',
+    sourceUrl: 'https://contextual.ai/blog/is-rag-dead-yet',
     sourceName: 'Blog',
     author: 'Philipp Schmid',
     tags: ['rag', 'retrieval', 'production'],
@@ -76,7 +76,7 @@ const READS = [
   {
     title: 'How to Build a Tool-Using AI Agent from Scratch',
     summary: 'From-scratch implementation of an AI agent that can use tools, with code examples covering the ReAct loop, tool execution, and error recovery.',
-    sourceUrl: 'https://www.anthropic.com/engineering/tool-use-agent-tutorial',
+    sourceUrl: 'https://docs.anthropic.com/en/docs/agents-and-tools/tool-use/implement-tool-use',
     sourceName: 'Blog',
     author: 'Anthropic',
     tags: ['agents', 'tool-use', 'tutorial'],
@@ -85,7 +85,7 @@ const READS = [
   {
     title: 'Understanding AI Agent Memory Systems',
     summary: 'Comprehensive overview of memory architectures for AI agents — short-term context, long-term vector storage, episodic memory, and hybrid approaches.',
-    sourceUrl: 'https://www.pinecone.io/learn/agent-memory/',
+    sourceUrl: 'https://www.pinecone.io/learn/series/langchain/langchain-conversational-memory/',
     sourceName: 'Blog',
     author: 'Pinecone',
     tags: ['agents', 'memory', 'vector-db'],
@@ -94,7 +94,7 @@ const READS = [
   {
     title: 'Multi-Agent Systems: Patterns and Pitfalls',
     summary: 'Lessons learned from building multi-agent systems in production. Covers coordination patterns, failure modes, and when single agents are enough.',
-    sourceUrl: 'https://www.crewai.com/blog/multi-agent-patterns',
+    sourceUrl: 'https://blog.crewai.com/agentic-systems-with-crewai/',
     sourceName: 'Blog',
     author: 'CrewAI',
     tags: ['multi-agent', 'architecture', 'production'],
@@ -103,7 +103,7 @@ const READS = [
   {
     title: 'Prompt Engineering for Tool Use',
     summary: 'How to write effective tool descriptions and system prompts that help LLMs reliably select and use the right tools with correct parameters.',
-    sourceUrl: 'https://docs.anthropic.com/en/docs/build-with-claude/tool-use/best-practices',
+    sourceUrl: 'https://docs.anthropic.com/en/docs/agents-and-tools/tool-use/overview',
     sourceName: 'Blog',
     author: 'Anthropic',
     tags: ['prompt-engineering', 'tool-use', 'claude'],
