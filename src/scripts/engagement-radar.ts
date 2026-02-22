@@ -37,18 +37,34 @@ const SEARCH_KEYWORDS = [
   'AI workflow',
 ];
 
-/** Accounts known to post about AI tools — monitor these for reply opportunities */
+/**
+ * Accounts known to post about AI tools — monitor these for reply opportunities.
+ * Curated for the sweet spot: big enough for visibility, small enough to notice replies.
+ * Organized by priority (best ROI reply targets first).
+ */
 const MONITOR_ACCOUNTS = [
-  { handle: '@TheRundownAI', topic: 'AI news and tools', followers: '600k+' },
-  { handle: '@rowancheung', topic: 'AI tools and tutorials', followers: '400k+' },
-  { handle: '@LinusEkenstam', topic: 'AI tools and art', followers: '250k+' },
-  { handle: '@maboroshi_ai', topic: 'AI and Web3', followers: '50k+' },
-  { handle: '@mcaborsh', topic: 'MCP and AI agents', followers: '20k+' },
-  { handle: '@aiaborsh', topic: 'AI tools curation', followers: '15k+' },
-  { handle: '@baborsh', topic: 'AI building tools', followers: '10k+' },
-  { handle: '@nonmayorpete', topic: 'AI agent frameworks', followers: '30k+' },
-  { handle: '@svpino', topic: 'ML engineering', followers: '250k+' },
-  { handle: '@kaborsh', topic: 'AI productivity', followers: '20k+' },
+  // Tier 1: MCP / Claude ecosystem (highest relevance for AI Bazaar)
+  { handle: '@alexalbert__', topic: 'MCP/Claude ecosystem, Anthropic developer relations', followers: '120k' },
+  { handle: '@simonw', topic: 'LLM tooling, Datasette, practical AI tools', followers: '147k' },
+  { handle: '@swyx', topic: 'AI engineering, Latent Space podcast, dev tools', followers: '122k' },
+  { handle: '@jxnlco', topic: 'Structured LLM outputs (Instructor), AI consulting', followers: '45k' },
+
+  // Tier 2: AI tool curators and builders (high engagement, reply-friendly)
+  { handle: '@_akhaliq', topic: 'Daily arXiv papers, HuggingFace, fastest AI news', followers: '441k' },
+  { handle: '@mattshumer_', topic: 'AI automation, HyperWrite CEO', followers: '336k' },
+  { handle: '@LinusEkenstam', topic: 'AI product design and UX', followers: '220k' },
+  { handle: '@SullyOmarr', topic: 'AI agent tools, Cognosys founder', followers: '59k' },
+  { handle: '@Teknium1', topic: 'Open-source LLMs, Nous Research, Hermes models', followers: '50k' },
+
+  // Tier 3: Crypto x AI intersection (Jet's core audience)
+  { handle: '@shawmakesmagic', topic: 'ElizaOS creator, crypto x AI agents', followers: '157k' },
+  { handle: '@ErikVoorhees', topic: 'Venice AI, ShapeShift, crypto-AI intersection', followers: '743k' },
+  { handle: '@levelsio', topic: 'Indie hacking, PhotoAI, ships AI products fast', followers: '792k' },
+
+  // Tier 4: Broader AI thought leaders (volume play)
+  { handle: '@rowancheung', topic: 'The Rundown AI newsletter, weekly AI tool roundups', followers: '567k' },
+  { handle: '@AravSrinivas', topic: 'Perplexity AI CEO, AI search products', followers: '322k' },
+  { handle: '@bindureddy', topic: 'Abacus AI CEO, LLM benchmarks (LiveBench)', followers: '175k' },
 ];
 
 /** Reply angle templates based on tweet content */
