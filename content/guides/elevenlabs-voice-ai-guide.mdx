@@ -1,0 +1,229 @@
+---
+slug: "elevenlabs-voice-ai-guide"
+title: "Adding Voice to Your AI Projects with ElevenLabs"
+tagline: "Text-to-speech, voice cloning, and conversational agents — everything you need to ship voice features"
+difficulty: "beginner"
+readingTime: "10 min"
+category: "ecosystem"
+tags: ["elevenlabs", "text-to-speech", "voice", "api", "agents"]
+relatedPacks: ["ai-agent-toolbox"]
+relatedTools: []
+publishedAt: "2026-02-23"
+prevGuide: "ai-design-pipeline-for-builders"
+---
+
+## What Is ElevenLabs?
+
+[ElevenLabs](https://elevenlabs.io) is an AI audio platform that turns text into lifelike speech, clones voices, generates music and sound effects, and powers real-time conversational voice agents. If you're building anything that needs to talk, listen, or process audio — this is the platform to know.
+
+The platform is organized into three product families:
+
+- **ElevenCreative** — Studio tools for content creators (TTS, dubbing, voice design)
+- **ElevenAgents** — Build and deploy real-time conversational voice AI agents
+- **ElevenAPI** — Developer APIs for integrating all of the above into your own apps
+
+---
+
+## What Can You Build?
+
+| Capability | What It Does |
+|---|---|
+| **Text-to-Speech** | Convert text to natural audio with emotional expression in 70+ languages |
+| **Voice Cloning** | Clone any voice from audio samples (instant or professional-grade) |
+| **Voice Agents** | Deploy real-time conversational AI with sub-75ms latency |
+| **Speech-to-Text** | Transcribe audio with Scribe v2 (90+ languages) |
+| **Text-to-Dialogue** | Generate multi-speaker conversations from a script |
+| **Music Generation** | Create compositions, stems, and loops from text prompts |
+| **Sound Effects** | Generate cinematic SFX from descriptions |
+| **Dubbing** | Translate audio/video into other languages, preserving speaker identity |
+
+---
+
+## AI Models — Which One to Use
+
+| Model | Best For | Languages |
+|---|---|---|
+| **Eleven v3** | Highest quality — audiobooks, podcasts, long-form | 70+ |
+| **Flash v2.5** | Real-time agents, chatbots (75ms latency) | 32 |
+| **Multilingual v2** | Video voiceovers, dubbing, production content | 29 |
+| **Turbo v2.5** | Prototyping, quick demos | 32 |
+| **Scribe v2** | Transcription (batch) | 90+ |
+| **Scribe v2 Realtime** | Live captioning | 90+ |
+
+**Rule of thumb:** Use Flash for anything real-time. Use v3 or Multilingual v2 for pre-rendered content. Use Turbo for throwaway prototypes.
+
+---
+
+## Pricing
+
+| Plan | Price/mo | Credits | What You Unlock |
+|---|---|---|---|
+| **Free** | $0 | 10,000 chars | 3 custom voices, non-commercial only |
+| **Starter** | $5 | 30,000 chars | Commercial rights, Instant Voice Cloning |
+| **Creator** | $22 | 100,000 chars | Professional Voice Cloning |
+| **Pro** | $99 | 500,000 chars | Higher concurrency, priority queue |
+| **Scale** | $330 | 2M chars | Enterprise features |
+| **Business** | $1,320 | 11M credits | Custom SLAs, dedicated support |
+
+Annual billing saves ~17%. Flash/Turbo models cost fewer credits per character than standard models.
+
+The free tier is enough to prototype and test. You'll hit Starter territory once you're generating audio for production use.
+
+---
+
+## Getting Started (5 Minutes)
+
+### Step 1: Get Your API Key
+
+1. Sign up at [elevenlabs.io](https://elevenlabs.io)
+2. Go to **Profile Settings** → **API Keys**
+3. Generate a key and store it as an environment variable:
+
+```bash
+export ELEVENLABS_API_KEY="your_key_here"
+```
+
+### Step 2: Install the SDK
+
+**JavaScript / TypeScript:**
+```bash
+npm install @elevenlabs/elevenlabs-js
+```
+
+**Python:**
+```bash
+pip install elevenlabs
+```
+
+### Step 3: Generate Your First Audio
+
+**TypeScript:**
+```typescript
+import { ElevenLabsClient } from "@elevenlabs/elevenlabs-js";
+
+const client = new ElevenLabsClient();
+
+const audio = await client.textToSpeech.convert("JBFqnCBsd6RMkjVDRZzb", {
+  text: "Welcome to AI Bazaar. Discover the best AI tools in under 60 seconds.",
+  modelId: "eleven_multilingual_v2",
+  outputFormat: "mp3_44100_128",
+});
+```
+
+**Python:**
+```python
+from elevenlabs import ElevenLabs
+
+client = ElevenLabs()
+
+audio = client.text_to_speech.convert(
+    voice_id="JBFqnCBsd6RMkjVDRZzb",
+    text="Welcome to AI Bazaar. Discover the best AI tools in under 60 seconds.",
+    model_id="eleven_multilingual_v2",
+    output_format="mp3_44100_128"
+)
+```
+
+That's it. `JBFqnCBsd6RMkjVDRZzb` is "George," one of the default voices. You'll get back a binary audio stream you can save to a file or stream directly.
+
+---
+
+## Raw API (No SDK)
+
+If you prefer raw HTTP:
+
+```
+POST https://api.elevenlabs.io/v1/text-to-speech/{voice_id}
+```
+
+**Headers:**
+```
+Content-Type: application/json
+xi-api-key: your_api_key
+```
+
+**Body:**
+```json
+{
+  "text": "Your text here",
+  "model_id": "eleven_multilingual_v2",
+  "voice_settings": {
+    "stability": 0.5,
+    "similarity_boost": 0.75,
+    "speed": 1.0
+  }
+}
+```
+
+**Response:** Binary audio stream (`application/octet-stream`).
+
+**Output format options:** `mp3_44100_128`, `mp3_22050_32`, `pcm_16000`, `pcm_22050`, `pcm_24000`, `pcm_44100`, `ulaw_8000`
+
+---
+
+## Voice Cloning
+
+### Instant Voice Cloning
+
+- **Plan required:** Starter ($5/mo) or above
+- **Audio needed:** 1-2 minutes of clean audio (no reverb, no background noise)
+- **Speed:** Near-instant
+- **Best for:** Quick experiments, prototyping, short-term use
+
+Keep recordings under 3 minutes — more audio doesn't improve quality and can actually hurt it.
+
+### Professional Voice Cloning
+
+- **Plan required:** Creator ($22/mo) or above
+- **Audio needed:** Minimum 30 minutes, optimal 2-3 hours
+- **Speed:** Requires processing time
+- **Best for:** Production use, long-form content, brand voices
+
+Both are available via API or the dashboard UI.
+
+---
+
+## Conversational Voice Agents
+
+ElevenAgents lets you build voice agents that handle real-time phone calls and conversations. The system chains four components:
+
+1. **Speech-to-Text** — Transcribes what the user says
+2. **Language Model** — Your choice of LLM (or bring your own)
+3. **Text-to-Speech** — Low-latency voice output from 5,000+ voices
+4. **Turn-taking model** — Handles natural conversation timing (interruptions, pauses, backchannels)
+
+### What People Build With It
+
+- Customer support phone lines that never sleep
+- Sales qualification bots that sound human
+- Virtual receptionists and booking assistants
+- Interactive tutorials and onboarding flows
+
+### Where You Can Deploy
+
+- **Web** — Embed in any website with the JS SDK
+- **Mobile** — Native SDKs for Swift, Kotlin, Flutter
+- **Telephony** — Connect to phone systems for inbound/outbound calls
+- **Dashboard** — Visual workflow builder if you don't want to code
+
+You can have a working voice agent in about 5 minutes using the [ElevenAgents dashboard](https://elevenlabs.io/conversational-ai).
+
+---
+
+## Quick Reference
+
+| Resource | Link |
+|---|---|
+| Platform | [elevenlabs.io](https://elevenlabs.io) |
+| API Docs | [elevenlabs.io/docs/api-reference/introduction](https://elevenlabs.io/docs/api-reference/introduction) |
+| Developer Portal | [elevenlabs.io/developers](https://elevenlabs.io/developers) |
+| Voice Agents | [elevenlabs.io/conversational-ai](https://elevenlabs.io/conversational-ai) |
+| Pricing | [elevenlabs.io/pricing](https://elevenlabs.io/pricing) |
+| JS/TS SDK | `npm install @elevenlabs/elevenlabs-js` |
+| Python SDK | `pip install elevenlabs` |
+
+---
+
+## Bottom Line
+
+ElevenLabs is the fastest path to shipping voice features. The free tier lets you prototype, the API is clean, and the model quality is best-in-class. If your project needs to speak, listen, clone voices, or handle phone calls — start here.
