@@ -180,7 +180,14 @@ async function main() {
   );
   results.push({ step: 'Engagement radar', success: radarOk });
 
-  // Step 5: Send Telegram brief
+  // Step 5: Sync style examples from Google Sheet
+  const stylesOk = await runCommand(
+    'Sync style examples',
+    ['bun', 'src/scripts/sync-style-examples.ts']
+  );
+  results.push({ step: 'Style examples', success: stylesOk });
+
+  // Step 6: Send Telegram brief
   console.log('\n--- Send Telegram brief ---');
   const brief = await buildTelegramBrief();
   const tgOk = await sendTelegram(brief);

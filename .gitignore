@@ -56,3 +56,4 @@ next-env.d.ts
 outputs/daily-brief-*.md
 outputs/reply-targets-*.md
 data/tweet-performance.json
+data/processed-threads.json
