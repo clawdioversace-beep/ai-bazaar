@@ -7,17 +7,19 @@ export interface CategoryNavProps {
     label: string;
   }>;
   activeCategory?: string;
+  /** Base path for category links. Defaults to "/tools". */
+  basePath?: string;
 }
 
 /**
  * CategoryNav component — displays category links with counts.
  *
- * Server Component (no client-side JS). Shows all 6 categories with listing counts.
- * Each category links to /tools?category={slug}.
+ * Server Component (no client-side JS). Shows all categories with entry counts.
+ * Each category links to {basePath}?category={slug}.
  *
  * Mobile: horizontal scroll. Desktop: wrapping grid.
  */
-export function CategoryNav({ categories, activeCategory }: CategoryNavProps) {
+export function CategoryNav({ categories, activeCategory, basePath = '/tools' }: CategoryNavProps) {
   return (
     <div className="flex gap-2 overflow-x-auto pb-2 md:flex-wrap md:overflow-x-visible">
       {categories.map(({ category, count, label }) => {
@@ -25,7 +27,7 @@ export function CategoryNav({ categories, activeCategory }: CategoryNavProps) {
         return (
           <Link
             key={category}
-            href={`/tools?category=${category}`}
+            href={`${basePath}?category=${category}`}
             className={`flex shrink-0 items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${
               isActive
                 ? 'border-indigo-600 bg-indigo-600 text-white hover:bg-indigo-700'

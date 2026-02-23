@@ -12,6 +12,10 @@
     "db:studio": "TURSO_DATABASE_URL=file:./dev.db bunx drizzle-kit studio",
     "seed": "TURSO_DATABASE_URL=file:./dev.db bun src/scripts/seed-catalog.ts",
     "seed:prod": "bun src/scripts/seed-catalog.ts",
+    "seed:skills": "TURSO_DATABASE_URL=file:./dev.db bun src/scripts/seed-skills.ts",
+    "seed:skills:prod": "bun src/scripts/seed-skills.ts",
+    "scrape:clawhub": "TURSO_DATABASE_URL=file:./dev.db bun src/scrapers/clawhub-scraper.ts",
+    "scrape:awesome-openclaw": "TURSO_DATABASE_URL=file:./dev.db bun src/scrapers/awesome-openclaw-scraper.ts",
     "worker": "TURSO_DATABASE_URL=file:./dev.db bun src/workers/scrape-worker.ts",
     "worker:prod": "bun src/workers/scrape-worker.ts",
     "schedule": "TURSO_DATABASE_URL=file:./dev.db bun src/jobs/schedule-scrapes.ts",
@@ -32,7 +36,9 @@
     "engagement-radar": "bun src/scripts/engagement-radar.ts",
     "morning-run": "TURSO_DATABASE_URL=file:./dev.db bun src/scripts/morning-run.ts",
     "morning-run:prod": "bun src/scripts/morning-run.ts",
-    "morning-run:quick": "TURSO_DATABASE_URL=file:./dev.db bun src/scripts/morning-run.ts --skip-scrape"
+    "morning-run:quick": "TURSO_DATABASE_URL=file:./dev.db bun src/scripts/morning-run.ts --skip-scrape",
+    "sync-styles": "bun src/scripts/sync-style-examples.ts",
+    "sync-styles:force": "bun src/scripts/sync-style-examples.ts --force"
   },
   "dependencies": {
     "@ai-sdk/groq": "^3.0.24",
@@ -44,6 +50,7 @@
     "ai": "^6.0.97",
     "bunqueue": "^2.4.6",
     "drizzle-orm": "^0.45.1",
+    "googleapis": "^171.4.0",
     "gray-matter": "^4.0.3",
     "mcp-handler": "^1.0.7",
     "next": "16.1.6",

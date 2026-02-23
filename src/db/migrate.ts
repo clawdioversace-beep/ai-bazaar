@@ -180,6 +180,35 @@ async function main() {
   await client.execute(`CREATE INDEX IF NOT EXISTS idx_clicks_clicked_at ON clicks(clicked_at)`);
   console.log('Clicks table created.');
 
+  // Create skills table (OpenClaw skills catalog)
+  console.log('Creating skills table...');
+  await client.execute(`
+    CREATE TABLE IF NOT EXISTS skills (
+      id TEXT PRIMARY KEY NOT NULL,
+      slug TEXT NOT NULL UNIQUE,
+      name TEXT NOT NULL,
+      tagline TEXT NOT NULL,
+      description TEXT NOT NULL,
+      category TEXT NOT NULL,
+      tags TEXT NOT NULL,
+      source_url TEXT NOT NULL UNIQUE,
+      docs_url TEXT,
+      license_type TEXT,
+      publisher TEXT,
+      install_cmd TEXT,
+      skill_type TEXT,
+      stars INTEGER DEFAULT 0,
+      upvotes INTEGER DEFAULT 0,
+      last_verified_at INTEGER,
+      dead_link INTEGER DEFAULT 0,
+      verified INTEGER DEFAULT 0,
+      created_at INTEGER NOT NULL,
+      updated_at INTEGER NOT NULL,
+      hype_score INTEGER DEFAULT 0
+    )
+  `);
+  console.log('Skills table created.');
+
   console.log('Migration complete.');
   client.close();
 }
@@ -303,6 +332,34 @@ async function runRemoteMigrations() {
   `);
   await client.execute(`CREATE INDEX IF NOT EXISTS idx_clicks_tool_id ON clicks(tool_id)`);
   await client.execute(`CREATE INDEX IF NOT EXISTS idx_clicks_clicked_at ON clicks(clicked_at)`);
+
+  // Skills table (OpenClaw skills catalog)
+  console.log('  Creating skills table...');
+  await client.execute(`
+    CREATE TABLE IF NOT EXISTS skills (
+      id TEXT PRIMARY KEY NOT NULL,
+      slug TEXT NOT NULL UNIQUE,
+      name TEXT NOT NULL,
+      tagline TEXT NOT NULL,
+      description TEXT NOT NULL,
+      category TEXT NOT NULL,
+      tags TEXT NOT NULL,
+      source_url TEXT NOT NULL UNIQUE,
+      docs_url TEXT,
+      license_type TEXT,
+      publisher TEXT,
+      install_cmd TEXT,
+      skill_type TEXT,
+      stars INTEGER DEFAULT 0,
+      upvotes INTEGER DEFAULT 0,
+      last_verified_at INTEGER,
+      dead_link INTEGER DEFAULT 0,
+      verified INTEGER DEFAULT 0,
+      created_at INTEGER NOT NULL,
+      updated_at INTEGER NOT NULL,
+      hype_score INTEGER DEFAULT 0
+    )
+  `);
 
   console.log('  Remote migrations applied.');
 }

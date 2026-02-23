@@ -32,6 +32,32 @@ export const CATEGORIES = [
 export type Category = typeof CATEGORIES[number];
 
 /**
+ * The six canonical categories for OpenClaw skill entries.
+ * Used by SkillEntrySchema in skill-schema.ts.
+ */
+export const SKILL_CATEGORIES = [
+  'automation',
+  'research',
+  'coding',
+  'media',
+  'web3',
+  'other',
+] as const;
+
+/** TypeScript type derived from SKILL_CATEGORIES */
+export type SkillCategory = typeof SKILL_CATEGORIES[number];
+
+/** Human-readable labels for each skill category */
+export const SKILL_CATEGORY_LABELS: Record<SkillCategory, string> = {
+  automation: 'Automation',
+  research: 'Research',
+  coding: 'Coding',
+  media: 'Media & Content',
+  web3: 'Web3 & Crypto',
+  other: 'Other',
+};
+
+/**
  * Human-readable labels for each canonical category.
  * Used for display in UI components and Telegram bot responses.
  */
