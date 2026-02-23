@@ -91,9 +91,14 @@ export function normalizeClawHubResult(result: ClawHubResult): SkillEntryInput {
     .filter((w) => w.length > 2);
   const tags = Array.from(new Set([category, 'openclaw-skill', ...nameTags])).slice(0, 8);
 
+  // Some ClawHub skills use the full description as displayName — truncate to 100 chars
+  const name = result.displayName.length > 100
+    ? result.displayName.slice(0, 97) + '...'
+    : result.displayName;
+
   return {
     slug: createSkillSlug(skillSlug),
-    name: result.displayName,
+    name,
     tagline,
     description,
     category,

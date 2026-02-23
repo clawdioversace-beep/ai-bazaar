@@ -150,12 +150,14 @@ async function scrapeQuery(
 
     if (page.length === 0) break;
 
+    let newInPage = 0;
     for (const result of page) {
       if (processed + errors >= maxPerQuery) break;
 
       // Skip slugs we've already processed from a previous query
       if (seenSlugs.has(result.slug)) continue;
       seenSlugs.add(result.slug);
+      newInPage++;
 
       try {
         const entry = normalizeClawHubResult(result);
@@ -166,6 +168,9 @@ async function scrapeQuery(
         errors++;
       }
     }
+
+    // ClawHub API ignores offset (returns same page every time) — stop if no new skills
+    if (newInPage === 0) break;
 
     offset += PAGE_SIZE;
 
