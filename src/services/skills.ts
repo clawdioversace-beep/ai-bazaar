@@ -119,27 +119,55 @@ export async function updateSkill(id: string, input: Partial<SkillEntryInput>): 
  * Upserts a skill by sourceUrl — updates if exists, creates if new.
  *
  * Preferred write method for scrapers: handles re-runs gracefully
- * without creating duplicate entries.
+ * without creating duplicate entries. Uses a single DB round trip via
+ * INSERT ... ON CONFLICT DO UPDATE for production Turso performance.
  *
  * @param input - Full skill data (validated through SkillEntrySchema)
- * @returns The skill record (either updated or newly created)
  */
-export async function upsertSkillBySourceUrl(input: SkillEntryInput): Promise<NewSkill> {
-  const normalizedUrl = normalizeSourceUrl(input.sourceUrl);
+export async function upsertSkillBySourceUrl(input: SkillEntryInput): Promise<void> {
+  const entry = SkillEntrySchema.parse(input);
+  const normalizedUrl = normalizeSourceUrl(entry.sourceUrl);
 
-  const existing = await db.query.skills.findFirst({
-    where: (s, { eq }) => eq(s.sourceUrl, normalizedUrl),
-  });
+  const record: NewSkill = {
+    id: entry.id ?? crypto.randomUUID(),
+    slug: entry.slug,
+    name: entry.name,
+    tagline: entry.tagline,
+    description: entry.description,
+    category: entry.category,
+    tags: JSON.stringify(entry.tags),
+    sourceUrl: normalizedUrl,
+    docsUrl: entry.docsUrl,
+    licenseType: entry.licenseType,
+    publisher: entry.publisher,
+    installCmd: entry.installCmd,
+    skillType: entry.skillType,
+    stars: entry.stars,
+    deadLink: entry.deadLink,
+    verified: entry.verified,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
 
-  if (existing) {
-    await updateSkill(existing.id, input);
-    const updated = await db.query.skills.findFirst({
-      where: (s, { eq }) => eq(s.id, existing.id),
+  await db
+    .insert(skills)
+    .values(record)
+    .onConflictDoUpdate({
+      target: skills.sourceUrl,
+      set: {
+        name: record.name,
+        tagline: record.tagline,
+        description: record.description,
+        category: record.category,
+        tags: record.tags,
+        publisher: record.publisher,
+        installCmd: record.installCmd,
+        skillType: record.skillType,
+        stars: record.stars,
+        verified: record.verified,
+        updatedAt: record.updatedAt,
+      },
     });
-    return updated as NewSkill;
-  }
-
-  return createSkill(input);
 }
 
 /**
