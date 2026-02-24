@@ -209,6 +209,26 @@ async function main() {
   `);
   console.log('Skills table created.');
 
+  // Create skills_sh table (skills.sh leaderboard cache)
+  console.log('Creating skills_sh table...');
+  await client.execute(`
+    CREATE TABLE IF NOT EXISTS skills_sh (
+      id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(8)))),
+      name TEXT NOT NULL UNIQUE,
+      source_repo TEXT NOT NULL,
+      description TEXT,
+      install_count INTEGER DEFAULT 0,
+      all_time_rank INTEGER,
+      trending_rank INTEGER,
+      install_cmd TEXT,
+      scraped_at INTEGER NOT NULL,
+      created_at INTEGER DEFAULT (unixepoch())
+    )
+  `);
+  await client.execute(`CREATE INDEX IF NOT EXISTS skills_sh_all_time_rank ON skills_sh(all_time_rank)`);
+  await client.execute(`CREATE INDEX IF NOT EXISTS skills_sh_trending_rank ON skills_sh(trending_rank)`);
+  console.log('skills_sh table created.');
+
   console.log('Migration complete.');
   client.close();
 }
@@ -360,6 +380,25 @@ async function runRemoteMigrations() {
       hype_score INTEGER DEFAULT 0
     )
   `);
+
+  // skills_sh table (skills.sh leaderboard cache)
+  console.log('  Creating skills_sh table...');
+  await client.execute(`
+    CREATE TABLE IF NOT EXISTS skills_sh (
+      id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(8)))),
+      name TEXT NOT NULL UNIQUE,
+      source_repo TEXT NOT NULL,
+      description TEXT,
+      install_count INTEGER DEFAULT 0,
+      all_time_rank INTEGER,
+      trending_rank INTEGER,
+      install_cmd TEXT,
+      scraped_at INTEGER NOT NULL,
+      created_at INTEGER DEFAULT (unixepoch())
+    )
+  `);
+  await client.execute(`CREATE INDEX IF NOT EXISTS skills_sh_all_time_rank ON skills_sh(all_time_rank)`);
+  await client.execute(`CREATE INDEX IF NOT EXISTS skills_sh_trending_rank ON skills_sh(trending_rank)`);
 
   console.log('  Remote migrations applied.');
 }

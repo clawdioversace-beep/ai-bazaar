@@ -6,7 +6,7 @@
 // The FTS5 table and triggers are created via a custom migration in src/db/migrations/.
 // See: drizzle.config.ts for the WARNING against using `drizzle-kit push` in this project.
 import { sqliteTable, text, integer, primaryKey } from 'drizzle-orm/sqlite-core';
-import { relations } from 'drizzle-orm';
+import { relations, sql } from 'drizzle-orm';
 
 /**
  * Main catalog listings table.
@@ -380,3 +380,26 @@ export const clicks = sqliteTable('clicks', {
 
 export type Click = typeof clicks.$inferSelect;
 export type NewClick = typeof clicks.$inferInsert;
+
+/**
+ * skills.sh leaderboard cache — scraped data from Vercel Labs' agent skills marketplace.
+ *
+ * Separate from the OpenClaw `skills` table. This table caches the skills.sh
+ * leaderboard (all-time + trending 24h) for the /agent-skills page.
+ * Data refreshed manually via `bun src/db/seed-skills-sh.ts`.
+ */
+export const skillsSh = sqliteTable('skills_sh', {
+  id: text('id').primaryKey(),
+  name: text('name').notNull().unique(),
+  sourceRepo: text('source_repo').notNull(),
+  description: text('description'),
+  installCount: integer('install_count').default(0),
+  allTimeRank: integer('all_time_rank'),
+  trendingRank: integer('trending_rank'),
+  installCmd: text('install_cmd'),
+  scrapedAt: integer('scraped_at').notNull(),
+  createdAt: integer('created_at').default(sql`(unixepoch())`),
+});
+
+export type SkillSh = typeof skillsSh.$inferSelect;
+export type NewSkillSh = typeof skillsSh.$inferInsert;

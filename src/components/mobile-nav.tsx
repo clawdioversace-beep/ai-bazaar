@@ -76,6 +76,13 @@ export function MobileNav() {
               Skills
             </Link>
             <Link
+              href="/agent-skills"
+              onClick={() => setIsOpen(false)}
+              className="text-sm font-medium text-zinc-600 hover:text-indigo-600 dark:text-zinc-400 dark:hover:text-indigo-400"
+            >
+              Agent Skills
+            </Link>
+            <Link
               href="/submit"
               onClick={() => setIsOpen(false)}
               className="rounded-lg bg-indigo-600 px-4 py-2 text-center text-sm font-medium text-white hover:bg-indigo-700"

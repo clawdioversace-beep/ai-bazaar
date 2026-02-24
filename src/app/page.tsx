@@ -15,6 +15,8 @@ import { listPacksWithToolCount } from '@/services/packs';
 import { listGuides } from '@/lib/guides';
 import { GuideCard } from '@/components/guide-card';
 import { CATEGORY_LABELS } from '@/lib/categories';
+import { getTopSkills } from '@/services/skills-sh';
+import { SkillShCard } from '@/components/skill-sh-card';
 
 export const dynamic = 'force-dynamic';
 
@@ -23,12 +25,13 @@ export const metadata = {
 };
 
 export default async function HomePage() {
-  const [newListings, categoryCounts, trendingListings, topReads, packs] = await Promise.all([
+  const [newListings, categoryCounts, trendingListings, topReads, packs, topAgentSkills] = await Promise.all([
     getNewThisWeek(12),
     countByCategory(),
     getTrendingListings(6),
     getFeaturedReads(3),
     listPacksWithToolCount(),
+    getTopSkills(3),
   ]);
 
   const featuredGuides = listGuides().slice(0, 3);
@@ -162,6 +165,35 @@ export default async function HomePage() {
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {featuredGuides.map((guide) => (
                 <GuideCard key={guide.slug} guide={guide} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Agent Skills — skills.sh teaser */}
+      {topAgentSkills.length > 0 && (
+        <section className="rounded-2xl bg-violet-50/50 p-8 dark:bg-violet-950/10">
+          <div className="flex flex-col gap-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <svg className="h-5 w-5 text-violet-600 dark:text-violet-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456z" />
+                </svg>
+                <h2 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+                  Agent Skills
+                </h2>
+              </div>
+              <Link
+                href="/agent-skills"
+                className="text-sm font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300"
+              >
+                View leaderboard &rarr;
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {topAgentSkills.map((skill) => (
+                <SkillShCard key={skill.name} skill={skill} rankField="allTimeRank" />
               ))}
             </div>
           </div>
