@@ -131,6 +131,13 @@ function parseTweetUrl(url: string): { screenName: string; tweetId: string } | n
   return { screenName: match[1]!, tweetId: match[2]! };
 }
 
+/** Strip tracking params (?s=, &t=) → canonical x.com/{user}/status/{id} */
+function normalizeTweetUrl(url: string): string {
+  const parsed = parseTweetUrl(url);
+  if (!parsed) return url;
+  return `https://x.com/${parsed.screenName}/status/${parsed.tweetId}`;
+}
+
 // ── X API v2 ────────────────────────────────────────────────────────────
 
 interface TwitterAPIResponse {
@@ -334,19 +341,33 @@ async function main() {
   const allRows = await readSheet();
   console.log(`  ${allRows.length} total rows`);
 
-  // 2. Filter for Twitter URLs
-  const twitterRows = filterTwitterRows(allRows);
-  console.log(`  ${twitterRows.length} Twitter/X thread rows`);
+  // 2. Filter for Twitter URLs and deduplicate by canonical URL
+  const allTwitterRows = filterTwitterRows(allRows);
+  const seen = new Set<string>();
+  const twitterRows = allTwitterRows.filter((r) => {
+    const key = normalizeTweetUrl(r.sourceUrl);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+  console.log(`  ${allTwitterRows.length} Twitter/X rows → ${twitterRows.length} unique threads`);
 
   if (twitterRows.length === 0) {
     console.log('No Twitter threads found in sheet. Done.');
     return;
   }
 
-  // 3. Load processed state (stores fetched content)
+  // 3. Load processed state (stores fetched content, keyed by canonical URL)
   const processed = forceRefetch ? {} as ProcessedState : await loadProcessed();
-  const unprocessed = twitterRows.filter((r) => !processed[r.sourceUrl]);
+  const unprocessed = twitterRows.filter((r) => !processed[normalizeTweetUrl(r.sourceUrl)]);
   console.log(`  ${unprocessed.length} new threads to fetch${forceRefetch ? ' (force mode)' : ''}`);
+
+  // Early exit: nothing new → skip fetch, markdown regen, and state save
+  if (unprocessed.length === 0 && !forceRefetch) {
+    const duration = ((Date.now() - startTime) / 1000).toFixed(1);
+    console.log(`\nNo new threads. Skipping markdown regeneration. (${duration}s)`);
+    return;
+  }
 
   // 4. Fetch new thread content
   let fetched = 0;
@@ -354,10 +375,11 @@ async function main() {
 
   for (let i = 0; i < unprocessed.length; i++) {
     const row = unprocessed[i];
+    const canonicalUrl = normalizeTweetUrl(row.sourceUrl);
     const result = await fetchThread(row.sourceUrl);
 
     if (result) {
-      processed[row.sourceUrl] = {
+      processed[canonicalUrl] = {
         fetchedAt: new Date().toISOString(),
         author: result.author,
         text: result.text,
@@ -365,9 +387,8 @@ async function main() {
       fetched++;
       console.log(`  ✓ @${result.author} — ${getHookLine(result.text)}`);
     } else {
-      // Store with summary as fallback text
       const parsed = parseTweetUrl(row.sourceUrl);
-      processed[row.sourceUrl] = {
+      processed[canonicalUrl] = {
         fetchedAt: new Date().toISOString(),
         author: parsed?.screenName || 'unknown',
         text: row.summary || '(Content could not be fetched — try --force later)',
@@ -386,13 +407,13 @@ async function main() {
 
   // 5. Build thread list from cached content + sheet metadata
   const allThreads: ThreadContent[] = twitterRows
-    .filter((row) => processed[row.sourceUrl])
+    .filter((row) => processed[normalizeTweetUrl(row.sourceUrl)])
     .map((row) => {
-      const entry = processed[row.sourceUrl];
+      const entry = processed[normalizeTweetUrl(row.sourceUrl)];
       return {
         author: entry.author,
         text: entry.text,
-        sourceUrl: row.sourceUrl,
+        sourceUrl: normalizeTweetUrl(row.sourceUrl),
         tags: row.tags,
         dateCaptured: row.date ? row.date.split('T')[0] : 'unknown',
         hookLine: getHookLine(entry.text),
@@ -404,7 +425,7 @@ async function main() {
   await Bun.write(OUTPUT_FILE, markdown);
   console.log(`Wrote ${allThreads.length} threads to content-engine/style-examples.md`);
 
-  // 7. Save processed state (with full content cached)
+  // 7. Save processed state (only when new entries were added)
   await saveProcessed(processed);
   console.log(`Updated processed state: ${Object.keys(processed).length} entries`);
 
