@@ -1,0 +1,185 @@
+---
+slug: "obsidian-agent-knowledge-base"
+title: "Obsidian Just Became the Best Knowledge Base for AI Agents"
+tagline: "Obsidian 1.12 ships a full CLI with 100+ commands — your vault is now programmable from the terminal"
+difficulty: "intermediate"
+readingTime: "8 min"
+category: "ecosystem"
+tags: ["obsidian", "agents", "knowledge-base", "cli", "memory", "openclaw", "automation"]
+relatedPacks: ["ai-agent-toolbox"]
+relatedTools: []
+publishedAt: "2026-03-01"
+---
+
+Everyone's been building agent setups with flat markdown files. SOUL.md here, MEMORY.md there, daily logs dumped into a folder. It works. It's also primitive.
+
+Obsidian 1.12 just dropped a CLI that gives any tool with terminal access — OpenClaw, Claude Code, Codex, custom scripts — full programmatic control over your vault. Read, write, search, tag, manage tasks, apply templates, execute JavaScript. Over 100 commands, all from the shell.
+
+This isn't a minor update. This is Obsidian positioning itself as the operating system for agent memory. And most people are going to miss it because the changelog leads with "image resizing."
+
+---
+
+## What the CLI Actually Does
+
+Here's what matters. Every one of these is a single terminal command.
+
+**Read and write notes:**
+```bash
+obsidian read file="My Note"
+obsidian create name="New Note" content="# Hello" template="Template" silent
+obsidian append file="My Note" content="New line"
+```
+
+**Search your entire vault:**
+```bash
+obsidian search query="search term" limit=10
+```
+
+**Manage tasks:**
+```bash
+obsidian tasks daily todo
+obsidian daily:append content="- [ ] Buy groceries"
+```
+
+**Work with daily notes:**
+```bash
+obsidian daily:read
+obsidian daily:append content="Research summary for today"
+```
+
+**Tags, backlinks, properties:**
+```bash
+obsidian tags sort=count counts
+obsidian backlinks file="My Note"
+obsidian property:set name="status" value="done" file="My Note"
+```
+
+**Execute arbitrary JavaScript in the app context:**
+```bash
+obsidian eval code="app.vault.getFiles().length"
+```
+
+That last one is wild. You can run JS that interacts with Obsidian's full internal API from the command line. Your agent can query anything the app itself can access.
+
+**Setup is dead simple:** Settings → General → Command line interface → turn it on. The `obsidian` command is now in your PATH.
+
+---
+
+## Why This Matters for Agent Setups
+
+If you're running any kind of autonomous agent — OpenClaw, a Claude Code workflow, a cron job that does research — you've been dealing with the same problem: where does the agent's knowledge live?
+
+Most setups use flat files. A `/memory` folder with dated markdown files. Maybe a `MEMORY.md` for long-term context. It works for simple cases. But the moment you want to search across weeks of notes, follow backlinks between ideas, or query structured properties, you're writing custom parsers.
+
+Obsidian already solved all of this. Backlinks, graph relationships, tags, search, templates, structured properties via YAML frontmatter. The plugin ecosystem adds dataview queries, kanban boards, database views. The problem was always access — agents couldn't get to any of it without going through MCP plugins or hacky workarounds.
+
+**The CLI removes that barrier completely.** Any agent with shell access can now:
+
+1. **Read** any note in the vault by name or path
+2. **Search** across the entire vault with the same engine Obsidian uses
+3. **Write** new notes from templates (preserving your vault's structure)
+4. **Append** to existing notes (daily logs, memory files, running task lists)
+5. **Query** tags, backlinks, and properties programmatically
+6. **Set** metadata on any file (mark tasks done, update status, add tags)
+
+Kepano — Obsidian's creator — put it bluntly: "Install Obsidian 1.12, enable CLI, and now OpenClaw, OpenCode, Claude Code, Codex, or any other agent can use Obsidian."
+
+He's not overselling it.
+
+---
+
+## 4 Agent Workflows Worth Building Today
+
+### 1. Daily Research Brief → Vault Integration
+
+**The problem:** Your research agent dumps findings into a flat markdown file. After a month, you have 30 disconnected daily files with no way to trace how a topic evolved.
+
+**The Obsidian play:** Have your agent write each research brief as a vault note using `obsidian create` with a template that includes YAML properties for topics, sources, and confidence levels. Use `obsidian property:set` to tag each note with the subjects covered. Now your research isn't a pile of files — it's a connected knowledge graph where you can follow a topic across weeks just by clicking a backlink.
+
+```bash
+obsidian create name="Intel-2026-03-01" template="Research Brief" silent
+obsidian property:set name="topics" value="DeFi, Agents, Obsidian" file="Intel-2026-03-01"
+obsidian append file="Intel-2026-03-01" content="## Findings\n..."
+```
+
+---
+
+### 2. Agent Memory That Actually Compounds
+
+**The problem:** Most agent memory setups are write-once, read-recent. The agent reads today's log and maybe yesterday's. Anything older than a week is effectively lost context.
+
+**The Obsidian play:** Use the vault as the memory layer. Short-term memory goes into daily notes via `obsidian daily:append`. When the agent distills insights during heartbeats, it creates linked evergreen notes using `obsidian create` with backlinks to the source dailies. Long-term memory becomes a graph, not a single file. The agent can use `obsidian search` or `obsidian backlinks` to pull relevant context from any time period — not just the last 48 hours.
+
+This is the difference between an agent with a notepad and an agent with an actual knowledge base.
+
+---
+
+### 3. Meeting Prep That Pulls From Your Entire History
+
+**The problem:** You have notes from dozens of meetings with someone, spread across months. Your agent can maybe read the last one.
+
+**The Obsidian play:** Every meeting note gets the attendee names as tags or properties. Before your next call, the agent runs:
+
+```bash
+obsidian search query="Sarah Chen" limit=20
+```
+
+...and gets every note that mentions them — meeting notes, research briefs, project docs, random thoughts you jotted down three months ago. It synthesizes all of it into a briefing.
+
+This is what CRM software charges enterprise prices for. A vault with good structure + an agent with CLI access does it for free.
+
+---
+
+### 4. Task Management Across Your Agent Team
+
+**The problem:** Multiple agents write tasks to different files. No central view. Things fall through the cracks.
+
+**The Obsidian play:** Every agent appends tasks to the daily note using `obsidian daily:append`. The heartbeat agent runs `obsidian tasks daily todo` to get all incomplete tasks across the vault. Overdue? It flags them. Done? It uses `obsidian property:set` to mark them complete. One command gives you a unified task view across every agent's output.
+
+---
+
+## The Bases Search Upgrade
+
+Bases is Obsidian's structured data layer — think spreadsheet views built from your note properties. 1.12 added search to Bases, which means you can now filter and query structured data across your vault without writing dataview queries.
+
+For agent setups, this is significant. Instead of parsing raw markdown to find "all notes tagged DeFi with status=active from the last 30 days," your agent can query Bases directly. Structured data in, structured data out. No regex. No markdown parsing. No fragile text extraction.
+
+---
+
+## What This Doesn't Do (Yet)
+
+Honest take. **The CLI requires Obsidian to be running.** It communicates with the app via IPC, so you can't use it in a truly headless server setup without running Obsidian in the background. On a Mac Mini or Linux desktop, this is fine. On a $5 VPS, you'll need to get creative (or wait for a headless mode).
+
+The CLI is also new — expect rough edges. Windows users need an extra setup step (a terminal redirector file from the Obsidian Discord). Linux users might need a wrapper script to avoid Electron flag conflicts. macOS is the smoothest experience right now.
+
+If you're running an agent on a remote server and don't want to deal with running Obsidian there, the community `notesmd-cli` project works directly on the vault files without needing the app. Less powerful (no plugin access, no JS execution, no Bases), but it runs anywhere.
+
+---
+
+## The Bigger Picture
+
+The CLI didn't come out of nowhere. The community-built `notesmd-cli` saw explosive growth after OpenClaw blew up — it became one of the default tools people connected to their agents. Obsidian saw the signal and shipped the official version.
+
+This is the pattern: agent builders hack together integrations with flat files and community tools, the platform notices, and ships native support. Expect every major knowledge management tool to follow this path. Notion's API is already there. Apple Notes will probably be last.
+
+But Obsidian has a structural advantage: **your data is local markdown files.** No API rate limits. No cloud dependency. No "we changed our pricing" surprises. The vault lives on your machine, right next to your agent. Zero latency, full control.
+
+For anyone building serious agent workflows, this is the knowledge layer that was missing. Not another SaaS integration. Not another MCP server. Just your notes, now accessible to everything with terminal access.
+
+---
+
+## Quick Reference
+
+| Resource | Link |
+|---|---|
+| Download | [obsidian.md](https://obsidian.md) |
+| 1.12 Changelog | [obsidian.md/changelog/obsidian-desktop-v1.12.0](https://obsidian.md/changelog/obsidian-desktop-v1.12.0) |
+| CLI Docs | Settings → General → Command line interface |
+| Community CLI | [notesmd-cli](https://github.com/nicholasgasior/notesmd-cli) (headless alternative) |
+| Plugin Ecosystem | [obsidian.md/plugins](https://obsidian.md/plugins) |
+
+---
+
+## Bottom Line
+
+Obsidian 1.12 turned your vault into an agent-native knowledge base. The CLI gives OpenClaw, Claude Code, and any shell-accessible tool full programmatic access — read, write, search, tag, manage tasks, and execute JavaScript against the Obsidian API. Your second brain just became programmable. Enable it in Settings and start plugging it into your agent workflows.
