@@ -94,7 +94,7 @@ export default async function GuideDetailPage({
       </div>
 
       {/* MDX Content */}
-      <article className="prose prose-zinc dark:prose-invert max-w-none prose-headings:scroll-mt-20 prose-h2:text-2xl prose-h2:font-bold prose-h2:mt-10 prose-h2:mb-4 prose-h3:text-xl prose-h3:font-semibold prose-h3:mt-8 prose-h3:mb-3 prose-p:leading-relaxed prose-a:text-indigo-600 prose-a:no-underline hover:prose-a:underline dark:prose-a:text-indigo-400 prose-code:rounded prose-code:bg-zinc-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:text-sm prose-code:before:content-none prose-code:after:content-none dark:prose-code:bg-zinc-800 prose-pre:rounded-xl prose-pre:bg-zinc-950 prose-pre:border prose-pre:border-zinc-800 prose-blockquote:border-indigo-300 dark:prose-blockquote:border-indigo-700 prose-img:rounded-xl">
+      <article className="prose prose-zinc dark:prose-invert max-w-none prose-headings:scroll-mt-20 prose-h2:text-2xl prose-h2:font-bold prose-h2:mt-10 prose-h2:mb-4 prose-h3:text-xl prose-h3:font-semibold prose-h3:mt-8 prose-h3:mb-3 prose-p:leading-relaxed prose-a:text-indigo-600 prose-a:no-underline hover:prose-a:underline dark:prose-a:text-indigo-400 prose-code:rounded prose-code:bg-zinc-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:text-sm prose-code:before:content-none prose-code:after:content-none dark:prose-code:bg-zinc-800 prose-pre:rounded-xl prose-pre:bg-zinc-800 prose-pre:text-zinc-100 prose-pre:border prose-pre:border-zinc-700 prose-blockquote:border-indigo-300 dark:prose-blockquote:border-indigo-700 prose-img:rounded-xl">
         <MDXRemote source={content} />
       </article>
 
