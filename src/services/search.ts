@@ -467,7 +467,7 @@ export async function getRelatedListings(
     WHERE dead_link = 0
     AND category = ${category}
     AND id != ${listingId}
-    ORDER BY stars DESC, downloads DESC
+    ORDER BY hype_score DESC NULLS LAST, stars DESC
     LIMIT ${limit}
   `);
   return result.rows as unknown as Listing[];

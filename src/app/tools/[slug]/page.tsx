@@ -6,6 +6,7 @@ import { getRelatedListings } from '@/services/search';
 import { CATEGORY_LABELS, type Category } from '@/lib/categories';
 import { ListingCard } from '@/components/listing-card';
 import { UpvoteButton } from '@/components/upvote-button';
+import { HypeScoreBadge } from '@/components/hype-score-badge';
 
 export const dynamic = 'force-dynamic';
 
@@ -168,6 +169,42 @@ export default async function ListingPage({
 
         {/* Sidebar (right/bottom on mobile) */}
         <div className="flex flex-col gap-4">
+          {/* Hype Score card */}
+          {listing.hypeScore !== null && listing.hypeScore > 0 && (
+            <div className="rounded-lg border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+              <h3 className="mb-3 text-sm font-semibold text-zinc-900 dark:text-zinc-50">
+                Hype Score
+              </h3>
+              <div className="mb-4">
+                <HypeScoreBadge score={listing.hypeScore} size="lg" />
+              </div>
+              <div className="flex flex-col gap-2.5">
+                {[
+                  { label: 'Stars', weight: 30, value: Math.min(100, Math.round(((listing.stars ?? 0) / 1000) * 100)) },
+                  { label: 'Downloads', weight: 25, value: Math.min(100, Math.round(((listing.downloads ?? 0) / 50000) * 100)) },
+                  { label: 'Recency', weight: 25, value: listing.updatedAt ? Math.min(100, Math.max(0, 100 - Math.floor((Date.now() - listing.updatedAt.getTime()) / (1000 * 60 * 60 * 24 * 3.65)))) : 0 },
+                  { label: 'Upvotes', weight: 20, value: Math.min(100, Math.round(((listing.upvotes ?? 0) / 50) * 100)) },
+                ].map(({ label, weight, value }) => (
+                  <div key={label} className="text-xs">
+                    <div className="mb-1 flex justify-between text-zinc-600 dark:text-zinc-400">
+                      <span>{label}</span>
+                      <span>{weight}%</span>
+                    </div>
+                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-800">
+                      <div
+                        className="h-full rounded-full bg-indigo-500 transition-all"
+                        style={{ width: `${value}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-3 text-xs text-zinc-500 dark:text-zinc-500">
+                Scored from GitHub stars (30%), downloads (25%), recency (25%), and upvotes (20%).
+              </p>
+            </div>
+          )}
+
           {/* Metrics card */}
           <div className="rounded-lg border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
             <h3 className="mb-3 text-sm font-semibold text-zinc-900 dark:text-zinc-50">
@@ -373,6 +410,12 @@ export default async function ListingPage({
               <ListingCard key={related.id} listing={related} />
             ))}
           </div>
+          <Link
+            href={`/tools?category=${listing.category}`}
+            className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300"
+          >
+            Browse all in {CATEGORY_LABELS[listing.category as Category] || listing.category} →
+          </Link>
         </div>
       )}
     </div>
